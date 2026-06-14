@@ -58,6 +58,7 @@ export default function Home() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -65,11 +66,11 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when sidebar is open
+  // Lock body scroll when sidebar or contact modal is open
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
+    document.body.style.overflow = (menuOpen || contactModalOpen) ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
+  }, [menuOpen, contactModalOpen]);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -421,16 +422,16 @@ export default function Home() {
           <div className="lg:col-span-5 flex flex-col items-start justify-center lg:pr-4 w-full flex-shrink-0">
             {/* Top Label with decorative gold lines */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 mb-4 max-w-full">
-              <div className="flex items-center">
+              <div className="flex items-center shrink-0">
                 <span className="w-3 sm:w-6 h-[1px] bg-[#D4AF37]"></span>
                 <svg className="w-2 h-2 text-[#D4AF37] -ml-0.5 fill-current" viewBox="0 0 24 24">
                   <path d="M12 .587l3.668 7.431 8.2 1.191-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.209l8.2-1.191L12 .587z" />
                 </svg>
               </div>
-              <span className="text-[9.2px] xs:text-[10px] sm:text-[10px] xl:text-[11px] uppercase tracking-[0.8px] xs:tracking-[1.5px] sm:tracking-[3px] font-semibold text-[#666666] font-sans whitespace-nowrap">
+              <span className="text-[2.5vw] xs:text-[10.5px] sm:text-[10px] xl:text-[11px] uppercase tracking-[0.4px] xs:tracking-[1.2px] sm:tracking-[3px] font-semibold text-[#666666] font-sans whitespace-nowrap">
                 Premium Wedding Photography & Cinematography
               </span>
-              <div className="flex items-center">
+              <div className="flex items-center shrink-0">
                 <svg className="w-2 h-2 text-[#D4AF37] -mr-0.5 fill-current" viewBox="0 0 24 24">
                   <path d="M12 .587l3.668 7.431 8.2 1.191-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.209l8.2-1.191L12 .587z" />
                 </svg>
@@ -439,12 +440,12 @@ export default function Home() {
             </div>
 
             {/* Main Heading */}
-            <h1 className="font-serif text-[36px] xs:text-[40px] sm:text-[42px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
+            <h1 className="font-serif text-[38px] xs:text-[42px] sm:text-[44px] md:text-[46px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
               Capturing Your<br />
               Lifetime Memories
             </h1>
             {/* Script word "Realistically" */}
-            <div className="font-script text-[50px] xs:text-[56px] sm:text-[60px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
+            <div className="font-script text-[54px] xs:text-[60px] sm:text-[64px] md:text-[68px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
               Realistically
             </div>
 
@@ -1174,27 +1175,27 @@ export default function Home() {
         </div>
 
         {/* MAIN FOOTER CONTENT */}
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 py-8 px-8 xl:px-16 relative z-10">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 py-6 md:py-8 px-6 md:px-8 xl:px-16 relative z-10">
 
           {/* Logo Column - 3 cols */}
           <div className="lg:col-span-3 flex flex-col justify-start">
             <div className="flex flex-col items-start leading-none select-none mb-4">
               <div className="flex items-center gap-2">
-                <span className="font-serif text-[34px] font-bold text-[#D4AF37] tracking-wider leading-none">OM</span>
-                <svg className="w-8 h-7 text-[#D4AF37] stroke-[1.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <span className="font-serif text-[28px] md:text-[34px] font-bold text-[#D4AF37] tracking-wider leading-none">OM</span>
+                <svg className="w-7 h-6 md:w-8 md:h-7 text-[#D4AF37] stroke-[1.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" strokeLinejoin="round" />
                   <circle cx="12" cy="13" r="3" />
                 </svg>
               </div>
-              <span className="font-sans text-[10px] font-medium text-[#D4AF37] tracking-[0.45em] mt-1">PHOTOGRAPHY</span>
+              <span className="font-sans text-[8.5px] md:text-[10px] font-medium text-[#D4AF37] tracking-[0.45em] mt-1">PHOTOGRAPHY</span>
             </div>
-            <p className="text-white/50 text-[13px] leading-[1.65] max-w-[280px]">
+            <p className="text-white/50 text-[12px] md:text-[13px] leading-[1.65] max-w-[280px]">
               Capturing your lifetime memories realistically with modern editorial elegance and cinematic storytelling.
             </p>
           </div>
 
           {/* EXPLORE COLUMN */}
-          <div className="lg:col-span-2 flex flex-col">
+          <div className="hidden md:flex lg:col-span-2 flex-col">
             <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">EXPLORE</h3>
             <ul className="space-y-2 font-sans text-[12px] text-white/50">
               <li><a href="#" className="hover:text-[#D4AF37] transition-colors">Home</a></li>
@@ -1207,7 +1208,7 @@ export default function Home() {
           </div>
 
           {/* GALLERIES COLUMN */}
-          <div className="lg:col-span-2 flex flex-col">
+          <div className="hidden md:flex lg:col-span-2 flex-col">
             <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">GALLERIES</h3>
             <ul className="space-y-2 font-sans text-[12px] text-white/50">
               <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Weddings</a></li>
@@ -1220,7 +1221,7 @@ export default function Home() {
           </div>
 
           {/* INFORMATION COLUMN */}
-          <div className="lg:col-span-2 flex flex-col">
+          <div className="hidden md:flex lg:col-span-2 flex-col">
             <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">INFORMATION</h3>
             <ul className="space-y-2 font-sans text-[12px] text-white/50">
               <li><a href="#services" className="hover:text-[#D4AF37] transition-colors">Pricing & Packages</a></li>
@@ -1233,15 +1234,15 @@ export default function Home() {
           </div>
 
           {/* CONTACT & CTA COLUMN - 3 cols */}
-          <div className="md:col-span-2 lg:col-span-3 flex flex-col items-start">
+          <div className="md:col-span-2 lg:col-span-3 flex flex-col items-start w-full mt-4 md:mt-0">
             <h3
               className="font-script text-[#D4AF37] leading-snug mb-3 whitespace-nowrap"
-              style={{ fontSize: 'clamp(14px, 1.4vw, 22px)' }}
+              style={{ fontSize: 'clamp(16px, 1.4vw, 22px)' }}
             >
               Let&apos;s Create Magic Together!
             </h3>
 
-            <ul className="space-y-2 text-[12px] text-white/50 mb-4 font-sans">
+            <ul className="space-y-2 text-[11.5px] md:text-[12px] text-white/50 mb-4 font-sans flex flex-col items-start">
               <li className="flex items-center gap-2">
                 <svg className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round" />
@@ -1263,7 +1264,7 @@ export default function Home() {
               </li>
             </ul>
 
-            <a href="#booking" className="w-full h-[38px] border border-[#D4AF37] rounded-[5px] flex items-center justify-center gap-2 text-[#D4AF37] font-semibold text-[11px] tracking-[1.5px] uppercase bg-transparent hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
+            <a href="#booking" className="w-full max-w-[280px] h-[36px] md:h-[38px] border border-[#D4AF37] rounded-[5px] flex items-center justify-center gap-2 text-[#D4AF37] font-semibold text-[10px] md:text-[11px] tracking-[1.5px] uppercase bg-transparent hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
               <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                 <line x1="16" y1="2" x2="16" y2="6" />
@@ -1287,7 +1288,7 @@ export default function Home() {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="border-t border-white/[0.08] py-4 px-8 xl:px-16 bg-[#090909] relative z-10">
+        <div className="border-t border-white/[0.08] py-4 px-6 md:px-8 xl:px-16 bg-[#090909] relative z-10">
           <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
 
             {/* Social Media Links */}
@@ -1326,18 +1327,223 @@ export default function Home() {
             </div>
 
             {/* Quotation */}
-            <div className="flex flex-col items-end text-right max-w-[360px]">
-              <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mb-0.5">“</div>
+            <div className="flex flex-col items-center text-center md:items-end md:text-right max-w-[360px]">
+              <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mb-0.5 justify-center md:justify-end">“</div>
               <p className="font-serif italic text-[12px] text-white/40 leading-relaxed">
                 A photograph is the pause button of life&apos;s most beautiful moments.
               </p>
-              <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mt-0.5">”</div>
+              <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mt-0.5 justify-center md:justify-end">”</div>
             </div>
 
           </div>
         </div>
 
       </footer>
+
+      {/* ─── FLOATING WHATSAPP BUTTON & CONTACT POPUP ─────────────────────────── */}
+      <div className="fixed bottom-6 left-6 z-[80] flex flex-col items-start gap-3">
+        {/* Floating WhatsApp Action Button */}
+        <button
+          onClick={() => setContactModalOpen(true)}
+          className="relative group w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-[0_8px_30px_rgba(37,211,102,0.45)] hover:shadow-[0_12px_40px_rgba(37,211,102,0.6)] hover:bg-[#20ba5a] active:scale-95 transition-all duration-300 hover:scale-110 z-10"
+          aria-label="Open instant contact hub"
+        >
+          {/* Pulsing ring outer decoration */}
+          <span className="absolute inset-0 rounded-full bg-[#25D366]/40 animate-ping pointer-events-none scale-105" />
+          
+          {/* WhatsApp icon */}
+          <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.739-1.451L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.863-9.864.001-2.636-1.023-5.11-2.884-6.974-1.862-1.865-4.337-2.893-6.979-2.895-5.438 0-9.866 4.42-9.869 9.866-.001 1.765.485 3.491 1.408 4.98l-.323 1.182.164.159c.775-.758 1.621-1.584 2.158-1.921zm10.594-5.28c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+          </svg>
+          
+          {/* Visual Tooltip indicator */}
+          <span className="absolute left-16 bg-[#111111] border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold tracking-[1.5px] uppercase py-1.5 px-3 rounded-[6px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-md">
+            Contact Hub
+          </span>
+        </button>
+      </div>
+
+      {/* POPUP MODAL / LOCALIZED POPOVER */}
+      {contactModalOpen && (
+        <>
+          {/* Backdrop — full-screen, dismisses on click */}
+          <div
+            onClick={() => setContactModalOpen(false)}
+            className="fixed inset-0 z-[85] bg-black/60 backdrop-blur-md"
+          />
+
+          {/* Centering wrapper */}
+          <div className="fixed inset-0 z-[90] flex items-center justify-center p-5 pointer-events-none">
+
+          {/* Contact Card */}
+          <div
+            className="w-full max-w-[440px] bg-[#0E0E0E] border border-[#D4AF37]/35 rounded-[18px] shadow-[0_20px_50px_rgba(0,0,0,0.65)] overflow-hidden transition-all duration-300 ease-out transform pointer-events-auto scale-100 opacity-100"
+          >
+            {/* Header section with cover gradient */}
+            <div className="bg-gradient-to-r from-[#171717] to-[#0A0A0A] p-4.5 border-b border-white/[0.08] relative">
+              {/* Close button */}
+              <button
+                onClick={() => setContactModalOpen(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-[#D4AF37] hover:border-[#D4AF37]/50 active:scale-95 transition-all duration-200"
+                aria-label="Close contact card"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
+              {/* Brand Logo inside contact card */}
+              <div className="flex flex-col items-start leading-none select-none">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-serif text-[24px] font-bold text-[#D4AF37] tracking-wider leading-none">OM</span>
+                  <svg className="w-6 h-4.5 text-[#D4AF37] stroke-[1.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" strokeLinejoin="round" />
+                    <circle cx="12" cy="13" r="3" />
+                  </svg>
+                </div>
+                <span className="font-sans text-[7.5px] font-medium text-[#D4AF37] tracking-[0.45em] mt-0.5">PHOTOGRAPHY</span>
+              </div>
+              <p className="text-[#D4AF37]/75 font-serif italic text-[12px] mt-2">
+                Let&apos;s turn your dream moments into timeless visual art.
+              </p>
+            </div>
+
+            {/* Body content */}
+            <div className="p-5 space-y-4">
+              {/* Quick Primary Actions */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* WhatsApp instant chat */}
+                <a
+                  href="https://wa.me/911234567890?text=Hi%20Om%20Photography,%20I'd%20like%20to%20inquire%20about%20your%20services!"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center p-3 rounded-[10px] bg-[#25D366]/10 border border-[#25D366]/30 hover:bg-[#25D366]/20 transition-all duration-300 text-center group"
+                >
+                  <div className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md mb-2 group-hover:scale-110 transition-transform duration-300">
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.739-1.451L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.863-9.864.001-2.636-1.023-5.11-2.884-6.974-1.862-1.865-4.337-2.893-6.979-2.895-5.438 0-9.866 4.42-9.869 9.866-.001 1.765.485 3.491 1.408 4.98l-.323 1.182.164.159c.775-.758 1.621-1.584 2.158-1.921zm10.594-5.28c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                    </svg>
+                  </div>
+                  <span className="font-bold text-[12px] text-white tracking-wide">WhatsApp Us</span>
+                  <span className="text-[9.5px] text-white/40 mt-0.5">Instant chat reply</span>
+                </a>
+
+                {/* Direct call */}
+                <a
+                  href="tel:+911234567890"
+                  className="flex flex-col items-center justify-center p-3 rounded-[10px] bg-[#D4AF37]/10 border border-[#D4AF37]/30 hover:bg-[#D4AF37]/20 transition-all duration-300 text-center group"
+                >
+                  <div className="w-9 h-9 rounded-full bg-[#D4AF37] text-[#0E0E0E] flex items-center justify-center shadow-md mb-2 group-hover:scale-110 transition-transform duration-300">
+                    <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                  </div>
+                  <span className="font-bold text-[12px] text-white tracking-wide">Call Direct</span>
+                  <span className="text-[9.5px] text-white/40 mt-0.5">+91 12345 67890</span>
+                </a>
+              </div>
+
+              {/* Email card */}
+              <a
+                href="mailto:hello@omphotography.com"
+                className="flex items-center gap-3 p-3 rounded-[10px] bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] transition-all duration-200 group"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] group-hover:scale-105 transition-transform duration-200">
+                  <svg className="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" strokeLinecap="round" strokeLinejoin="round" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                </div>
+                <div className="flex-1 text-left">
+                  <h4 className="text-[11.5px] font-bold text-white/90 font-sans uppercase tracking-wider">Email Address</h4>
+                  <p className="text-[11px] text-white/50 mt-0.5">hello@omphotography.com</p>
+                </div>
+                <svg className="w-3.5 h-3.5 text-white/20 group-hover:text-white/60 transition-colors" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+
+              {/* Reach Us / Location Map link */}
+              <a
+                href="https://maps.google.com/?q=Mumbai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-[10px] bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] transition-all duration-200 group"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] group-hover:scale-105 transition-transform duration-200">
+                  <svg className="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </div>
+                <div className="flex-1 text-left">
+                  <h4 className="text-[11.5px] font-bold text-white/90 font-sans uppercase tracking-wider">Reach Our Studio</h4>
+                  <p className="text-[11px] text-white/50 mt-0.5 leading-snug">102, Royal Lotus Plaza, MG Road, Mumbai, India</p>
+                </div>
+                <span className="text-[7px] font-bold tracking-wider text-[#D4AF37] uppercase bg-[#D4AF37]/10 px-2 py-0.5 rounded-[4px] border border-[#D4AF37]/20 group-hover:bg-[#D4AF37] group-hover:text-[#0E0E0E] transition-all duration-200 shrink-0">MAPS</span>
+              </a>
+
+              {/* Social Hub Grid */}
+              <div>
+                <h4 className="text-[9.5px] font-bold text-white/40 tracking-[2px] uppercase mb-2.5 text-left">Connect Socially</h4>
+                <div className="grid grid-cols-4 gap-2">
+                  {/* Instagram */}
+                  <a href="#" className="flex flex-col items-center justify-center p-2 rounded-[8px] bg-white/[0.02] border border-white/5 hover:border-[#D4AF37]/45 hover:bg-white/[0.04] transition-all duration-200 text-center group">
+                    <svg className="w-[18px] h-[18px] text-white/60 group-hover:text-[#D4AF37] transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                    <span className="text-[8.5px] text-white/50 mt-1 font-medium group-hover:text-white transition-colors">Insta</span>
+                  </a>
+                  {/* Facebook */}
+                  <a href="#" className="flex flex-col items-center justify-center p-2 rounded-[8px] bg-white/[0.02] border border-white/5 hover:border-[#D4AF37]/45 hover:bg-white/[0.04] transition-all duration-200 text-center group">
+                    <svg className="w-[18px] h-[18px] text-white/60 group-hover:text-[#D4AF37] transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span className="text-[8.5px] text-white/50 mt-1 font-medium group-hover:text-white transition-colors">Facebook</span>
+                  </a>
+                  {/* YouTube */}
+                  <a href="#" className="flex flex-col items-center justify-center p-2 rounded-[8px] bg-white/[0.02] border border-white/5 hover:border-[#D4AF37]/45 hover:bg-white/[0.04] transition-all duration-200 text-center group">
+                    <svg className="w-[18px] h-[18px] text-white/60 group-hover:text-[#D4AF37] transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    <span className="text-[8.5px] text-white/50 mt-1 font-medium group-hover:text-white transition-colors">YouTube</span>
+                  </a>
+                  {/* Pinterest */}
+                  <a href="#" className="flex flex-col items-center justify-center p-2 rounded-[8px] bg-white/[0.02] border border-white/5 hover:border-[#D4AF37]/45 hover:bg-white/[0.04] transition-all duration-200 text-center group">
+                    <svg className="w-[18px] h-[18px] text-white/60 group-hover:text-[#D4AF37] transition-colors" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.627 0-12 5.372-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/>
+                    </svg>
+                    <span className="text-[8.5px] text-white/50 mt-1 font-medium group-hover:text-white transition-colors">Pinterest</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Timings & Availability */}
+              <div className="bg-white/[0.01] border border-white/[0.06] rounded-[10px] p-3">
+                <div className="flex items-center justify-between text-[10.5px] text-white/40 mb-1.5">
+                  <span className="font-semibold uppercase tracking-wider">Studio Hours:</span>
+                  <span className="font-medium text-white/80">10:00 AM – 8:00 PM (IST)</span>
+                </div>
+                <div className="flex items-center justify-between text-[10.5px] text-white/40">
+                  <span className="font-semibold uppercase tracking-wider">Response Time:</span>
+                  <span className="font-bold text-[#25D366]">Under 1 Hour</span>
+                </div>
+              </div>
+
+            </div>{/* end body */}
+
+            {/* Card Footer */}
+            <div className="bg-black/80 px-5 py-3 border-t border-white/[0.06] text-center">
+              <span className="text-[9.5px] tracking-[2px] font-bold text-[#D4AF37] uppercase">OM PHOTOGRAPHY</span>
+              <span className="text-[8.5px] text-white/40 block mt-0.5">© 2026. All Rights Reserved.</span>
+            </div>
+
+          </div>{/* end card */}
+          </div>{/* end centering wrapper */}
+        </>
+      )}
+
     </div>
   );
 }
