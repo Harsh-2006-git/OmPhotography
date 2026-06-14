@@ -153,9 +153,9 @@ export default function Home() {
 
       {/* 1. HEADER — Fixed floating navbar */}
       <header
-        className={`fixed top-0 left-0 right-0 h-[60px] md:h-[70px] w-full px-4 md:px-12 flex items-center justify-between z-50 transition-all duration-500 ${scrolled
-          ? "bg-[#FEFCF8]/90 backdrop-blur-xl border-b border-[#D4AF37]/30 shadow-[0_4px_30px_rgba(212,175,55,0.12)]"
-          : "bg-transparent border-b border-transparent"
+        className={`fixed top-0 left-0 right-0 h-[60px] md:h-[70px] w-full px-4 md:px-12 flex items-center justify-between z-50 transition-all duration-500 bg-[#FEFCF8]/90 backdrop-blur-xl border-b border-[#D4AF37]/25 ${scrolled
+          ? "shadow-[0_4px_30px_rgba(212,175,55,0.12)]"
+          : ""
           }`}
       >
         {/* LOGO */}
@@ -425,7 +425,7 @@ export default function Home() {
                 <span className="w-6 h-[1px] bg-[#D4AF37]"></span>
                 <span className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37] -ml-1"></span>
               </div>
-              <span className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] xl:text-[11px] uppercase tracking-[1px] xs:tracking-[1.5px] sm:tracking-[3px] font-semibold text-[#666666] font-sans whitespace-nowrap">
+              <span className="text-[9.2px] xs:text-[10px] sm:text-[10px] xl:text-[11px] uppercase tracking-[0.8px] xs:tracking-[1.5px] sm:tracking-[3px] font-semibold text-[#666666] font-sans whitespace-nowrap">
                 Premium Wedding Photography & Cinematography
               </span>
               <div className="hidden sm:flex items-center">
@@ -748,65 +748,65 @@ export default function Home() {
       </section>
 
       {/* 5. SERVICES & EXPERIENCE SECTION */}
-      <section id="services" className="bg-white border-t border-[#E8DCC2] py-10 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
+      <section id="services" className="bg-white border-t border-[#E8DCC2] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
         <div className="max-w-[1440px] mx-auto flex flex-col items-center">
-          <div className="font-script text-[28px] md:text-[36px] text-[#D4AF37] mb-2">Our Services</div>
-          <h2 className="font-serif text-[28px] sm:text-[34px] md:text-[42px] text-[#222222] font-normal tracking-tight text-center mb-8 md:mb-16">
+          <div className="font-script text-[24px] md:text-[36px] text-[#D4AF37] mb-1">Our Services</div>
+          <h2 className="font-serif text-[22px] sm:text-[34px] md:text-[42px] text-[#222222] font-normal tracking-tight text-center mb-6 md:mb-16">
             What We Specialize In
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 w-full">
             {/* Service 1 */}
-            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-6">
-                <svg className="w-6 h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-4 sm:p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-4 md:mb-6 shrink-0">
+                <svg className="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                   <circle cx="12" cy="13" r="4" />
                 </svg>
               </div>
-              <h3 className="font-serif text-[22px] text-[#222222] font-normal mb-3">Candid Photography</h3>
-              <p className="text-[#666666] text-[14px] leading-[1.6]">
+              <h3 className="font-serif text-[18px] md:text-[22px] text-[#222222] font-normal mb-2 md:mb-3">Candid Photography</h3>
+              <p className="text-[#666666] text-[12.5px] md:text-[14px] leading-[1.6]">
                 Capturing natural, unscripted emotions, stolen glances, and real laughter as it happens without forcing poses.
               </p>
             </div>
 
             {/* Service 2 */}
-            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-6">
-                <svg className="w-6 h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-4 sm:p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-4 md:mb-6 shrink-0">
+                <svg className="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <polygon points="23 7 16 12 23 17 23 7" />
                   <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                 </svg>
               </div>
-              <h3 className="font-serif text-[22px] text-[#222222] font-normal mb-3">Cinematic Films</h3>
-              <p className="text-[#666666] text-[14px] leading-[1.6]">
+              <h3 className="font-serif text-[18px] md:text-[22px] text-[#222222] font-normal mb-2 md:mb-3">Cinematic Films</h3>
+              <p className="text-[#666666] text-[12.5px] md:text-[14px] leading-[1.6]">
                 Creating bespoke cinematic wedding highlights, teasers, and documentary-style films of your royal celebrations.
               </p>
             </div>
 
             {/* Service 3 */}
-            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-6">
-                <svg className="w-6 h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-4 sm:p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-4 md:mb-6 shrink-0">
+                <svg className="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-[22px] text-[#222222] font-normal mb-3">Drone Shoots</h3>
-              <p className="text-[#666666] text-[14px] leading-[1.6]">
+              <h3 className="font-serif text-[18px] md:text-[22px] text-[#222222] font-normal mb-2 md:mb-3">Drone Shoots</h3>
+              <p className="text-[#666666] text-[12.5px] md:text-[14px] leading-[1.6]">
                 Grand aerial cinematography capturing the scale, majesty, and breath-taking architecture of your wedding destination.
               </p>
             </div>
 
             {/* Service 4 */}
-            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-6">
-                <svg className="w-6 h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-4 sm:p-5 md:p-8 flex flex-col items-start hover:shadow-lg transition-shadow duration-300">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] mb-4 md:mb-6 shrink-0">
+                <svg className="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                   <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5V4.5z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-[22px] text-[#222222] font-normal mb-3">Premium Albums</h3>
-              <p className="text-[#666666] text-[14px] leading-[1.6]">
+              <h3 className="font-serif text-[18px] md:text-[22px] text-[#222222] font-normal mb-2 md:mb-3">Premium Albums</h3>
+              <p className="text-[#666666] text-[12.5px] md:text-[14px] leading-[1.6]">
                 Handcrafted leather albums with gold gilded edges and flush mount pages, custom-designed to tell your unique love story.
               </p>
             </div>
@@ -1089,15 +1089,15 @@ export default function Home() {
       </section>
 
       {/* 9. FOOTER (Bottom Section) */}
-      <footer className="bg-[#F8F5F0] border-t border-[#E7D8B5] text-[#222222] relative flex-shrink-0" style={{ fontSize: '13px' }}>
+      <footer className="bg-[#0D0D0D] relative flex-shrink-0" style={{ fontSize: '13px' }}>
 
-        {/* TOP SERVICE STRIP */}
-        <div className="border-b border-[#E7D8B5] py-3 px-8 xl:px-16">
-          <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 divide-y md:divide-y-0 lg:divide-x divide-[#E7D8B5]">
+        {/* TOP SERVICE STRIP - Warm Ivory Light Theme */}
+        <div className="bg-[#FEFCF8] border-t border-[#E8DCC2] border-b border-[#E8DCC2] py-4 md:py-5 px-8 xl:px-16 text-[#222222] relative z-10">
+          <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 divide-y md:divide-y-0 lg:divide-x divide-[#E8DCC2]">
 
             {/* Service 1 */}
             <div className="flex items-center gap-3 px-4 py-3 lg:py-0 first:pl-0 last:pr-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
+              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
                 <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                   <circle cx="12" cy="13" r="4" />
@@ -1111,7 +1111,7 @@ export default function Home() {
 
             {/* Service 2 */}
             <div className="flex items-center gap-3 px-4 py-3 lg:py-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
+              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
                 <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <polygon points="23 7 16 12 23 17 23 7" />
                   <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
@@ -1125,7 +1125,7 @@ export default function Home() {
 
             {/* Service 3 */}
             <div className="flex items-center gap-3 px-4 py-3 lg:py-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
+              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
                 <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
@@ -1140,7 +1140,7 @@ export default function Home() {
 
             {/* Service 4 */}
             <div className="flex items-center gap-3 px-4 py-3 lg:py-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
+              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
                 <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
@@ -1154,7 +1154,7 @@ export default function Home() {
 
             {/* Service 5 */}
             <div className="flex items-center gap-3 px-4 py-3 lg:py-0 last:pr-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
+              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
                 <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
@@ -1184,15 +1184,15 @@ export default function Home() {
               </div>
               <span className="font-sans text-[10px] font-medium text-[#D4AF37] tracking-[0.45em] mt-1">PHOTOGRAPHY</span>
             </div>
-            <p className="text-[#666666] text-[13px] leading-[1.65] max-w-[280px]">
+            <p className="text-white/50 text-[13px] leading-[1.65] max-w-[280px]">
               Capturing your lifetime memories realistically with modern editorial elegance and cinematic storytelling.
             </p>
           </div>
 
           {/* EXPLORE COLUMN */}
           <div className="lg:col-span-2 flex flex-col">
-            <h3 className="font-serif text-[13px] text-[#222222] font-bold tracking-[1.5px] uppercase mb-4">EXPLORE</h3>
-            <ul className="space-y-2 font-sans text-[12px] text-[#666666]">
+            <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">EXPLORE</h3>
+            <ul className="space-y-2 font-sans text-[12px] text-white/50">
               <li><a href="#" className="hover:text-[#D4AF37] transition-colors">Home</a></li>
               <li><a href="#about" className="hover:text-[#D4AF37] transition-colors">About Us</a></li>
               <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Our Works</a></li>
@@ -1204,8 +1204,8 @@ export default function Home() {
 
           {/* GALLERIES COLUMN */}
           <div className="lg:col-span-2 flex flex-col">
-            <h3 className="font-serif text-[13px] text-[#222222] font-bold tracking-[1.5px] uppercase mb-4">GALLERIES</h3>
-            <ul className="space-y-2 font-sans text-[12px] text-[#666666]">
+            <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">GALLERIES</h3>
+            <ul className="space-y-2 font-sans text-[12px] text-white/50">
               <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Weddings</a></li>
               <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Pre Weddings</a></li>
               <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Portraits</a></li>
@@ -1217,8 +1217,8 @@ export default function Home() {
 
           {/* INFORMATION COLUMN */}
           <div className="lg:col-span-2 flex flex-col">
-            <h3 className="font-serif text-[13px] text-[#222222] font-bold tracking-[1.5px] uppercase mb-4">INFORMATION</h3>
-            <ul className="space-y-2 font-sans text-[12px] text-[#666666]">
+            <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">INFORMATION</h3>
+            <ul className="space-y-2 font-sans text-[12px] text-white/50">
               <li><a href="#services" className="hover:text-[#D4AF37] transition-colors">Pricing & Packages</a></li>
               <li><a href="#booking" className="hover:text-[#D4AF37] transition-colors">Booking Process</a></li>
               <li><a href="#" className="hover:text-[#D4AF37] transition-colors">FAQs</a></li>
@@ -1237,7 +1237,7 @@ export default function Home() {
               Let&apos;s Create Magic Together!
             </h3>
 
-            <ul className="space-y-2 text-[12px] text-[#666666] mb-4 font-sans">
+            <ul className="space-y-2 text-[12px] text-white/50 mb-4 font-sans">
               <li className="flex items-center gap-2">
                 <svg className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round" />
@@ -1259,7 +1259,7 @@ export default function Home() {
               </li>
             </ul>
 
-            <a href="#booking" className="w-full h-[38px] border border-[#D4AF37] rounded-[5px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[11px] tracking-[1.5px] uppercase bg-transparent hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
+            <a href="#booking" className="w-full h-[38px] border border-[#D4AF37] rounded-[5px] flex items-center justify-center gap-2 text-[#D4AF37] font-semibold text-[11px] tracking-[1.5px] uppercase bg-transparent hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
               <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                 <line x1="16" y1="2" x2="16" y2="6" />
@@ -1278,21 +1278,21 @@ export default function Home() {
           <img
             src="https://images.unsplash.com/photo-1519225495810-7512c696505a?auto=format&fit=crop&w=600&q=80"
             alt=""
-            className="w-full h-full object-cover object-right grayscale opacity-[0.08] mix-blend-multiply"
+            className="w-full h-full object-cover object-right grayscale opacity-[0.03] mix-blend-screen invert"
           />
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="border-t border-[#E7D8B5] py-4 px-8 xl:px-16 bg-[#F8F5F0] relative z-10">
+        <div className="border-t border-white/[0.08] py-4 px-8 xl:px-16 bg-[#090909] relative z-10">
           <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
 
             {/* Social Media Links */}
             <div className="flex items-center gap-4">
-              <span className="text-[12px] font-bold text-[#666666] tracking-[2px] uppercase flex items-center gap-2">
+              <span className="text-[12px] font-bold text-white/40 tracking-[2px] uppercase flex items-center gap-2">
                 FOLLOW US <span className="w-6 h-[1px] bg-[#D4AF37] inline-block"></span>
               </span>
               {/* Instagram */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
+              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -1300,21 +1300,21 @@ export default function Home() {
                 </svg>
               </a>
               {/* Facebook */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
+              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                 </svg>
               </a>
               {/* YouTube */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
+              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
                   <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" />
                 </svg>
               </a>
               {/* Pinterest */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
-                <svg className="w-5.5 h-5.5 text-[#D4AF37]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M8 22a9 9 0 0 1-5.18-16.36 9 9 0 0 1 14.82 4.96C17.64 16 14 22 8 22z" />
                   <circle cx="8" cy="10" r="3" />
                 </svg>
@@ -1324,7 +1324,7 @@ export default function Home() {
             {/* Quotation */}
             <div className="flex flex-col items-end text-right max-w-[360px]">
               <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mb-0.5">“</div>
-              <p className="font-serif italic text-[12px] text-[#666666] leading-relaxed">
+              <p className="font-serif italic text-[12px] text-white/40 leading-relaxed">
                 A photograph is the pause button of life&apos;s most beautiful moments.
               </p>
               <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mt-0.5">”</div>
