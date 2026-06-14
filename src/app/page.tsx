@@ -421,26 +421,30 @@ export default function Home() {
           <div className="lg:col-span-5 flex flex-col items-start justify-center lg:pr-4 w-full flex-shrink-0">
             {/* Top Label with decorative gold lines */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 mb-4 max-w-full">
-              <div className="hidden sm:flex items-center">
-                <span className="w-6 h-[1px] bg-[#D4AF37]"></span>
-                <span className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37] -ml-1"></span>
+              <div className="flex items-center">
+                <span className="w-3 sm:w-6 h-[1px] bg-[#D4AF37]"></span>
+                <svg className="w-2 h-2 text-[#D4AF37] -ml-0.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 .587l3.668 7.431 8.2 1.191-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.209l8.2-1.191L12 .587z" />
+                </svg>
               </div>
               <span className="text-[9.2px] xs:text-[10px] sm:text-[10px] xl:text-[11px] uppercase tracking-[0.8px] xs:tracking-[1.5px] sm:tracking-[3px] font-semibold text-[#666666] font-sans whitespace-nowrap">
                 Premium Wedding Photography & Cinematography
               </span>
-              <div className="hidden sm:flex items-center">
-                <span className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37] -mr-1"></span>
-                <span className="w-6 h-[1px] bg-[#D4AF37]"></span>
+              <div className="flex items-center">
+                <svg className="w-2 h-2 text-[#D4AF37] -mr-0.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 .587l3.668 7.431 8.2 1.191-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.209l8.2-1.191L12 .587z" />
+                </svg>
+                <span className="w-3 sm:w-6 h-[1px] bg-[#D4AF37]"></span>
               </div>
             </div>
 
             {/* Main Heading */}
-            <h1 className="font-serif text-[34px] xs:text-[38px] sm:text-[40px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
+            <h1 className="font-serif text-[36px] xs:text-[40px] sm:text-[42px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
               Capturing Your<br />
               Lifetime Memories
             </h1>
             {/* Script word "Realistically" */}
-            <div className="font-script text-[48px] xs:text-[53px] sm:text-[58px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
+            <div className="font-script text-[50px] xs:text-[56px] sm:text-[60px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
               Realistically
             </div>
 
