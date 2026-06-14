@@ -435,12 +435,12 @@ export default function Home() {
             </div>
 
             {/* Main Heading */}
-            <h1 className="font-serif text-[32px] xs:text-[35px] sm:text-[40px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
+            <h1 className="font-serif text-[34px] xs:text-[38px] sm:text-[40px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
               Capturing Your<br />
               Lifetime Memories
             </h1>
             {/* Script word "Realistically" */}
-            <div className="font-script text-[46px] xs:text-[50px] sm:text-[58px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
+            <div className="font-script text-[48px] xs:text-[53px] sm:text-[58px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
               Realistically
             </div>
 
