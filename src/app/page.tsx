@@ -415,10 +415,10 @@ export default function Home() {
 
       {/* 2. HERO SECTION / BANNER */}
       <section className="h-[100dvh] md:h-screen pt-[60px] md:pt-[70px] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-3 md:py-3 max-w-[1920px] mx-auto w-full overflow-hidden">
-        {/* Two columns section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 items-center flex-1 min-h-0 py-2">
+        {/* Two columns section (Flex on mobile, Grid on desktop) */}
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 w-full">
           {/* Left Column (42%) */}
-          <div className="lg:col-span-5 flex flex-col items-start justify-center lg:pr-4">
+          <div className="lg:col-span-5 flex flex-col items-start justify-center lg:pr-4 w-full flex-shrink-0">
             {/* Top Label with decorative gold lines */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 mb-4 max-w-full">
               <div className="hidden sm:flex items-center">
@@ -435,22 +435,22 @@ export default function Home() {
             </div>
 
             {/* Main Heading */}
-            <h1 className="font-serif text-[28px] sm:text-[40px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
+            <h1 className="font-serif text-[32px] xs:text-[35px] sm:text-[40px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
               Capturing Your<br />
               Lifetime Memories
             </h1>
             {/* Script word "Realistically" */}
-            <div className="font-script text-[40px] sm:text-[58px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
+            <div className="font-script text-[46px] xs:text-[50px] sm:text-[58px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
               Realistically
             </div>
 
             {/* Description */}
-            <p className="text-[#666666] text-[11.5px] sm:text-[14px] xl:text-[16px] font-normal leading-[1.5] max-w-[460px] mt-2 md:mt-4 font-sans">
+            <p className="text-[#666666] text-[12.5px] xs:text-[13.5px] sm:text-[14px] xl:text-[16px] font-normal leading-[1.5] max-w-[460px] mt-2 md:mt-4 font-sans">
               We don't just click pictures, we capture emotions, moments and stories you'll cherish forever.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex items-center gap-3 md:gap-4 mt-3.5 md:mt-6">
+            <div className="flex items-center gap-3 md:gap-4 mt-4 md:mt-6">
               {/* Button 1 */}
               <a href="#portfolio" className="h-[42px] md:h-[50px] px-4 md:w-[200px] bg-[#E0B44C] rounded-[8px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[12px] md:text-[14px] xl:text-[15px] hover:bg-[#D4AF37] hover:shadow-md transition-all duration-300">
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -474,7 +474,10 @@ export default function Home() {
           </div>
 
           {/* MOBILE/TABLET COLLAGE (shown only on mobile/tablet) */}
-          <div className="lg:hidden relative w-full max-w-[340px] xs:max-w-[380px] sm:max-w-[420px] mx-auto aspect-[16/10] flex items-center justify-center mt-3 z-10">
+          <div 
+            className="lg:hidden relative max-w-full mx-auto flex items-center justify-center mt-2.5 z-10"
+            style={{ height: "33dvh", width: "calc(33dvh * 1.6)" }}
+          >
             {/* Main Bigger Image */}
             <div className="relative w-[78%] h-[88%] rounded-[16px] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.15)] border border-[#E8DCC2]/30">
               <Image
