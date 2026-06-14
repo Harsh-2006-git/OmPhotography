@@ -5,7 +5,6 @@ import Image from "next/image";
 
 
 // ─── FAQ Accordion Item ───────────────────────────────────────────────────────
-// ─── FAQ Accordion Item ───────────────────────────────────────────────────────
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
