@@ -58,7 +58,6 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
 
-  const [activeTab, setActiveTab] = useState("All");
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
 
@@ -110,29 +109,38 @@ export default function Home() {
     setCarouselIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
   };
 
-  // Portfolio items data (using custom real-world portfolio images)
-  const portfolioData: Record<string, { url: string; title: string; location: string }[]> = {
-    Wedding: [
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445808.jpg", title: "Royal Garlands Ceremony", location: "Jaipur" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445800.jpg", title: "Luxury Wedding Stage", location: "Udaipur" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445803.jpg", title: "Sacred Pheras Ritual", location: "Delhi" }
-    ],
-    "Pre-Wedding": [
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445807.jpg", title: "Desert Sunset Romance", location: "Jaisalmer" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447046.jpg", title: "Lakeside Love Walk", location: "Udaipur" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445805.jpg", title: "Historic Haveli Shoot", location: "Jodhpur" }
-    ],
-    "Cinematic Videos": [
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445812.jpg", title: "Baraat Entrance Highlights", location: "Mumbai" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445810.jpg", title: "Sangeet Dance Celebration", location: "Goa" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447051.jpg", title: "Drone Wedding Sequence", location: "Kerala" }
-    ],
-    Portraits: [
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445804.jpg", title: "The Regal Bride Portrait", location: "Delhi" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448068.jpg", title: "Elegant Groom Close-up", location: "Punjab" },
-      { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445808.jpg", title: "Candid Emotional Gaze", location: "Bangalore" }
-    ]
-  };
+  const masonryGallery = [
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445793.jpg", category: "Wedding Story", title: "Portfolio Frame 01" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445797.jpg", category: "Wedding Story", title: "Portfolio Frame 02" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445798.jpg", category: "Bride Portrait", title: "Portfolio Frame 03" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445799.jpg", category: "Editorial Wedding", title: "Portfolio Frame 04" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445800.jpg", category: "Ceremony", title: "Portfolio Frame 05" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445802.jpg", category: "Candid Moment", title: "Portfolio Frame 06" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445803.jpg", category: "Rituals", title: "Portfolio Frame 07" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445804.jpg", category: "Bride Closeup", title: "Portfolio Frame 08" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445805.jpg", category: "Pre-Wedding", title: "Portfolio Frame 09" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445806.jpg", category: "Wedding Detail", title: "Portfolio Frame 10" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445807.jpg", category: "Couple Portrait", title: "Portfolio Frame 11" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445808.jpg", category: "Wedding Couple", title: "Portfolio Frame 12" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445809.jpg", category: "Cinematic Story", title: "Portfolio Frame 13" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445810.jpg", category: "Celebration", title: "Portfolio Frame 14" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445811.jpg", category: "Wedding Story", title: "Portfolio Frame 15" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445812.jpg", category: "Baraat", title: "Portfolio Frame 16" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445814.jpg", category: "Destination Wedding", title: "Portfolio Frame 17" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445815.jpg", category: "Candid Moment", title: "Portfolio Frame 18" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445816.jpg", category: "Wedding Detail", title: "Portfolio Frame 19" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445817.jpg", category: "Editorial Wedding", title: "Portfolio Frame 20" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447046.jpg", category: "Pre-Wedding", title: "Portfolio Frame 21" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447047.jpg", category: "Couple Portrait", title: "Portfolio Frame 22" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447048.jpg", category: "Wedding Story", title: "Portfolio Frame 23" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447049.jpg", category: "Bride Portrait", title: "Portfolio Frame 24" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447050.jpg", category: "Ceremony", title: "Portfolio Frame 25" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447051.jpg", category: "Destination Wedding", title: "Portfolio Frame 26" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448068.jpg", category: "Groom Portrait", title: "Portfolio Frame 27" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448095.jpg", category: "Black and White", title: "Portfolio Frame 28" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448096.jpg", category: "Cinematic Story", title: "Portfolio Frame 29" },
+    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-451747.jpg", category: "Luxury Wedding", title: "Portfolio Frame 30" },
+  ];
 
   return (
     <div className="min-h-screen bg-[#F7F5F2] text-[#222222] overflow-x-hidden font-sans scroll-smooth">
@@ -422,53 +430,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. PORTFOLIO GRID / GALLERY SECTION */}
-      <section id="portfolio" className="bg-[#F7F5F2] border-t border-[#E8DCC2] py-20 px-12 xl:px-24">
-        <div className="max-w-[1440px] mx-auto flex flex-col items-center">
-          <div className="font-script text-[36px] text-[#D4AF37] mb-2">Our Work</div>
-          <h2 className="font-serif text-[42px] text-[#222222] font-normal tracking-tight text-center mb-12">
-            Explore Our Love Stories
-          </h2>
-
-          {/* Category Tabs */}
-          <div className="flex items-center gap-4 mb-12">
-            {["All", ...Object.keys(portfolioData)].map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveTab(category)}
-                className={`px-8 py-3 rounded-full text-[14px] font-semibold tracking-wider uppercase transition-all duration-300 border ${
-                  activeTab === category
-                    ? "bg-[#E0B44C] border-[#E0B44C] text-[#222222] shadow-sm"
-                    : "bg-white border-[#E8DCC2] text-[#666666] hover:border-[#D4AF37] hover:text-[#D4AF37]"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+      {/* 4. PINTEREST-STYLE MASONRY GALLERY SECTION */}
+      <section id="portfolio" className="bg-[#F8F5F0] border-t border-[#E8DCC2] py-24 px-5 sm:px-8 lg:px-12 xl:px-16">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="mx-auto max-w-[760px] text-center mb-16">
+            <div className="text-[12px] uppercase tracking-[0.42em] text-[#D4AF37] font-semibold mb-4">OUR WORK</div>
+            <h2 className="font-serif text-[42px] md:text-[56px] text-[#222222] font-normal leading-[1.08] tracking-tight mb-5">
+              Stories Through Our Lens
+            </h2>
+            <p className="text-[#666666] text-[15px] md:text-[17px] leading-[1.8] font-sans">
+              A collection of timeless moments, captured with elegance and emotion.
+            </p>
           </div>
 
-          {/* Portfolio Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-            {(activeTab === "All"
-              ? Object.values(portfolioData).flat()
-              : portfolioData[activeTab]
-            ).map((item, index) => (
-              <div 
-                key={index} 
-                className="group relative rounded-[16px] overflow-hidden aspect-[4/5] shadow-md bg-white border border-[#E8DCC2] cursor-pointer"
+          <div className="masonry-gallery">
+            {masonryGallery.map((item, index) => (
+              <article
+                key={`${item.title}-${index}`}
+                className="masonry-card group"
+                style={{ animationDelay: `${index * 70}ms` }}
               >
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={item.url}
                   alt={item.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
+                  className="masonry-image"
                 />
-                {/* Overlay details */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <span className="text-[12px] uppercase tracking-[2px] text-[#D4AF37] font-semibold mb-1">{item.location}</span>
-                  <h3 className="text-white font-serif text-[20px] font-normal">{item.title}</h3>
+                <div className="masonry-overlay">
+                  <span className="text-[11px] uppercase tracking-[0.28em] text-[#D4AF37] font-semibold">{item.category}</span>
+                  <span className="mt-2 font-serif text-white text-[24px] leading-tight">{item.title}</span>
+                  <span className="mt-4 text-white/85 text-[12px] uppercase tracking-[0.22em] font-semibold">View Project &rarr;</span>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
