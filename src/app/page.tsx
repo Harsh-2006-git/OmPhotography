@@ -1340,25 +1340,24 @@ export default function Home() {
 
       </footer>
 
-      {/* ─── FLOATING WHATSAPP BUTTON & CONTACT POPUP ─────────────────────────── */}
-      <div className="fixed bottom-6 left-6 z-[80] flex flex-col items-start gap-3">
-        {/* Floating WhatsApp Action Button */}
+      {/* ─── FLOATING CONTACT US BUTTON ──────────────────────────────────────── */}
+      <div className="fixed bottom-6 left-6 z-[80]">
         <button
           onClick={() => setContactModalOpen(true)}
-          className="relative group w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-[0_8px_30px_rgba(37,211,102,0.45)] hover:shadow-[0_12px_40px_rgba(37,211,102,0.6)] hover:bg-[#20ba5a] active:scale-95 transition-all duration-300 hover:scale-110 z-10"
-          aria-label="Open instant contact hub"
+          className="relative group flex items-center gap-0 hover:gap-2.5 w-14 hover:w-auto h-14 px-4 rounded-full bg-[#D4AF37] text-[#111111] shadow-[0_8px_28px_rgba(212,175,55,0.45)] hover:shadow-[0_12px_40px_rgba(212,175,55,0.6)] hover:bg-[#C9A227] active:scale-95 transition-all duration-300 overflow-hidden"
+          aria-label="Open contact hub"
         >
-          {/* Pulsing ring outer decoration */}
-          <span className="absolute inset-0 rounded-full bg-[#25D366]/40 animate-ping pointer-events-none scale-105" />
-          
-          {/* WhatsApp icon */}
-          <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
-            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.739-1.451L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.863-9.864.001-2.636-1.023-5.11-2.884-6.974-1.862-1.865-4.337-2.893-6.979-2.895-5.438 0-9.866 4.42-9.869 9.866-.001 1.765.485 3.491 1.408 4.98l-.323 1.182.164.159c.775-.758 1.621-1.584 2.158-1.921zm10.594-5.28c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+          {/* Pulsing ring */}
+          <span className="absolute inset-0 rounded-full bg-[#D4AF37]/35 animate-ping pointer-events-none" />
+
+          {/* Contact / headset icon */}
+          <svg className="w-6 h-6 shrink-0 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          
-          {/* Visual Tooltip indicator */}
-          <span className="absolute left-16 bg-[#111111] border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold tracking-[1.5px] uppercase py-1.5 px-3 rounded-[6px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-md">
-            Contact Hub
+
+          {/* Expandable label */}
+          <span className="font-bold text-[12px] tracking-[1.5px] uppercase whitespace-nowrap max-w-0 group-hover:max-w-[120px] overflow-hidden transition-all duration-300 opacity-0 group-hover:opacity-100">
+            Contact Us
           </span>
         </button>
       </div>
