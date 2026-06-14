@@ -414,7 +414,7 @@ export default function Home() {
       </div>
 
       {/* 2. HERO SECTION / BANNER */}
-      <section className="min-h-screen h-auto md:h-screen pt-[60px] md:pt-[70px] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-4 md:py-3 max-w-[1920px] mx-auto w-full">
+      <section className="h-[100dvh] md:h-screen pt-[60px] md:pt-[70px] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-3 md:py-3 max-w-[1920px] mx-auto w-full overflow-hidden">
         {/* Two columns section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 items-center flex-1 min-h-0 py-2">
           {/* Left Column (42%) */}
@@ -435,22 +435,22 @@ export default function Home() {
             </div>
 
             {/* Main Heading */}
-            <h1 className="font-serif text-[32px] sm:text-[40px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
+            <h1 className="font-serif text-[28px] sm:text-[40px] md:text-[44px] xl:text-[54px] leading-[1.12] text-[#222222] font-normal tracking-tight">
               Capturing Your<br />
               Lifetime Memories
             </h1>
             {/* Script word "Realistically" */}
-            <div className="font-script text-[48px] sm:text-[58px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-2 pl-3 select-none transform -rotate-1 origin-left z-10">
+            <div className="font-script text-[40px] sm:text-[58px] md:text-[64px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
               Realistically
             </div>
 
             {/* Description */}
-            <p className="text-[#666666] text-[13px] md:text-[14px] xl:text-[16px] font-normal leading-[1.6] max-w-[460px] mt-3 md:mt-4 font-sans">
+            <p className="text-[#666666] text-[11.5px] sm:text-[14px] xl:text-[16px] font-normal leading-[1.5] max-w-[460px] mt-2 md:mt-4 font-sans">
               We don't just click pictures, we capture emotions, moments and stories you'll cherish forever.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex items-center gap-3 md:gap-4 mt-5 md:mt-6">
+            <div className="flex items-center gap-3 md:gap-4 mt-3.5 md:mt-6">
               {/* Button 1 */}
               <a href="#portfolio" className="h-[42px] md:h-[50px] px-4 md:w-[200px] bg-[#E0B44C] rounded-[8px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[12px] md:text-[14px] xl:text-[15px] hover:bg-[#D4AF37] hover:shadow-md transition-all duration-300">
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -474,7 +474,7 @@ export default function Home() {
           </div>
 
           {/* MOBILE/TABLET COLLAGE (shown only on mobile/tablet) */}
-          <div className="lg:hidden relative w-full max-w-[500px] mx-auto aspect-[16/10] flex items-center justify-center mt-6 z-10">
+          <div className="lg:hidden relative w-full max-w-[340px] xs:max-w-[380px] sm:max-w-[420px] mx-auto aspect-[16/10] flex items-center justify-center mt-3 z-10">
             {/* Main Bigger Image */}
             <div className="relative w-[78%] h-[88%] rounded-[16px] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.15)] border border-[#E8DCC2]/30">
               <Image
@@ -549,7 +549,7 @@ export default function Home() {
         </div>
 
         {/* IMAGE CAROUSEL CONTAINER (Height: 140px) */}
-        <div className="relative w-full bg-white border border-[#D4AF37]/50 rounded-[12px] p-2 md:p-2.5 h-[90px] md:h-[140px] flex items-center justify-between flex-shrink-0">
+        <div className="relative w-full bg-white border border-[#D4AF37]/50 rounded-[12px] p-2 md:p-2.5 h-[80px] md:h-[140px] flex items-center justify-between flex-shrink-0 mt-1.5 md:mt-0">
           {/* Left Arrow */}
           <button onClick={handlePrevCarousel} className="absolute left-[-20px] w-[40px] h-[40px] rounded-full border border-[#D4AF37]/50 bg-white flex items-center justify-center text-[#D4AF37] shadow-md hover:bg-[#D4AF37] hover:text-white transition-all duration-300 z-10">
             <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -643,12 +643,23 @@ export default function Home() {
       </section>
 
       {/* 3. ABOUT / INTRODUCTION SECTION */}
-      <section id="about" className="bg-white border-t border-[#E8DCC2] py-10 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-center">
+      <section id="about" className="bg-white border-t border-[#E8DCC2] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-16 items-center">
+          
+          {/* Heading (Mobile Only) */}
+          <div className="lg:hidden w-full flex flex-col items-center text-center mb-4">
+            <div className="font-script text-[24px] text-[#D4AF37] mb-1 select-none">
+              Our Philosophy
+            </div>
+            <h2 className="font-serif text-[22px] sm:text-[30px] text-[#222222] font-normal leading-tight tracking-tight mb-2 px-2">
+              Capturing Love in Its Purest, Most Authentic Form
+            </h2>
+          </div>
+
           {/* Left Side: Professional Photo */}
-          <div className="lg:col-span-5 relative">
-            <div className="absolute inset-0 border-2 border-[#D4AF37] rounded-[16px] translate-x-4 translate-y-4 pointer-events-none z-0"></div>
-            <div className="relative rounded-[16px] overflow-hidden aspect-[3/4] shadow-lg bg-gray-100 z-10">
+          <div className="lg:col-span-5 relative max-w-[450px] mx-auto w-full lg:max-w-none">
+            <div className="absolute inset-0 border-2 border-[#D4AF37] rounded-[16px] translate-x-2.5 translate-y-2.5 lg:translate-x-4 lg:translate-y-4 pointer-events-none z-0"></div>
+            <div className="relative rounded-[16px] overflow-hidden aspect-[1.5/1] sm:aspect-[1.8/1] lg:aspect-[3/4] shadow-lg bg-gray-100 z-10">
               <Image
                 src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=800&q=80"
                 alt="Om - Lead Photographer"
@@ -660,31 +671,35 @@ export default function Home() {
           </div>
 
           {/* Right Side: Introduction text */}
-          <div className="lg:col-span-7 flex flex-col items-start">
-            <div className="font-script text-[28px] md:text-[36px] text-[#D4AF37] mb-2 select-none">
-              Our Philosophy
+          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left mt-4 lg:mt-0">
+            {/* Heading (Desktop Only) */}
+            <div className="hidden lg:flex flex-col items-start">
+              <div className="font-script text-[36px] text-[#D4AF37] mb-1 select-none">
+                Our Philosophy
+              </div>
+              <h2 className="font-serif text-[42px] text-[#222222] font-normal leading-tight tracking-tight mb-6">
+                Capturing Love in Its Purest, Most Authentic Form
+              </h2>
             </div>
-            <h2 className="font-serif text-[28px] sm:text-[34px] md:text-[42px] text-[#222222] font-normal leading-tight tracking-tight mb-4 md:mb-6">
-              Capturing Love in Its Purest, Most Authentic Form
-            </h2>
-            <p className="text-[#666666] text-[14px] md:text-[16px] leading-[1.8] font-sans mb-4 md:mb-6">
+
+            <p className="text-[#666666] text-[13px] md:text-[16px] leading-[1.65] md:leading-[1.8] font-sans mb-3 md:mb-6 px-1 lg:px-0">
               Hi, I am Om, the lead photographer and founder of Om Photography. With over a decade of capturing premium luxury weddings across India and worldwide, our vision is simple: <strong>to capture your lifetime memories realistically.</strong>
             </p>
-            <p className="text-[#666666] text-[14px] md:text-[16px] leading-[1.8] font-sans mb-6 md:mb-8">
+            <p className="text-[#666666] text-[13px] md:text-[16px] leading-[1.65] md:leading-[1.8] font-sans mb-4 md:mb-8 px-1 lg:px-0">
               We specialize in candid emotions, dramatic lighting, and cinematic story-telling. We believe that a wedding isn't just an event; it's a legacy of emotions, laughter, and tears that you will pass down for generations. Our team operates with micro-precision, ensuring that every fleeting moment is immortalized with editorial elegance.
             </p>
-            <div className="grid grid-cols-3 gap-3 md:gap-6 w-full pt-4 md:pt-6 border-t border-[#E8DCC2]">
-              <div>
-                <div className="text-[22px] md:text-[28px] font-serif font-bold text-[#D4AF37]">10+</div>
-                <div className="text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#666666] mt-1">Years Experience</div>
+            <div className="grid grid-cols-3 gap-2 md:gap-6 w-full pt-4 md:pt-6 border-t border-[#E8DCC2]">
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-serif font-bold text-[#D4AF37]">10+</div>
+                <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#666666] mt-0.5">Years Experience</div>
               </div>
-              <div>
-                <div className="text-[22px] md:text-[28px] font-serif font-bold text-[#D4AF37]">350+</div>
-                <div className="text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#666666] mt-1">Weddings Shot</div>
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-serif font-bold text-[#D4AF37]">350+</div>
+                <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#666666] mt-0.5">Weddings Shot</div>
               </div>
-              <div>
-                <div className="text-[22px] md:text-[28px] font-serif font-bold text-[#D4AF37]">100%</div>
-                <div className="text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#666666] mt-1">Happy Clients</div>
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-serif font-bold text-[#D4AF37]">100%</div>
+                <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#666666] mt-0.5">Happy Clients</div>
               </div>
             </div>
           </div>
