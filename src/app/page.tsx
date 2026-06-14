@@ -5,6 +5,7 @@ import Image from "next/image";
 
 
 // ─── FAQ Accordion Item ───────────────────────────────────────────────────────
+// ─── FAQ Accordion Item ───────────────────────────────────────────────────────
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -16,22 +17,22 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
       onClick={() => setOpen((o) => !o)}
     >
       {/* Question row */}
-      <div className="flex items-center justify-between px-6 py-5 select-none">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between px-4 py-3.5 md:px-6 md:py-5 select-none">
+        <div className="flex items-center gap-2.5 md:gap-4">
           <span
-            className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[12px] font-bold font-serif transition-all duration-300 ${open ? "bg-[#D4AF37] text-white" : "bg-[#F5EDD8] text-[#D4AF37]"
+            className={`w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] md:text-[12px] font-bold font-serif transition-all duration-300 ${open ? "bg-[#D4AF37] text-white" : "bg-[#F5EDD8] text-[#D4AF37]"
               }`}
           >
             Q
           </span>
-          <span className={`font-serif text-[16px] leading-snug transition-colors duration-300 ${open ? "text-[#C9A227]" : "text-[#222222] group-hover:text-[#C9A227]"}`}>
+          <span className={`font-serif text-[14px] md:text-[16px] leading-snug transition-colors duration-300 ${open ? "text-[#C9A227]" : "text-[#222222] group-hover:text-[#C9A227]"}`}>
             {question}
           </span>
         </div>
         {/* Plus / Minus icon */}
-        <div className={`w-7 h-7 shrink-0 rounded-full border flex items-center justify-center transition-all duration-300 ${open ? "border-[#D4AF37] bg-[#D4AF37]/10 rotate-45" : "border-[#DDD0B3] group-hover:border-[#D4AF37]/60"
+        <div className={`w-6 h-6 md:w-7 md:h-7 shrink-0 rounded-full border flex items-center justify-center transition-all duration-300 ${open ? "border-[#D4AF37] bg-[#D4AF37]/10 rotate-45" : "border-[#DDD0B3] group-hover:border-[#D4AF37]/60"
           }`}>
-          <svg className={`w-3.5 h-3.5 transition-colors duration-300 ${open ? "text-[#D4AF37]" : "text-[#AAAAAA]"}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <svg className={`w-3 h-3 md:w-3.5 md:h-3.5 transition-colors duration-300 ${open ? "text-[#D4AF37]" : "text-[#AAAAAA]"}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -43,9 +44,9 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
         className="overflow-hidden transition-all duration-500 ease-in-out"
         style={{ maxHeight: open ? "300px" : "0px", opacity: open ? 1 : 0 }}
       >
-        <div className="px-6 pb-6 pl-[4.25rem]">
-          <div className="w-full h-[1px] bg-[#E8DCC2] mb-4" />
-          <p className="text-[#555555] text-[14px] leading-[1.85] font-sans">{answer}</p>
+        <div className="px-4 pb-4 pl-12 md:px-6 md:pb-6 md:pl-[4.25rem]">
+          <div className="w-full h-[1px] bg-[#E8DCC2] mb-3 md:mb-4" />
+          <p className="text-[#555555] text-[13px] md:text-[14px] leading-[1.8] md:leading-[1.85] font-sans">{answer}</p>
         </div>
       </div>
     </div>
@@ -820,120 +821,120 @@ export default function Home() {
       </section>
 
       {/* 6. TESTIMONIALS / CLIENT REVIEWS */}
-      <section className="bg-[#F7F5F2] border-t border-[#E8DCC2] py-10 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
+      <section className="bg-[#F7F5F2] border-t border-[#E8DCC2] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
         <div className="max-w-[1440px] mx-auto flex flex-col items-center">
-          <div className="font-script text-[28px] md:text-[36px] text-[#D4AF37] mb-2">Testimonials</div>
-          <h2 className="font-serif text-[26px] sm:text-[32px] md:text-[42px] text-[#222222] font-normal tracking-tight text-center mb-8 md:mb-16">
+          <div className="font-script text-[22px] md:text-[36px] text-[#D4AF37] mb-1">Testimonials</div>
+          <h2 className="font-serif text-[22px] sm:text-[32px] md:text-[42px] text-[#222222] font-normal tracking-tight text-center mb-6 md:mb-16">
             Words From Our Beautiful Couples
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 w-full">
             {/* Review 1 */}
-            <div className="bg-white border border-[#E8DCC2] rounded-[16px] p-5 md:p-8 flex flex-col items-center text-center shadow-sm">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden mb-4 border border-[#D4AF37]">
+            <div className="bg-white border border-[#E8DCC2] rounded-[16px] p-4 sm:p-5 md:p-8 flex flex-col items-center text-center shadow-sm">
+              <div className="relative w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 md:mb-4 border border-[#D4AF37]">
                 <Image
                   src="https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445804.jpg"
                   alt="Aarav and Diya"
                   fill
-                  sizes="80px"
+                  sizes="(max-width: 768px) 56px, 80px"
                   className="object-cover"
                 />
               </div>
-              <div className="flex items-center gap-1 mb-4 text-[#D4AF37]">
+              <div className="flex items-center gap-1 mb-3 md:mb-4 text-[#D4AF37]">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <svg key={i} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                   </svg>
                 ))}
               </div>
-              <p className="text-[#666666] text-[14px] leading-[1.8] italic mb-6">
+              <p className="text-[#666666] text-[13px] md:text-[14px] leading-[1.7] md:leading-[1.8] italic mb-4 md:mb-6">
                 "Om Photography ne hamari shaadi ko sach me yaadgaar bana diya! The team was so friendly and professional, they captured emotional candids and details that we didn't even notice. We absolutely love our wedding film and album!"
               </p>
-              <h4 className="font-serif text-[18px] font-semibold text-[#222222]">Aarav & Diya</h4>
-              <span className="text-[11px] text-[#D4AF37] uppercase tracking-[1px] mt-1 font-sans">Married in Udaipur</span>
+              <h4 className="font-serif text-[16px] md:text-[18px] font-semibold text-[#222222]">Aarav & Diya</h4>
+              <span className="text-[10px] md:text-[11px] text-[#D4AF37] uppercase tracking-[0.5px] md:tracking-[1px] mt-1 font-sans">Married in Udaipur</span>
             </div>
 
             {/* Review 2 */}
-            <div className="bg-white border border-[#E8DCC2] rounded-[16px] p-5 md:p-8 flex flex-col items-center text-center shadow-sm">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden mb-4 border border-[#D4AF37]">
+            <div className="bg-white border border-[#E8DCC2] rounded-[16px] p-4 sm:p-5 md:p-8 flex flex-col items-center text-center shadow-sm">
+              <div className="relative w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 md:mb-4 border border-[#D4AF37]">
                 <Image
                   src="https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448068.jpg"
                   alt="Kabir and Meera"
                   fill
-                  sizes="80px"
+                  sizes="(max-width: 768px) 56px, 80px"
                   className="object-cover"
                 />
               </div>
-              <div className="flex items-center gap-1 mb-4 text-[#D4AF37]">
+              <div className="flex items-center gap-1 mb-3 md:mb-4 text-[#D4AF37]">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <svg key={i} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                   </svg>
                 ))}
               </div>
-              <p className="text-[#666666] text-[14px] leading-[1.8] italic mb-6">
+              <p className="text-[#666666] text-[13px] md:text-[14px] leading-[1.7] md:leading-[1.8] italic mb-4 md:mb-6">
                 "We had our pre-wedding shoot in Jaisalmer and wedding in Jaipur. The team's cinematic visual storytelling is outstanding. They knew exactly how to make us feel relaxed, resulting in beautiful, organic memories. High-class service!"
               </p>
-              <h4 className="font-serif text-[18px] font-semibold text-[#222222]">Kabir & Meera</h4>
-              <span className="text-[11px] text-[#D4AF37] uppercase tracking-[1px] mt-1 font-sans">Married in Jaipur</span>
+              <h4 className="font-serif text-[16px] md:text-[18px] font-semibold text-[#222222]">Kabir & Meera</h4>
+              <span className="text-[10px] md:text-[11px] text-[#D4AF37] uppercase tracking-[0.5px] md:tracking-[1px] mt-1 font-sans">Married in Jaipur</span>
             </div>
 
             {/* Review 3 */}
-            <div className="bg-white border border-[#E8DCC2] rounded-[16px] p-5 md:p-8 flex flex-col items-center text-center shadow-sm">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden mb-4 border border-[#D4AF37]">
+            <div className="bg-white border border-[#E8DCC2] rounded-[16px] p-4 sm:p-5 md:p-8 flex flex-col items-center text-center shadow-sm">
+              <div className="relative w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 md:mb-4 border border-[#D4AF37]">
                 <Image
                   src="https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445808.jpg"
                   alt="Rohit and Anjali"
                   fill
-                  sizes="80px"
+                  sizes="(max-width: 768px) 56px, 80px"
                   className="object-cover"
                 />
               </div>
-              <div className="flex items-center gap-1 mb-4 text-[#D4AF37]">
+              <div className="flex items-center gap-1 mb-3 md:mb-4 text-[#D4AF37]">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <svg key={i} className="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                   </svg>
                 ))}
               </div>
-              <p className="text-[#666666] text-[14px] leading-[1.8] italic mb-6">
+              <p className="text-[#666666] text-[13px] md:text-[14px] leading-[1.7] md:leading-[1.8] italic mb-4 md:mb-6">
                 "They don't just take pictures; they truly capture realistic emotions. Our family members are still praising their professional conduct and behavior during the event. The photos are absolute masterpieces of editorial art."
               </p>
-              <h4 className="font-serif text-[18px] font-semibold text-[#222222]">Rohit & Anjali</h4>
-              <span className="text-[11px] text-[#D4AF37] uppercase tracking-[1px] mt-1 font-sans">Married in Delhi</span>
+              <h4 className="font-serif text-[16px] md:text-[18px] font-semibold text-[#222222]">Rohit & Anjali</h4>
+              <span className="text-[10px] md:text-[11px] text-[#D4AF37] uppercase tracking-[0.5px] md:tracking-[1px] mt-1 font-sans">Married in Delhi</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* 7. CALL TO ACTION (BOOKING FORM) */}
-      <section id="booking" className="bg-white border-t border-[#E8DCC2] py-10 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
+      <section id="booking" className="bg-white border-t border-[#E8DCC2] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
         <div className="max-w-[800px] mx-auto flex flex-col items-center">
-          <div className="font-script text-[28px] md:text-[36px] text-[#D4AF37] mb-2">Get In Touch</div>
-          <h2 className="font-serif text-[26px] sm:text-[34px] md:text-[42px] text-[#222222] font-normal tracking-tight text-center mb-4 md:mb-6">
+          <div className="font-script text-[22px] md:text-[36px] text-[#D4AF37] mb-1">Get In Touch</div>
+          <h2 className="font-serif text-[22px] sm:text-[34px] md:text-[42px] text-[#222222] font-normal tracking-tight text-center mb-3 md:mb-6">
             Let's Create Magic Together
           </h2>
-          <p className="text-[#666666] text-[14px] md:text-[15px] text-center mb-8 md:mb-12 max-w-[500px]">
+          <p className="text-[#666666] text-[13px] md:text-[15px] text-center mb-6 md:mb-12 max-w-[500px] px-2 sm:px-0">
             Please share details of your event below. We will reach out to discuss how we can turn your real wedding into a timeless visual romance.
           </p>
 
           {formSubmitted ? (
-            <div className="w-full bg-[#F7F5F2] border-2 border-[#D4AF37] rounded-[16px] p-12 text-center shadow-sm">
-              <svg className="w-16 h-16 text-[#D4AF37] mx-auto mb-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <div className="w-full bg-[#F7F5F2] border-2 border-[#D4AF37] rounded-[16px] p-6 md:p-12 text-center shadow-sm">
+              <svg className="w-12 h-12 md:w-16 md:h-16 text-[#D4AF37] mx-auto mb-3 md:mb-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
                 <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <h3 className="font-serif text-[24px] text-[#222222] mb-2">Inquiry Received Successfully!</h3>
-              <p className="text-[#666666] text-[14px]">
+              <h3 className="font-serif text-[20px] md:text-[24px] text-[#222222] mb-1 md:mb-2">Inquiry Received Successfully!</h3>
+              <p className="text-[#666666] text-[13px] md:text-[14px]">
                 Thank you for contacting Om Photography. We will get back to you within 24 hours.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleFormSubmit} className="w-full bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-5 sm:p-6 md:p-8 xl:p-12 shadow-sm space-y-4 md:space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleFormSubmit} className="w-full bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-4 sm:p-6 md:p-8 xl:p-12 shadow-sm space-y-4 md:space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Name */}
                 <div className="flex flex-col">
-                  <label className="text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-2 font-sans">Full Name</label>
+                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Full Name</label>
                   <input
                     type="text"
                     name="name"
@@ -941,12 +942,12 @@ export default function Home() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="e.g. Rahul Sharma"
-                    className="w-full h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
+                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
                   />
                 </div>
                 {/* Phone */}
                 <div className="flex flex-col">
-                  <label className="text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-2 font-sans">Phone Number</label>
+                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Phone Number</label>
                   <input
                     type="tel"
                     name="phone"
@@ -954,27 +955,27 @@ export default function Home() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="e.g. +91 98765 43210"
-                    className="w-full h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
+                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Event Date */}
                 <div className="flex flex-col">
-                  <label className="text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-2 font-sans">Event Date</label>
+                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Event Date</label>
                   <input
                     type="date"
                     name="date"
                     required
                     value={formData.date}
                     onChange={handleInputChange}
-                    className="w-full h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
+                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
                   />
                 </div>
                 {/* Event Location */}
                 <div className="flex flex-col">
-                  <label className="text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-2 font-sans">Event Location (City)</label>
+                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Event Location (City)</label>
                   <input
                     type="text"
                     name="location"
@@ -982,30 +983,30 @@ export default function Home() {
                     value={formData.location}
                     onChange={handleInputChange}
                     placeholder="e.g. Udaipur, Rajasthan"
-                    className="w-full h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
+                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
                   />
                 </div>
               </div>
 
               {/* Message Box */}
               <div className="flex flex-col">
-                <label className="text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-2 font-sans">Event Details / Message</label>
+                <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Event Details / Message</label>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   rows={4}
                   placeholder="Tell us about your wedding ceremonies, style preferences, and visual requests..."
-                  className="w-full bg-white border border-[#E8DCC2] rounded-[8px] p-4 text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
+                  className="w-full bg-white border border-[#E8DCC2] rounded-[8px] p-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
                 />
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full h-[54px] bg-[#E0B44C] rounded-[8px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[16px] shadow-sm hover:bg-[#D4AF37] hover:shadow-md transition-all duration-300"
+                className="w-full h-[48px] md:h-[54px] bg-[#E0B44C] rounded-[8px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[15px] md:text-[16px] shadow-sm hover:bg-[#D4AF37] hover:shadow-md transition-all duration-300"
               >
-                <svg className="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span>SEND BOOKING INQUIRY</span>
@@ -1016,7 +1017,7 @@ export default function Home() {
       </section>
 
       {/* 8. FAQ SECTION */}
-      <section id="faq" className="relative bg-[#FDFAF5] py-20 px-6 overflow-hidden">
+      <section id="faq" className="relative bg-[#FDFAF5] py-10 md:py-20 px-4 md:px-6 overflow-hidden">
         {/* Subtle warm dot pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.4]"
           style={{ backgroundImage: 'radial-gradient(circle, #D4AF3720 1px, transparent 1px)', backgroundSize: '36px 36px' }}
@@ -1027,22 +1028,22 @@ export default function Home() {
         <div className="max-w-[900px] mx-auto relative z-10">
 
           {/* Section header */}
-          <div className="text-center mb-14">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="w-10 h-[1px] bg-[#D4AF37]" />
-              <span className="text-[#D4AF37] text-[11px] font-sans font-semibold tracking-[4px] uppercase">Got Questions?</span>
-              <span className="w-10 h-[1px] bg-[#D4AF37]" />
+          <div className="text-center mb-8 md:mb-14">
+            <div className="flex items-center justify-center gap-2 md:gap-3 mb-3 md:mb-4">
+              <span className="w-8 md:w-10 h-[1px] bg-[#D4AF37]" />
+              <span className="text-[#D4AF37] text-[10px] md:text-[11px] font-sans font-semibold tracking-[2px] md:tracking-[4px] uppercase">Got Questions?</span>
+              <span className="w-8 md:w-10 h-[1px] bg-[#D4AF37]" />
             </div>
-            <h2 className="font-serif text-[38px] md:text-[48px] font-bold text-[#1A1A1A] leading-tight">
+            <h2 className="font-serif text-[24px] sm:text-[32px] md:text-[48px] font-bold text-[#1A1A1A] leading-tight">
               Frequently Asked <span className="text-[#D4AF37] italic">Questions</span>
             </h2>
-            <p className="text-[#777777] text-[15px] mt-4 max-w-[520px] mx-auto leading-relaxed font-sans">
+            <p className="text-[#777777] text-[13.5px] md:text-[15px] mt-3 md:mt-4 max-w-[520px] mx-auto leading-relaxed font-sans px-2">
               Everything you need to know before booking your special day with us.
             </p>
           </div>
 
           {/* FAQ Items */}
-          <div className="space-y-3">
+          <div className="space-y-2 md:space-y-3">
             {[
               {
                 q: "How far in advance should I book?",
@@ -1078,13 +1079,13 @@ export default function Home() {
           </div>
 
           {/* Bottom CTA */}
-          <div className="mt-14 text-center">
-            <p className="text-[#888888] text-[14px] font-sans mb-5">Still have questions? We&apos;d love to hear from you.</p>
+          <div className="mt-10 md:mt-14 text-center">
+            <p className="text-[#888888] text-[13px] md:text-[14px] font-sans mb-4 md:mb-5">Still have questions? We&apos;d love to hear from you.</p>
             <a
               href="#booking"
-              className="inline-flex items-center gap-2.5 bg-[#D4AF37] text-[#111111] font-semibold text-[13px] tracking-[2px] uppercase px-8 py-3.5 rounded-[6px] hover:bg-[#E0C050] transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.25)]"
+              className="inline-flex items-center gap-2 bg-[#D4AF37] text-[#111111] font-semibold text-[12px] md:text-[13px] tracking-[1.5px] md:tracking-[2px] uppercase px-5 py-3 md:px-8 md:py-3.5 rounded-[6px] hover:bg-[#E0C050] transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.25)]"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Ask Us Directly
@@ -1097,77 +1098,77 @@ export default function Home() {
       <footer className="bg-[#0D0D0D] relative flex-shrink-0" style={{ fontSize: '13px' }}>
 
         {/* TOP SERVICE STRIP - Warm Ivory Light Theme */}
-        <div className="bg-[#FEFCF8] border-t border-[#E8DCC2] border-b border-[#E8DCC2] py-4 md:py-5 px-8 xl:px-16 text-[#222222] relative z-10">
+        <div className="bg-[#FEFCF8] border-t border-[#E8DCC2] border-b border-[#E8DCC2] py-2.5 md:py-5 px-4 md:px-8 xl:px-16 text-[#222222] relative z-10">
           <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 divide-y md:divide-y-0 lg:divide-x divide-[#E8DCC2]">
 
             {/* Service 1 */}
-            <div className="flex items-center gap-3 px-4 py-3 lg:py-0 first:pl-0 last:pr-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0 first:pl-0 last:pr-0">
+              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                   <circle cx="12" cy="13" r="4" />
                 </svg>
               </div>
               <div>
-                <h4 className="font-serif text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Wedding Photography</h4>
-                <p className="text-[#666666] text-[11px] mt-0.5 leading-tight font-sans">Capturing real emotions and beautiful moments</p>
+                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Wedding Photography</h4>
+                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Capturing real emotions and beautiful moments</p>
               </div>
             </div>
 
             {/* Service 2 */}
-            <div className="flex items-center gap-3 px-4 py-3 lg:py-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0">
+              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <polygon points="23 7 16 12 23 17 23 7" />
                   <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                 </svg>
               </div>
               <div>
-                <h4 className="font-serif text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Cinematography</h4>
-                <p className="text-[#666666] text-[11px] mt-0.5 leading-tight font-sans">Cinematic films that tell your story</p>
+                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Cinematography</h4>
+                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Cinematic films that tell your story</p>
               </div>
             </div>
 
             {/* Service 3 */}
-            <div className="flex items-center gap-3 px-4 py-3 lg:py-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0">
+              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
               </div>
               <div>
-                <h4 className="font-serif text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Pre Wedding Shoots</h4>
-                <p className="text-[#666666] text-[11px] mt-0.5 leading-tight font-sans">Romantic. Natural. Timeless.</p>
+                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Pre Wedding Shoots</h4>
+                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Romantic. Natural. Timeless.</p>
               </div>
             </div>
 
             {/* Service 4 */}
-            <div className="flex items-center gap-3 px-4 py-3 lg:py-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0">
+              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
               </div>
               <div>
-                <h4 className="font-serif text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Portrait Photography</h4>
-                <p className="text-[#666666] text-[11px] mt-0.5 leading-tight font-sans">Your story. Your look. Our creativity.</p>
+                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Portrait Photography</h4>
+                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Your story. Your look. Our creativity.</p>
               </div>
             </div>
 
             {/* Service 5 */}
-            <div className="flex items-center gap-3 px-4 py-3 lg:py-0 last:pr-0">
-              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-4 h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0 last:pr-0">
+              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                 </svg>
               </div>
               <div>
-                <h4 className="font-serif text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Destination Weddings</h4>
-                <p className="text-[#666666] text-[11px] mt-0.5 leading-tight font-sans">Beautiful weddings in breathtaking destinations</p>
+                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Destination Weddings</h4>
+                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Beautiful weddings in breathtaking destinations</p>
               </div>
             </div>
 
