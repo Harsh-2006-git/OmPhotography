@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 
 // ─── FAQ Accordion Item ───────────────────────────────────────────────────────
@@ -56,47 +58,15 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 export default function Home() {
 
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [contactModalOpen, setContactModalOpen] = useState(false);
 
+  // Lock body scroll when contact modal is open
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Lock body scroll when sidebar or contact modal is open
-  useEffect(() => {
-    document.body.style.overflow = (menuOpen || contactModalOpen) ? "hidden" : "";
+    document.body.style.overflow = contactModalOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [menuOpen, contactModalOpen]);
+  }, [contactModalOpen]);
 
-  const closeMenu = () => setMenuOpen(false);
-
-  // Form state
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    date: "",
-    location: "",
-    message: ""
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => {
-      setFormSubmitted(false);
-      setFormData({ name: "", phone: "", date: "", location: "", message: "" });
-    }, 4000);
-  };
+  // Contact page routing helper is handled via static Links/hrefs pointing to /contact
 
   // Carousel images
   const carouselImages = [
@@ -152,274 +122,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#F7F5F2] text-[#222222] overflow-x-hidden font-sans scroll-smooth">
 
-      {/* 1. HEADER — Fixed floating navbar */}
-      <header
-        className={`fixed top-0 left-0 right-0 h-[60px] md:h-[70px] w-full px-4 md:px-12 flex items-center justify-between z-50 transition-all duration-500 bg-[#FEFCF8]/90 backdrop-blur-xl border-b border-[#D4AF37]/25 ${scrolled
-          ? "shadow-[0_4px_30px_rgba(212,175,55,0.12)]"
-          : ""
-          }`}
-      >
-        {/* LOGO */}
-        <div className="flex flex-col items-start leading-none select-none">
-          <div className="flex items-center gap-1.5">
-            <span className="font-serif text-[28px] font-bold text-[#D4AF37] tracking-wider">OM</span>
-            <svg className="w-8 h-6 text-[#D4AF37] stroke-[1.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" strokeLinejoin="round" />
-              <circle cx="12" cy="13" r="3" />
-            </svg>
-          </div>
-          <span className="font-sans text-[7.5px] font-medium text-[#D4AF37] tracking-[0.45em] mt-0.5">PHOTOGRAPHY</span>
-        </div>
 
-        {/* DESKTOP NAVIGATION */}
-        <nav className="hidden md:flex items-center gap-8 text-[15px] font-semibold tracking-wide font-sans">
-          <a href="#" className="text-[#D4AF37] transition-colors">Home</a>
-          <a href="#about" className="text-[#555555] hover:text-[#D4AF37] transition-colors">About</a>
-          <a href="#portfolio" className="text-[#555555] hover:text-[#D4AF37] transition-colors">Portfolio</a>
-          <a href="#services" className="text-[#555555] hover:text-[#D4AF37] transition-colors">Services</a>
-          <a href="#booking" className="text-[#555555] hover:text-[#D4AF37] transition-colors">Contact</a>
-        </nav>
-
-        {/* RIGHT SIDE: Desktop Book Now + Mobile actions */}
-        <div className="flex items-center gap-2">
-          {/* Desktop Book Now */}
-          <a href="#booking" className="hidden md:flex h-[46px] w-[160px] bg-[#E0B44C] rounded-[8px] items-center justify-center gap-2 text-[#222222] font-semibold text-[15px] shadow-sm hover:bg-[#D4AF37] hover:shadow-md transition-all duration-300">
-            <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <span>BOOK NOW</span>
-          </a>
-
-          {/* Mobile: compact Book Now */}
-          <a
-            href="#booking"
-            className="md:hidden h-[34px] px-3.5 bg-[#D4AF37] rounded-[7px] flex items-center justify-center text-[#111111] font-semibold text-[11px] tracking-[1px] uppercase shadow-sm active:scale-95 transition-all duration-200"
-          >
-            Book Now
-          </a>
-
-          {/* Mobile Hamburger — styled icon */}
-          <button
-            onClick={() => setMenuOpen(true)}
-            className="md:hidden w-[34px] h-[34px] rounded-[7px] bg-[#111111]/8 border border-[#D4AF37]/40 flex flex-col items-center justify-center gap-[4px] transition-all duration-200 active:scale-95"
-            aria-label="Open menu"
-          >
-            <svg width="18" height="13" viewBox="0 0 18 13" fill="none">
-              <rect y="0" width="18" height="2" rx="1" fill="#D4AF37" />
-              <rect y="5.5" width="12" height="2" rx="1" fill="#D4AF37" />
-              <rect y="11" width="18" height="2" rx="1" fill="#D4AF37" />
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      {/* ─── MOBILE FULL-SCREEN SIDEBAR ─────────────────────────────── */}
-      {/* Backdrop */}
-      <div
-        onClick={closeMenu}
-        className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-400 md:hidden ${
-          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      />
-
-      {/* Sidebar Panel */}
-      <div
-        className={`fixed top-0 right-0 bottom-0 z-[70] w-full max-w-full bg-[#0D0D0D] flex flex-col transition-transform duration-500 ease-in-out md:hidden ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        {/* Sidebar Top Bar */}
-        <div className="flex items-center justify-between px-6 pt-8 pb-6 border-b border-white/10">
-          {/* Logo in sidebar */}
-          <div className="flex flex-col items-start leading-none">
-            <div className="flex items-center gap-1.5">
-              <span className="font-serif text-[26px] font-bold text-[#D4AF37] tracking-wider">OM</span>
-              <svg className="w-7 h-5 text-[#D4AF37] stroke-[1.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" strokeLinejoin="round" />
-                <circle cx="12" cy="13" r="3" />
-              </svg>
-            </div>
-            <span className="font-sans text-[7px] font-medium text-[#D4AF37] tracking-[0.4em] mt-0.5">PHOTOGRAPHY</span>
-          </div>
-          {/* Close Button */}
-          <button
-            onClick={closeMenu}
-            className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-[#D4AF37] hover:border-[#D4AF37]/50 transition-all duration-200"
-            aria-label="Close menu"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Nav Links — compact, left-aligned */}
-        <nav className="flex flex-col px-6 pt-6 gap-0 flex-1 overflow-y-auto">
-          {[
-            { href: "#",          label: "Home",       num: "01" },
-            { href: "#about",     label: "About",      num: "02" },
-            { href: "#portfolio", label: "Portfolio",  num: "03" },
-            { href: "#services",  label: "Services",   num: "04" },
-            { href: "#faq",       label: "FAQ",        num: "05" },
-            { href: "#booking",   label: "Contact",    num: "06" },
-          ].map((item, i) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={closeMenu}
-              className="group inline-flex items-center gap-3 py-3 border-b border-white/[0.07] transition-all duration-200 w-auto"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <span className="text-[10px] text-[#D4AF37]/40 font-mono tracking-widest w-5 shrink-0">{item.num}</span>
-              <span className="font-serif text-[18px] text-white/75 group-hover:text-[#D4AF37] transition-colors duration-200 leading-none">
-                {item.label}
-              </span>
-              <svg className="w-3.5 h-3.5 text-[#D4AF37]/20 group-hover:text-[#D4AF37]/70 group-hover:translate-x-0.5 transition-all duration-200 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
-          ))}
-        </nav>
-
-        {/* Bottom Section */}
-        <div className="px-6 py-6 border-t border-white/10 bg-white/[0.01]">
-          {/* Brand highlights (smaller for mobile, not in hero) */}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-3.5 mb-5 pb-5 border-b border-white/[0.08]">
-            {/* Based in India */}
-            <div className="flex items-start gap-2">
-              <div className="w-5 h-5 rounded-full border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shrink-0 mt-0.5">
-                <svg className="w-2.5 h-2.5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-semibold text-white/90 text-[10px] sm:text-[11px] font-sans uppercase tracking-wider leading-tight">Based in India</h4>
-                <p className="text-white/40 text-[8px] sm:text-[9px] font-sans mt-0.5">Available Worldwide</p>
-              </div>
-            </div>
-
-            {/* Cinematic Shoots */}
-            <div className="flex items-start gap-2">
-              <div className="w-5 h-5 rounded-full border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shrink-0 mt-0.5">
-                <svg className="w-2.5 h-2.5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-semibold text-white/95 text-[10px] sm:text-[11px] font-sans uppercase tracking-wider leading-tight">Cinematic Shoots</h4>
-                <p className="text-white/40 text-[8px] sm:text-[9px] font-sans mt-0.5">Timeless Stories</p>
-              </div>
-            </div>
-
-            {/* 4.9/5 Rated */}
-            <div className="flex items-start gap-2">
-              <div className="w-5 h-5 rounded-full border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shrink-0 mt-0.5">
-                <svg className="w-2.5 h-2.5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-semibold text-white/95 text-[10px] sm:text-[11px] font-sans uppercase tracking-wider leading-tight">4.9/5 Rated</h4>
-                <p className="text-white/40 text-[8px] sm:text-[9px] font-sans mt-0.5">By Happy Clients</p>
-              </div>
-            </div>
-
-            {/* +91 12345 67890 */}
-            <div className="flex items-start gap-2">
-              <div className="w-5 h-5 rounded-full border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shrink-0 mt-0.5">
-                <svg className="w-2.5 h-2.5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-semibold text-white/95 text-[10px] sm:text-[11px] font-sans uppercase tracking-wider leading-tight">+91 12345 67890</h4>
-                <p className="text-white/40 text-[8px] sm:text-[9px] font-sans mt-0.5">Let&apos;s Create Magic</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Email row under highlights */}
-          <div className="flex items-center gap-2 mb-5 text-white/50 text-[11px] font-sans justify-center">
-            <svg className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" strokeLinecap="round" strokeLinejoin="round" />
-              <polyline points="22,6 12,13 2,6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            hello@omphotography.com
-          </div>
-
-          {/* Social icons */}
-          <div className="flex items-center gap-2.5 mb-6">
-
-            {/* Instagram */}
-            <a href="#" aria-label="Instagram"
-              className="w-9 h-9 rounded-full border border-[#D4AF37]/25 bg-white/5 flex items-center justify-center text-[#D4AF37]/60 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#e6683c] hover:to-[#bc1888] hover:text-white hover:border-transparent transition-all duration-250">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-            </a>
-
-            {/* Facebook */}
-            <a href="#" aria-label="Facebook"
-              className="w-9 h-9 rounded-full border border-[#D4AF37]/25 bg-white/5 flex items-center justify-center text-[#D4AF37]/60 hover:bg-[#1877F2] hover:text-white hover:border-transparent transition-all duration-250">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-            </a>
-
-            {/* YouTube */}
-            <a href="#" aria-label="YouTube"
-              className="w-9 h-9 rounded-full border border-[#D4AF37]/25 bg-white/5 flex items-center justify-center text-[#D4AF37]/60 hover:bg-[#FF0000] hover:text-white hover:border-transparent transition-all duration-250">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-            </a>
-
-            {/* WhatsApp */}
-            <a href="#" aria-label="WhatsApp"
-              className="w-9 h-9 rounded-full border border-[#D4AF37]/25 bg-white/5 flex items-center justify-center text-[#D4AF37]/60 hover:bg-[#25D366] hover:text-white hover:border-transparent transition-all duration-250">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
-              </svg>
-            </a>
-
-            {/* Pinterest */}
-            <a href="#" aria-label="Pinterest"
-              className="w-9 h-9 rounded-full border border-[#D4AF37]/25 bg-white/5 flex items-center justify-center text-[#D4AF37]/60 hover:bg-[#E60023] hover:text-white hover:border-transparent transition-all duration-250">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0c-6.627 0-12 5.372-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/>
-              </svg>
-            </a>
-
-          </div>
-
-
-          {/* Book Now CTA */}
-          <a
-            href="#booking"
-            onClick={closeMenu}
-            className="w-full h-[50px] bg-[#D4AF37] rounded-[10px] flex items-center justify-center gap-2 text-[#111111] font-semibold text-[14px] tracking-[1.5px] uppercase hover:bg-[#E0C050] transition-all duration-300 shadow-[0_0_24px_rgba(212,175,55,0.3)]"
-          >
-            <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            Book a Session
-          </a>
-        </div>
-      </div>
+      <Header />
 
       {/* 2. HERO SECTION / BANNER */}
       <section className="h-[100dvh] md:h-screen pt-[60px] md:pt-[70px] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-3 md:py-3 max-w-[1920px] mx-auto w-full overflow-hidden">
         {/* Two columns section (Flex on mobile, Grid on desktop) */}
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 w-full">
           {/* Left Column (42%) */}
-          <div className="lg:col-span-5 flex flex-col items-start justify-center lg:pr-4 w-full flex-shrink-0">
+          <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center lg:pr-0 lg:text-center w-full flex-shrink-0">
             {/* Top Label with decorative gold lines */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 mb-4 max-w-full">
               <div className="flex items-center shrink-0">
@@ -445,7 +156,7 @@ export default function Home() {
               Lifetime Memories
             </h1>
             {/* Script word "Realistically" */}
-            <div className="font-script text-[54px] xs:text-[60px] sm:text-[64px] md:text-[68px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 select-none transform -rotate-1 origin-left z-10">
+            <div className="font-script text-[54px] xs:text-[60px] sm:text-[64px] md:text-[68px] xl:text-[76px] text-[#D4AF37] leading-none mt-1 pl-3 lg:pl-0 select-none transform -rotate-1 origin-left lg:origin-center z-10">
               Realistically
             </div>
 
@@ -466,7 +177,7 @@ export default function Home() {
               </a>
 
               {/* Button 2 */}
-              <a href="#booking" className="h-[42px] md:h-[50px] px-4 md:w-[190px] border-2 border-[#D4AF37] rounded-[8px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[12px] md:text-[14px] xl:text-[15px] hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
+              <a href="/contact" className="h-[42px] md:h-[50px] px-4 md:w-[190px] border-2 border-[#D4AF37] rounded-[8px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[12px] md:text-[14px] xl:text-[15px] hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
@@ -529,15 +240,15 @@ export default function Home() {
           </div>
 
           {/* DESKTOP ORIGINAL IMAGE (shown only on desktop lg+) */}
-          <div className="hidden lg:col-span-7 lg:flex relative w-full h-full max-h-[260px] sm:max-h-[320px] md:max-h-[380px] xl:max-h-[460px] items-center justify-end">
-            <div className="relative w-full h-full rounded-[16px] overflow-hidden shadow-sm">
+          <div className="hidden lg:col-span-7 lg:flex relative w-full h-full max-h-[260px] sm:max-h-[320px] md:max-h-[380px] lg:max-h-[320px] xl:max-h-[400px] items-center justify-center">
+            <div className="relative w-full lg:w-[85%] h-full rounded-[16px] overflow-hidden shadow-sm">
               <Image
                 src="/main_hero.png"
                 alt="Premium wedding photography portrait of an Indian couple"
                 fill
                 priority
                 sizes="(min-width: 1024px) 58vw, 100vw"
-                className="object-cover"
+                className="object-cover lg:object-[center_25%]"
                 style={{
                   maskImage: 'linear-gradient(to right, transparent, black 15%)',
                   WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%)'
@@ -577,7 +288,7 @@ export default function Home() {
                     alt={`Wedding moment ${index + 1}`}
                     fill
                     sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover lg:object-[center_25%] group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               );
@@ -595,7 +306,7 @@ export default function Home() {
         {/* BOTTOM INFO ROW */}
         <div className="hidden md:grid md:grid-cols-4 gap-3 md:gap-4 py-3 border-t border-[#E8DCC2] mt-2 md:mt-3 flex-shrink-0 w-full">
           {/* Item 1 */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 justify-center">
             <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
               <svg className="w-4 h-4 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" strokeLinecap="round" strokeLinejoin="round" />
@@ -609,7 +320,7 @@ export default function Home() {
           </div>
 
           {/* Item 2 */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 justify-center">
             <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
               <svg className="w-4 h-4 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
@@ -623,7 +334,7 @@ export default function Home() {
           </div>
 
           {/* Item 3 */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 justify-center">
             <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
               <svg className="w-4 h-4 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" strokeLinecap="round" strokeLinejoin="round" />
@@ -636,7 +347,7 @@ export default function Home() {
           </div>
 
           {/* Item 4 */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 justify-center">
             <div className="w-9 h-9 rounded-full border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] shrink-0">
               <svg className="w-4 h-4 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round" />
@@ -906,115 +617,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. CALL TO ACTION (BOOKING FORM) */}
-      <section id="booking" className="bg-white border-t border-[#E8DCC2] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
-        <div className="max-w-[800px] mx-auto flex flex-col items-center">
-          <div className="font-script text-[22px] md:text-[36px] text-[#D4AF37] mb-1">Get In Touch</div>
-          <h2 className="font-serif text-[22px] sm:text-[34px] md:text-[42px] text-[#222222] font-normal tracking-tight text-center mb-3 md:mb-6">
-            Let's Create Magic Together
-          </h2>
-          <p className="text-[#666666] text-[13px] md:text-[15px] text-center mb-6 md:mb-12 max-w-[500px] px-2 sm:px-0">
-            Please share details of your event below. We will reach out to discuss how we can turn your real wedding into a timeless visual romance.
-          </p>
-
-          {formSubmitted ? (
-            <div className="w-full bg-[#F7F5F2] border-2 border-[#D4AF37] rounded-[16px] p-6 md:p-12 text-center shadow-sm">
-              <svg className="w-12 h-12 md:w-16 md:h-16 text-[#D4AF37] mx-auto mb-3 md:mb-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
-                <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <h3 className="font-serif text-[20px] md:text-[24px] text-[#222222] mb-1 md:mb-2">Inquiry Received Successfully!</h3>
-              <p className="text-[#666666] text-[13px] md:text-[14px]">
-                Thank you for contacting Om Photography. We will get back to you within 24 hours.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleFormSubmit} className="w-full bg-[#F7F5F2] border border-[#E8DCC2] rounded-[16px] p-4 sm:p-6 md:p-8 xl:p-12 shadow-sm space-y-4 md:space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                {/* Name */}
-                <div className="flex flex-col">
-                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Rahul Sharma"
-                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
-                  />
-                </div>
-                {/* Phone */}
-                <div className="flex flex-col">
-                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    required
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="e.g. +91 98765 43210"
-                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                {/* Event Date */}
-                <div className="flex flex-col">
-                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Event Date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    required
-                    value={formData.date}
-                    onChange={handleInputChange}
-                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
-                  />
-                </div>
-                {/* Event Location */}
-                <div className="flex flex-col">
-                  <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Event Location (City)</label>
-                  <input
-                    type="text"
-                    name="location"
-                    required
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Udaipur, Rajasthan"
-                    className="w-full h-[46px] md:h-[50px] bg-white border border-[#E8DCC2] rounded-[8px] px-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Message Box */}
-              <div className="flex flex-col">
-                <label className="text-[11px] md:text-[12px] uppercase font-semibold text-[#666666] tracking-[1px] mb-1.5 md:mb-2 font-sans">Event Details / Message</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  rows={4}
-                  placeholder="Tell us about your wedding ceremonies, style preferences, and visual requests..."
-                  className="w-full bg-white border border-[#E8DCC2] rounded-[8px] p-4 text-[13px] md:text-[14px] text-[#222222] focus:outline-none focus:border-[#D4AF37] transition-all"
-                />
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full h-[48px] md:h-[54px] bg-[#E0B44C] rounded-[8px] flex items-center justify-center gap-2 text-[#222222] font-semibold text-[15px] md:text-[16px] shadow-sm hover:bg-[#D4AF37] hover:shadow-md transition-all duration-300"
-              >
-                <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>SEND BOOKING INQUIRY</span>
-              </button>
-            </form>
-          )}
-        </div>
-      </section>
-
       {/* 8. FAQ SECTION */}
       <section id="faq" className="relative bg-[#FDFAF5] py-10 md:py-20 px-4 md:px-6 overflow-hidden">
         {/* Subtle warm dot pattern */}
@@ -1081,7 +683,7 @@ export default function Home() {
           <div className="mt-10 md:mt-14 text-center">
             <p className="text-[#888888] text-[13px] md:text-[14px] font-sans mb-4 md:mb-5">Still have questions? We&apos;d love to hear from you.</p>
             <a
-              href="#booking"
+              href="/contact"
               className="inline-flex items-center gap-2 bg-[#D4AF37] text-[#111111] font-semibold text-[12px] md:text-[13px] tracking-[1.5px] md:tracking-[2px] uppercase px-5 py-3 md:px-8 md:py-3.5 rounded-[6px] hover:bg-[#E0C050] transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.25)]"
             >
               <svg className="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -1094,251 +696,8 @@ export default function Home() {
       </section>
 
       {/* 9. FOOTER (Bottom Section) */}
-      <footer className="bg-[#0D0D0D] relative flex-shrink-0" style={{ fontSize: '13px' }}>
+      <Footer />
 
-        {/* TOP SERVICE STRIP - Warm Ivory Light Theme */}
-        <div className="bg-[#FEFCF8] border-t border-[#E8DCC2] border-b border-[#E8DCC2] py-2.5 md:py-5 px-4 md:px-8 xl:px-16 text-[#222222] relative z-10">
-          <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 divide-y md:divide-y-0 lg:divide-x divide-[#E8DCC2]">
-
-            {/* Service 1 */}
-            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0 first:pl-0 last:pr-0">
-              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                  <circle cx="12" cy="13" r="4" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Wedding Photography</h4>
-                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Capturing real emotions and beautiful moments</p>
-              </div>
-            </div>
-
-            {/* Service 2 */}
-            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0">
-              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <polygon points="23 7 16 12 23 17 23 7" />
-                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Cinematography</h4>
-                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Cinematic films that tell your story</p>
-              </div>
-            </div>
-
-            {/* Service 3 */}
-            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0">
-              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Pre Wedding Shoots</h4>
-                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Romantic. Natural. Timeless.</p>
-              </div>
-            </div>
-
-            {/* Service 4 */}
-            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0">
-              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Portrait Photography</h4>
-                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Your story. Your look. Our creativity.</p>
-              </div>
-            </div>
-
-            {/* Service 5 */}
-            <div className="flex items-center gap-2.5 md:gap-3 px-2 md:px-4 py-2 md:py-3 lg:py-0 last:pr-0">
-              <div className="w-7 h-7 md:w-9 md:h-9 rounded-full border border-[#D4AF37] bg-white flex items-center justify-center text-[#D4AF37] shrink-0">
-                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-serif text-[11px] md:text-[12px] font-bold text-[#222222] uppercase tracking-[0.5px]">Destination Weddings</h4>
-                <p className="text-[#666666] text-[10px] md:text-[11px] mt-0.5 leading-tight font-sans">Beautiful weddings in breathtaking destinations</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* MAIN FOOTER CONTENT */}
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 py-6 md:py-8 px-6 md:px-8 xl:px-16 relative z-10">
-
-          {/* Logo Column - 3 cols */}
-          <div className="lg:col-span-3 flex flex-col justify-start">
-            <div className="flex flex-col items-start leading-none select-none mb-4">
-              <div className="flex items-center gap-2">
-                <span className="font-serif text-[28px] md:text-[34px] font-bold text-[#D4AF37] tracking-wider leading-none">OM</span>
-                <svg className="w-7 h-6 md:w-8 md:h-7 text-[#D4AF37] stroke-[1.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" strokeLinejoin="round" />
-                  <circle cx="12" cy="13" r="3" />
-                </svg>
-              </div>
-              <span className="font-sans text-[8.5px] md:text-[10px] font-medium text-[#D4AF37] tracking-[0.45em] mt-1">PHOTOGRAPHY</span>
-            </div>
-            <p className="text-white/50 text-[12px] md:text-[13px] leading-[1.65] max-w-[280px]">
-              Capturing your lifetime memories realistically with modern editorial elegance and cinematic storytelling.
-            </p>
-          </div>
-
-          {/* EXPLORE COLUMN */}
-          <div className="hidden md:flex lg:col-span-2 flex-col">
-            <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">EXPLORE</h3>
-            <ul className="space-y-2 font-sans text-[12px] text-white/50">
-              <li><a href="#" className="hover:text-[#D4AF37] transition-colors">Home</a></li>
-              <li><a href="#about" className="hover:text-[#D4AF37] transition-colors">About Us</a></li>
-              <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Our Works</a></li>
-              <li><a href="#testimonials" className="hover:text-[#D4AF37] transition-colors">Testimonials</a></li>
-              <li><a href="#blog" className="hover:text-[#D4AF37] transition-colors">Blog</a></li>
-              <li><a href="#booking" className="hover:text-[#D4AF37] transition-colors">Contact</a></li>
-            </ul>
-          </div>
-
-          {/* GALLERIES COLUMN */}
-          <div className="hidden md:flex lg:col-span-2 flex-col">
-            <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">GALLERIES</h3>
-            <ul className="space-y-2 font-sans text-[12px] text-white/50">
-              <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Weddings</a></li>
-              <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Pre Weddings</a></li>
-              <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Portraits</a></li>
-              <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Cinematic Films</a></li>
-              <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Events</a></li>
-              <li><a href="#portfolio" className="hover:text-[#D4AF37] transition-colors">Behind The Scenes</a></li>
-            </ul>
-          </div>
-
-          {/* INFORMATION COLUMN */}
-          <div className="hidden md:flex lg:col-span-2 flex-col">
-            <h3 className="font-serif text-[13px] text-white/90 font-bold tracking-[1.5px] uppercase mb-4">INFORMATION</h3>
-            <ul className="space-y-2 font-sans text-[12px] text-white/50">
-              <li><a href="#services" className="hover:text-[#D4AF37] transition-colors">Pricing & Packages</a></li>
-              <li><a href="#booking" className="hover:text-[#D4AF37] transition-colors">Booking Process</a></li>
-              <li><a href="#" className="hover:text-[#D4AF37] transition-colors">FAQs</a></li>
-              <li><a href="#" className="hover:text-[#D4AF37] transition-colors">Client Guide</a></li>
-              <li><a href="#" className="hover:text-[#D4AF37] transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-[#D4AF37] transition-colors">Terms & Conditions</a></li>
-            </ul>
-          </div>
-
-          {/* CONTACT & CTA COLUMN - 3 cols */}
-          <div className="md:col-span-2 lg:col-span-3 flex flex-col items-start w-full mt-4 md:mt-0">
-            <h3
-              className="font-script text-[#D4AF37] leading-snug mb-3 whitespace-nowrap"
-              style={{ fontSize: 'clamp(16px, 1.4vw, 22px)' }}
-            >
-              Let&apos;s Create Magic Together!
-            </h3>
-
-            <ul className="space-y-2 text-[11.5px] md:text-[12px] text-white/50 mb-4 font-sans flex flex-col items-start">
-              <li className="flex items-center gap-2">
-                <svg className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>+91 12345 67890</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <svg className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" strokeLinecap="round" strokeLinejoin="round" />
-                  <polyline points="22,6 12,13 2,6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span>hello@omphotography.com</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <svg className="w-3.5 h-3.5 text-[#D4AF37] mt-0.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span className="leading-tight">Based in India | Available Worldwide</span>
-              </li>
-            </ul>
-
-            <a href="#booking" className="w-full max-w-[280px] h-[36px] md:h-[38px] border border-[#D4AF37] rounded-[5px] flex items-center justify-center gap-2 text-[#D4AF37] font-semibold text-[10px] md:text-[11px] tracking-[1.5px] uppercase bg-transparent hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
-              <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-              <span>CHECK AVAILABILITY</span>
-            </a>
-          </div>
-
-        </div>
-
-        {/* BACKGROUND DECORATION (Subtle faded silhouette on the far right) */}
-        <div className="absolute right-0 bottom-0 top-0 w-[350px] md:w-[450px] pointer-events-none z-0 overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://images.unsplash.com/photo-1519225495810-7512c696505a?auto=format&fit=crop&w=600&q=80"
-            alt=""
-            className="w-full h-full object-cover object-right grayscale opacity-[0.03] mix-blend-screen invert"
-          />
-        </div>
-
-        {/* BOTTOM BAR */}
-        <div className="border-t border-white/[0.08] py-4 px-6 md:px-8 xl:px-16 bg-[#090909] relative z-10">
-          <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-
-            {/* Social Media Links */}
-            <div className="flex items-center gap-4">
-              <span className="text-[12px] font-bold text-white/40 tracking-[2px] uppercase flex items-center gap-2">
-                FOLLOW US <span className="w-6 h-[1px] bg-[#D4AF37] inline-block"></span>
-              </span>
-              {/* Instagram */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              </a>
-              {/* Facebook */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                </svg>
-              </a>
-              {/* YouTube */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
-                  <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" />
-                </svg>
-              </a>
-              {/* Pinterest */}
-              <a href="#" className="w-9 h-9 rounded-full border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]/80 hover:bg-[#D4AF37] hover:text-[#0D0D0D] transition-all duration-300">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M8 22a9 9 0 0 1-5.18-16.36 9 9 0 0 1 14.82 4.96C17.64 16 14 22 8 22z" />
-                  <circle cx="8" cy="10" r="3" />
-                </svg>
-              </a>
-            </div>
-
-            {/* Quotation */}
-            <div className="flex flex-col items-center text-center md:items-end md:text-right max-w-[360px]">
-              <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mb-0.5 justify-center md:justify-end">“</div>
-              <p className="font-serif italic text-[12px] text-white/40 leading-relaxed">
-                A photograph is the pause button of life&apos;s most beautiful moments.
-              </p>
-              <div className="flex gap-1.5 text-[#D4AF37] select-none text-[18px] font-serif leading-none mt-0.5 justify-center md:justify-end">”</div>
-            </div>
-
-          </div>
-        </div>
-
-      </footer>
 
       {/* ─── FLOATING CONTACT US BUTTON ──────────────────────────────────────── */}
       <div className="fixed bottom-6 left-6 z-[80]">
