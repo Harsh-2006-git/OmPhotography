@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Great_Vibes, Poppins } from "next/font/google";
+import { Playfair_Display, Great_Vibes, Poppins, Inter } from "next/font/google";
 import "./globals.css";
 
 const playfairDisplay = Playfair_Display({
@@ -20,9 +20,18 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["400", "500", "600"],
+});
+
 export const metadata: Metadata = {
   title: "OM PHOTOGRAPHY | Premium Wedding Photography & Cinematography",
   description: "Capturing your lifetime memories realistically. Premium wedding photography & cinematography portfolio.",
+  icons: {
+    icon: "/logo.png?v=2",
+  },
 };
 
 export default function RootLayout({
@@ -33,9 +42,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfairDisplay.variable} ${greatVibes.variable} ${poppins.variable} h-full antialiased`}
+      className={`${playfairDisplay.variable} ${greatVibes.variable} ${poppins.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#F7F5F2] text-[#222222] font-sans">{children}</body>
+      <body className="min-h-full flex flex-col bg-transparent text-[#18352F] font-sans">{children}</body>
     </html>
   );
 }

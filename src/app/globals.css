@@ -4,20 +4,43 @@
   --font-serif: var(--font-playfair), serif;
   --font-script: var(--font-great-vibes), cursive;
   --font-sans: var(--font-poppins), sans-serif;
+  --font-inter: var(--font-inter), sans-serif;
 
-  --color-brand-gold: #D4AF37;
-  --color-brand-gold-btn: #E0B44C;
-  --color-brand-bg: #F7F5F2;
-  --color-brand-border: #E8DCC2;
-  --color-brand-dark: #222222;
-  --color-brand-gray: #666666;
+  --color-primary-green: #0F5C4D;
+  --color-deep-forest-green: #0F5C4D;
+  --color-secondary-green: #1F6F63;
+  --color-accent-green: #2D8A74;
+  --color-soft-green: #DCEFE8;
+  --color-very-light-green: #F5FBF8;
+  --color-cream-white: #ffffff;
+  --color-text-primary: #18352F;
+  --color-text-secondary: #5E6C66;
+  --color-border-color: #D9E6E0;
+  --color-success-color: #3F9B73;
+  --color-error-color: #C85D5D;
+  --color-footer-green: #0B3D34;
+
+  /* Legacy brand compatibility overrides */
+  --color-brand-gold: #0F5C4D;
+  --color-brand-gold-btn: #1F6F63;
+  --color-brand-bg: #ffffff;
+  --color-brand-border: #D9E6E0;
+  --color-brand-dark: #18352F;
+  --color-brand-gray: #5E6C66;
 }
 
 body {
-  background-color: #F7F5F2;
-  color: #222222;
+  background-color: #ffffff;
+  color: #18352F;
   font-family: var(--font-poppins), sans-serif;
   min-height: 100vh;
+}
+
+/* Custom paragraphs */
+p {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 18px;
+  color: #5E6C66;
 }
 
 .masonry-gallery {
@@ -29,9 +52,9 @@ body {
 .masonry-card {
   animation: masonry-fade-in 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 18px;
   break-inside: avoid;
-  box-shadow: 0 12px 34px rgba(34, 34, 34, 0.07);
+  box-shadow: 0 10px 30px rgba(15, 92, 77, 0.08);
   cursor: pointer;
   display: inline-block;
   margin: 0 0 18px;
@@ -43,7 +66,7 @@ body {
 }
 
 .masonry-card:hover {
-  box-shadow: 0 28px 70px rgba(34, 34, 34, 0.18);
+  box-shadow: 0 20px 45px rgba(15, 92, 77, 0.15);
   transform: translateY(-4px);
 }
 
@@ -63,7 +86,7 @@ body {
 .masonry-overlay {
   align-items: flex-start;
   background:
-    linear-gradient(180deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.28) 45%, rgba(10, 9, 8, 0.86) 100%);
+    linear-gradient(180deg, rgba(15, 92, 77, 0.08) 0%, rgba(15, 92, 77, 0.28) 45%, rgba(11, 61, 52, 0.92) 100%);
   bottom: 0;
   display: flex;
   flex-direction: column;
