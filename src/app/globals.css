@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+:root {
+  --header-height: 60px;
+}
+@media (min-width: 768px) {
+  :root {
+    --header-height: 78px;
+  }
+}
+
 @theme {
   --font-serif: var(--font-playfair), serif;
   --font-script: var(--font-great-vibes), cursive;

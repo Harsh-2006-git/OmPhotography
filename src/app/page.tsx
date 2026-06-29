@@ -120,7 +120,7 @@ export default function Home() {
       <Header />
 
       {/* 2. HERO SECTION / BANNER */}
-      <section className="min-h-[100dvh] lg:h-screen pt-[60px] md:pt-[88px] lg:pt-[98px] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-3 lg:py-4 max-w-[1920px] mx-auto w-full overflow-x-hidden lg:overflow-hidden relative">
+      <section className="min-h-[100dvh] lg:h-screen pt-[var(--header-height)] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-3 lg:py-[2vh] max-w-[1920px] mx-auto w-full overflow-x-hidden lg:overflow-hidden relative">
 
 
 
@@ -129,7 +129,7 @@ export default function Home() {
           {/* Left Column (42%) */}
           <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center lg:pr-0 lg:text-center w-full flex-shrink-0">
             {/* Top Label with decorative green lines */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5 mb-4 max-w-full">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 mb-3 lg:mb-[2.5vh] max-w-full">
               <div className="flex items-center shrink-0">
                 <span className="w-3 sm:w-6 h-[1px] bg-[#0F5C4D]"></span>
                 <svg className="w-2 h-2 text-[#0F5C4D] -ml-0.5 fill-current" viewBox="0 0 24 24">
@@ -158,13 +158,13 @@ export default function Home() {
             </div>
 
             {/* Description */}
-            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] sm:!text-[14px] xl:!text-[16px] font-normal leading-[1.5] max-w-[325px] xs:max-w-[365px] sm:max-w-[460px] mt-2 md:mt-4 font-inter">
+            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] sm:!text-[14px] xl:!text-[16px] font-normal leading-[1.5] max-w-[325px] xs:max-w-[365px] sm:max-w-[460px] mt-2 lg:mt-[2vh] font-inter">
               <span className="block sm:inline">We don't just click pictures, we capture emotions,</span>{" "}
               <span className="block sm:inline">moments and stories you'll cherish forever.</span>
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex items-center gap-2.5 sm:gap-4 mt-4 w-full sm:w-auto">
+            <div className="flex items-center gap-2.5 sm:gap-4 mt-4 lg:mt-[3vh] w-full sm:w-auto">
               {/* Button 1 */}
               <a href="/portfolio" className="flex-1 sm:flex-initial h-[46px] md:h-[50px] px-3 sm:px-6 md:px-8 whitespace-nowrap bg-[#0F5C4D] rounded-[14px] flex items-center justify-center gap-1.5 sm:gap-2 text-white font-semibold text-[11px] sm:text-[12px] md:text-[14px] xl:text-[15px] hover:bg-[#1F6F63] hover:shadow-[0_10px_30px_rgba(15,92,77,0.15)] transition-all duration-300">
                 <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,13 +189,13 @@ export default function Home() {
 
           {/* MOBILE/TABLET COLLAGE (shown only on mobile/tablet) */}
           <div
-            className="lg:hidden relative w-full max-w-[360px] xs:max-w-[400px] aspect-[1.6] mx-auto flex items-center justify-center mt-3 mb-2 z-10"
+            className="lg:hidden relative w-full max-w-[380px] xs:max-w-[420px] aspect-[1.6] max-h-[26vh] mx-auto flex items-center justify-center mt-3 mb-2 z-10"
           >
             {/* Organic curved shape behind image */}
             <div className="absolute inset-0 bg-[#DCEFE8] rounded-[24px] transform rotate-2 scale-[0.98] pointer-events-none opacity-60 z-0" />
 
             {/* Main Bigger Image */}
-            <div className="relative w-[85%] h-[92%] rounded-[24px] overflow-hidden shadow-[0_10px_30px_rgba(15,92,77,0.08)] border border-[#D9E6E0]/30 z-10">
+            <div className="relative w-[92%] h-[94%] rounded-[24px] overflow-hidden shadow-[0_10px_30px_rgba(15,92,77,0.08)] border border-[#D9E6E0]/30 z-10">
               <Image
                 src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=1200&q=80"
                 alt="Premium wedding photography portrait of an Indian couple"
@@ -240,7 +240,7 @@ export default function Home() {
           </div>
 
           {/* DESKTOP ORIGINAL IMAGE (shown only on desktop lg+) */}
-          <div className="hidden lg:col-span-7 lg:flex relative w-full h-full max-h-[260px] sm:max-h-[320px] md:max-h-[380px] lg:max-h-[320px] xl:max-h-[400px] items-center justify-center">
+          <div className="hidden lg:col-span-7 lg:flex relative w-full h-[45vh] min-h-[300px] max-h-[420px] xl:h-[50vh] xl:max-h-[500px] items-center justify-center">
             {/* Organic curved shape behind image */}
             <div className="absolute w-[87%] h-[105%] left-[8%] bg-[#DCEFE8] rounded-[24px] transform rotate-1 pointer-events-none opacity-60 z-0" />
 
@@ -271,7 +271,7 @@ export default function Home() {
         </div>
 
         {/* IMAGE CAROUSEL CONTAINER (Height: 140px) */}
-        <div className="relative w-full bg-white border border-[#0F5C4D]/30 md:border-[#D9E6E0]/50 rounded-[18px] p-2 md:p-2.5 h-[80px] md:h-[140px] flex items-center justify-between flex-shrink-0 mt-1.5 md:mt-0 shadow-[0_10px_30px_rgba(15,92,77,0.04)]">
+        <div className="relative w-full bg-white border border-[#0F5C4D]/30 md:border-[#D9E6E0]/50 rounded-[18px] p-2 md:p-2.5 h-[80px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] flex items-center justify-between flex-shrink-0 mt-1.5 md:mt-0 shadow-[0_10px_30px_rgba(15,92,77,0.04)]">
           {/* Carousel Images */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 w-full h-full overflow-hidden">
             {carouselImages.slice(0, 6).map((src, index) => {

@@ -29,7 +29,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 h-[60px] md:h-[78px] w-full px-4 md:px-12 flex items-center justify-between z-50 transition-all duration-500 bg-white/95 backdrop-blur-xl border-b border-[#D9E6E0] ${scrolled ? "shadow-[0_10px_30px_rgba(15,92,77,0.05)]" : ""
+        className={`fixed top-0 left-0 right-0 h-[var(--header-height)] w-full px-4 md:px-12 flex items-center justify-between z-50 transition-all duration-500 bg-white/95 backdrop-blur-xl border-b border-[#D9E6E0] ${scrolled ? "shadow-[0_10px_30px_rgba(15,92,77,0.05)]" : ""
           }`}
       >
         <a href="/" className="flex items-center gap-2 md:gap-3.5 select-none py-1">
