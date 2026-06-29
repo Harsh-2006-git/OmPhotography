@@ -117,7 +117,7 @@ export default function AboutPage() {
                 as="p"
                 animationNum={4}
                 customVariants={revealVariants}
-                className="text-[#5E6C66] text-[14px] md:text-[16px] leading-[1.75] font-inter"
+                className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.75] font-inter"
               >
                 Hi, I am Om, the lead photographer and founder of Om Photography. With over a decade of capturing premium luxury weddings across India and worldwide, our vision is simple: <strong>to capture your lifetime memories realistically.</strong>
               </TimelineContent>
@@ -126,7 +126,7 @@ export default function AboutPage() {
                 as="p"
                 animationNum={5}
                 customVariants={revealVariants}
-                className="text-[#5E6C66] text-[14px] md:text-[16px] leading-[1.75] font-inter"
+                className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.75] font-inter"
               >
                 We specialize in candid emotions, dramatic lighting, and cinematic story-telling. We believe that a wedding isn't just an event; it's a legacy of emotions, laughter, and tears that you will pass down for generations. Our team operates with micro-precision, ensuring that every fleeting moment is immortalized with editorial elegance.
               </TimelineContent>

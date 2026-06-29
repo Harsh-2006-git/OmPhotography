@@ -393,10 +393,10 @@ export default function Home() {
               </h2>
             </div>
 
-            <p className="text-[#5E6C66] text-[13px] md:text-[16px] leading-[1.65] md:leading-[1.8] font-inter mb-3 md:mb-6 px-1 lg:px-0">
+            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.65] md:leading-[1.8] font-inter mb-3 md:mb-6 px-1 lg:px-0">
               Hi, I am Om, the lead photographer and founder of Om Photography. With over a decade of capturing premium luxury weddings across India and worldwide, our vision is simple: <strong>to capture your lifetime memories realistically.</strong>
             </p>
-            <p className="text-[#5E6C66] text-[13px] md:text-[16px] leading-[1.65] md:leading-[1.8] font-inter mb-4 md:mb-8 px-1 lg:px-0">
+            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.65] md:leading-[1.8] font-inter mb-4 md:mb-8 px-1 lg:px-0">
               We specialize in candid emotions, dramatic lighting, and cinematic story-telling. We believe that a wedding isn't just an event; it's a legacy of emotions, laughter, and tears that you will pass down for generations. Our team operates with micro-precision, ensuring that every fleeting moment is immortalized with editorial elegance.
             </p>
             <div className="grid grid-cols-3 gap-2 md:gap-6 w-full pt-4 md:pt-6 border-t border-[#D9E6E0]">
@@ -479,13 +479,15 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 w-full">
             {/* Service 1 */}
             <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] mb-3 md:mb-4 shrink-0">
-                <svg className="w-5 h-5 md:w-5.5 md:h-5.5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                  <circle cx="12" cy="13" r="4" />
-                </svg>
+              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
+                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                    <circle cx="12" cy="13" r="4" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Candid Photography</h3>
               </div>
-              <h3 className="font-serif text-[18px] md:text-[22px] text-[#0F5C4D] font-normal mb-1.5 md:mb-2">Candid Photography</h3>
               <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
                 Capturing natural, unscripted emotions, stolen glances, and real laughter as it happens without forcing poses.
               </p>
@@ -493,13 +495,15 @@ export default function Home() {
 
             {/* Service 2 */}
             <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] mb-3 md:mb-4 shrink-0">
-                <svg className="w-5 h-5 md:w-5.5 md:h-5.5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <polygon points="23 7 16 12 23 17 23 7" />
-                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                </svg>
+              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
+                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Cinematic Films</h3>
               </div>
-              <h3 className="font-serif text-[18px] md:text-[22px] text-[#0F5C4D] font-normal mb-1.5 md:mb-2">Cinematic Films</h3>
               <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
                 Creating bespoke cinematic wedding highlights, teasers, and documentary-style films of your royal celebrations.
               </p>
@@ -507,12 +511,14 @@ export default function Home() {
 
             {/* Service 3 */}
             <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] mb-3 md:mb-4 shrink-0">
-                <svg className="w-5 h-5 md:w-5.5 md:h-5.5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                </svg>
+              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
+                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Drone Shoots</h3>
               </div>
-              <h3 className="font-serif text-[18px] md:text-[22px] text-[#0F5C4D] font-normal mb-1.5 md:mb-2">Drone Shoots</h3>
               <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
                 Grand aerial cinematography capturing the scale, majesty, and breath-taking architecture of your wedding destination.
               </p>
@@ -520,13 +526,15 @@ export default function Home() {
 
             {/* Service 4 */}
             <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] mb-3 md:mb-4 shrink-0">
-                <svg className="w-5 h-5 md:w-5.5 md:h-5.5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                  <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5V4.5z" />
-                </svg>
+              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
+                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5V4.5z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Premium Albums</h3>
               </div>
-              <h3 className="font-serif text-[18px] md:text-[22px] text-[#0F5C4D] font-normal mb-1.5 md:mb-2">Premium Albums</h3>
               <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
                 Handcrafted leather albums with gold gilded edges and flush mount pages, custom-designed to tell your unique love story.
               </p>
@@ -534,6 +542,13 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Decorative Separator */}
+      <div className="w-full flex items-center justify-center py-4 bg-white">
+        <div className="h-[1px] bg-[#D9E6E0]/60 flex-1 max-w-[150px] sm:max-w-[240px]" />
+        <div className="w-1.5 h-1.5 rounded-full bg-[#0F5C4D]/30 mx-4" />
+        <div className="h-[1px] bg-[#D9E6E0]/60 flex-1 max-w-[150px] sm:max-w-[240px]" />
+      </div>
 
       {/* 5.5 BRAND PROMISE BANNER SECTION */}
       <section className="bg-[#0b3d34] text-white w-full relative overflow-hidden py-5 md:py-7 border-t border-b border-[#0F5C4D]/20">

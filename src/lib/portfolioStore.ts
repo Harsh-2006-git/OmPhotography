@@ -35,49 +35,49 @@ const DEFAULT_CATEGORIES: Category[] = [
   {
     id: "weddings",
     name: "Weddings",
-    coverUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+    coverUrl: "/placeholder.svg",
     shootCount: 245,
     order: 1,
   },
   {
     id: "pre-weddings",
     name: "Pre Weddings",
-    coverUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+    coverUrl: "/placeholder.svg",
     shootCount: 120,
     order: 2,
   },
   {
     id: "birthdays",
     name: "Birthdays",
-    coverUrl: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80",
+    coverUrl: "/placeholder.svg",
     shootCount: 80,
     order: 3,
   },
   {
     id: "events",
     name: "Parties & Events",
-    coverUrl: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80",
+    coverUrl: "/placeholder.svg",
     shootCount: 78,
     order: 4,
   },
   {
     id: "maternity",
     name: "Maternity",
-    coverUrl: "https://images.unsplash.com/photo-1551972251-12cb72448d5a?auto=format&fit=crop&w=800&q=80",
+    coverUrl: "/placeholder.svg",
     shootCount: 45,
     order: 5,
   },
   {
     id: "destination-weddings",
     name: "Destination Weddings",
-    coverUrl: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
+    coverUrl: "/placeholder.svg",
     shootCount: 54,
     order: 6,
   },
   {
     id: "portraits",
     name: "Fashion & Portraits",
-    coverUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80",
+    coverUrl: "/placeholder.svg",
     shootCount: 71,
     order: 7,
   },
@@ -86,73 +86,73 @@ const DEFAULT_CATEGORIES: Category[] = [
 const MOCK_WEDDING_PHOTOS: Photo[] = [
   {
     id: "w1",
-    url: "https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Couple Portraits",
     likes: 12,
   },
   {
     id: "w2",
-    url: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Bride Portraits",
     likes: 8,
   },
   {
     id: "w3",
-    url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Ceremony",
     likes: 15,
   },
   {
     id: "w4",
-    url: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Candid Moments",
     likes: 24,
   },
   {
     id: "w5",
-    url: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Reception",
     likes: 6,
   },
   {
     id: "w6",
-    url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Details",
     likes: 19,
   },
   {
     id: "w7",
-    url: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Ceremony",
     likes: 14,
   },
   {
     id: "w8",
-    url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Couple Portraits",
     likes: 31,
   },
   {
     id: "w9",
-    url: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Bride Portraits",
     likes: 21,
   },
   {
     id: "w10",
-    url: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Candid Moments",
     likes: 42,
   },
   {
     id: "w11",
-    url: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Reception",
     likes: 11,
   },
   {
     id: "w12",
-    url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
+    url: "/placeholder.svg",
     category: "Details",
     likes: 5,
   },
@@ -183,7 +183,6 @@ const DEFAULT_GALLERIES: ClientGallery[] = [
     photos: MOCK_WEDDING_PHOTOS.map((p, idx) => ({
       ...p,
       id: `an-${idx}`,
-      url: p.url.replace("w=", "w=700&q=80"), // slight variation
     })),
     isPublic: true,
     favorites: [],
@@ -288,8 +287,8 @@ const DEFAULT_GALLERIES: ClientGallery[] = [
     location: "Jaisalmer, India",
     photographer: "Om",
     photos: [
-      { id: "p1", url: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80", category: "Couple Portraits" },
-      { id: "p2", url: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=800&q=80", category: "Candid Moments" },
+      { id: "p1", url: "/placeholder.svg", category: "Couple Portraits" },
+      { id: "p2", url: "/placeholder.svg", category: "Candid Moments" },
     ],
     isPublic: true,
     favorites: [],
@@ -303,7 +302,23 @@ export function getCategories(): Category[] {
     localStorage.setItem("om_categories", JSON.stringify(DEFAULT_CATEGORIES));
     return DEFAULT_CATEGORIES;
   }
-  return JSON.parse(stored);
+  try {
+    const parsed = JSON.parse(stored);
+    let updated = false;
+    const cleaned = parsed.map((cat: any) => {
+      if (cat.coverUrl && cat.coverUrl.includes("unsplash.com")) {
+        cat.coverUrl = "/placeholder.svg";
+        updated = true;
+      }
+      return cat;
+    });
+    if (updated) {
+      localStorage.setItem("om_categories", JSON.stringify(cleaned));
+    }
+    return cleaned;
+  } catch (e) {
+    return DEFAULT_CATEGORIES;
+  }
 }
 
 export function saveCategories(categories: Category[]) {
@@ -318,7 +333,32 @@ export function getGalleries(): ClientGallery[] {
     localStorage.setItem("om_galleries", JSON.stringify(DEFAULT_GALLERIES));
     return DEFAULT_GALLERIES;
   }
-  return JSON.parse(stored);
+  try {
+    const parsed = JSON.parse(stored);
+    let updated = false;
+    const cleaned = parsed.map((gal: any) => {
+      if (gal.coverUrl && gal.coverUrl.includes("unsplash.com")) {
+        gal.coverUrl = "/placeholder.svg";
+        updated = true;
+      }
+      if (gal.photos) {
+        gal.photos = gal.photos.map((p: any) => {
+          if (p.url && p.url.includes("unsplash.com")) {
+            p.url = "/placeholder.svg";
+            updated = true;
+          }
+          return p;
+        });
+      }
+      return gal;
+    });
+    if (updated) {
+      localStorage.setItem("om_galleries", JSON.stringify(cleaned));
+    }
+    return cleaned;
+  } catch (e) {
+    return DEFAULT_GALLERIES;
+  }
 }
 
 export function saveGalleries(galleries: ClientGallery[]) {
