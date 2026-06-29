@@ -68,7 +68,7 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Explore links - 2 columns */}
-          <div className="lg:col-span-2 flex flex-col items-start text-left lg:border-r lg:border-[#E8EEE9] lg:px-6">
+          <div className="hidden md:flex lg:col-span-2 flex-col items-start text-left lg:border-r lg:border-[#E8EEE9] lg:px-6">
             <h3 className="font-serif text-[14px] font-bold tracking-[1.5px] uppercase text-[#134B42] mb-1 leading-none">
               EXPLORE
             </h3>
@@ -103,7 +103,7 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Galleries links - 2 columns */}
-          <div className="lg:col-span-2 flex flex-col items-start text-left lg:border-r lg:border-[#E8EEE9] lg:px-6">
+          <div className="hidden md:flex lg:col-span-2 flex-col items-start text-left lg:border-r lg:border-[#E8EEE9] lg:px-6">
             <h3 className="font-serif text-[14px] font-bold tracking-[1.5px] uppercase text-[#134B42] mb-1 leading-none">
               GALLERIES
             </h3>
@@ -138,7 +138,7 @@ export default function Footer() {
           </div>
 
           {/* Column 4: Information links - 2 columns */}
-          <div className="lg:col-span-2 flex flex-col items-start text-left lg:border-r lg:border-[#E8EEE9] lg:px-6">
+          <div className="hidden md:flex lg:col-span-2 flex-col items-start text-left lg:border-r lg:border-[#E8EEE9] lg:px-6">
             <h3 className="font-serif text-[14px] font-bold tracking-[1.5px] uppercase text-[#134B42] mb-1 leading-none">
               INFORMATION
             </h3>
@@ -238,18 +238,18 @@ export default function Footer() {
       </div>
 
       {/* BOTTOM FOOTER BAR */}
-      <div className="bg-[#0D3C35] h-auto lg:h-[68px] py-4 lg:py-0 px-[60px] flex flex-col lg:flex-row items-center justify-between gap-4 relative z-10 border-t border-white/[0.05]">
+      <div className="bg-[#0D3C35] h-auto lg:h-[68px] py-4 lg:py-0 px-6 sm:px-[60px] flex flex-col lg:flex-row items-center justify-between gap-4 relative z-10 border-t border-white/[0.05]">
         
         {/* Left Side: Follow Us & Social Icons */}
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="flex items-center gap-2.5">
-            <span className="font-sans text-[11px] font-semibold text-white tracking-[1.5px] uppercase whitespace-nowrap">
+        <div className="flex flex-row items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <span className="font-sans text-[11px] font-semibold text-white/90 tracking-[1.5px] uppercase whitespace-nowrap">
               FOLLOW US
             </span>
-            <span className="w-6 h-[1px] bg-white/40 block"></span>
+            <span className="w-4 sm:w-6 h-[1px] bg-white/40 block"></span>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {[
               {
                 // Instagram
@@ -303,7 +303,7 @@ export default function Footer() {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-[34px] h-[34px] rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:bg-[#0F5C4D] hover:text-white transition-all duration-300 hover:scale-105"
+                className="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:bg-[#0F5C4D] hover:text-white transition-all duration-300 hover:scale-105"
               >
                 {social.icon}
               </a>
@@ -312,12 +312,12 @@ export default function Footer() {
         </div>
 
         {/* Right Side: Luxury Quote */}
-        <div className="relative max-w-[500px] text-center lg:text-right flex items-center gap-2">
-          <span className="text-white/10 text-[32px] font-serif leading-none select-none pointer-events-none shrink-0">&ldquo;</span>
-          <div className="font-serif italic text-[15px] font-normal text-white/90 leading-normal">
+        <div className="relative max-w-[500px] text-center lg:text-right flex items-center gap-1.5 md:gap-2">
+          <span className="text-white/10 text-[20px] md:text-[32px] font-serif leading-none select-none pointer-events-none shrink-0">&ldquo;</span>
+          <div className="font-serif italic text-[10px] xs:text-[11.5px] sm:text-[13.5px] md:text-[15px] font-normal text-white/90 leading-normal whitespace-nowrap">
             A photograph is the pause button of life&apos;s most beautiful moments.
           </div>
-          <span className="text-white/10 text-[32px] font-serif leading-none select-none pointer-events-none shrink-0">&rdquo;</span>
+          <span className="text-white/10 text-[20px] md:text-[32px] font-serif leading-none select-none pointer-events-none shrink-0">&rdquo;</span>
         </div>
 
       </div>

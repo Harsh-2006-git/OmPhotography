@@ -538,38 +538,40 @@ export default function Home() {
       {/* 5.5 BRAND PROMISE BANNER SECTION */}
       <section className="bg-[#0b3d34] text-white w-full relative overflow-hidden py-5 md:py-7 border-t border-b border-[#0F5C4D]/20">
         {/* Circular line decoration on right side */}
-        <div className="absolute right-[5%] top-[10%] w-[320px] h-[320px] border border-[#E8DCC2]/10 rounded-full pointer-events-none select-none hidden lg:block z-0" />
-        <div className="absolute right-[2%] top-[5%] w-[360px] h-[360px] border border-[#E8DCC2]/5 rounded-full pointer-events-none select-none hidden lg:block z-0" />
+        {/* Circular line decoration on right side */}
+        {/* Circular line decoration on right side */}
+        <div className="absolute right-[5%] top-[10%] w-[320px] h-[320px] border border-[#EEF7F2]/10 rounded-full pointer-events-none select-none hidden lg:block z-0" />
+        <div className="absolute right-[2%] top-[5%] w-[360px] h-[360px] border border-[#EEF7F2]/5 rounded-full pointer-events-none select-none hidden lg:block z-0" />
 
         {/* Background dot grid pattern */}
         <div className="absolute top-[10%] left-[45%] w-[100px] h-[100px] opacity-[0.06] hidden lg:block z-0" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '12px 12px' }} />
         <div className="absolute bottom-[10%] left-[40%] w-[100px] h-[100px] opacity-[0.06] hidden lg:block z-0" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '12px 12px' }} />
         <div className="absolute bottom-[5%] right-[5%] w-[100px] h-[100px] opacity-[0.06] hidden lg:block z-0" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '12px 12px' }} />
 
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-10 items-center px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
           
           {/* Left Column: Text & Features */}
-          <div className="lg:col-span-6 flex flex-col items-start text-left space-y-3.5 md:space-y-4 animate-[fadeIn_0.8s_ease-out]">
+          <div className="lg:col-span-6 flex flex-col items-start text-left space-y-2.5 sm:space-y-3.5 md:space-y-4 animate-[fadeIn_0.8s_ease-out]">
             {/* Logo and branding */}
             <div className="flex flex-col select-none font-serif text-white tracking-wide">
               <div className="flex items-center gap-1.5">
                 <span className="text-[24px] font-bold leading-none tracking-[0.5px]">Om</span>
                 {/* Small camera logo spark */}
-                <svg className="w-4.5 h-4.5 text-[#E8DCC2] fill-none stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4.5 h-4.5 text-[#EEF7F2] fill-none stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="3" />
                   <path d="M19 10h.01M21 19a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2h3l2-3h6l2 3h3a2 2 0 012 2v10z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span className="text-[8px] uppercase tracking-[5px] text-[#E8DCC2] mt-0.5 font-sans leading-none font-semibold">Photo Studio</span>
+              <span className="text-[8px] uppercase tracking-[5px] text-[#D7E8DF] mt-0.5 font-sans leading-none font-semibold">Photo Studio</span>
             </div>
 
             {/* Subtitle tag line */}
-            <div className="flex items-center gap-2 select-none">
-              <span className="text-[#E8DCC2]/40 text-[12px] font-sans font-normal">&#10230;</span>
-              <span className="text-[#E8DCC2] text-[9.5px] md:text-[10px] font-semibold tracking-[3px] uppercase font-sans">
+            <div className="flex items-center gap-1.5 sm:gap-2 select-none max-w-full overflow-hidden">
+              <span className="text-[#D7E8DF]/45 text-[10px] sm:text-[12px] font-sans font-normal shrink-0">&#10230;</span>
+              <span className="text-[#EEF7F2] text-[7.5px] xs:text-[9px] sm:text-[9.5px] md:text-[10px] font-semibold tracking-[1.5px] xs:tracking-[2.5px] sm:tracking-[3px] uppercase font-sans whitespace-nowrap shrink-0">
                 TIMELESS MOMENTS. ETERNAL MEMORIES
               </span>
-              <span className="text-[#E8DCC2]/40 text-[12px] font-sans font-normal">&#10231;</span>
+              <span className="text-[#D7E8DF]/45 text-[10px] sm:text-[12px] font-sans font-normal shrink-0">&#10231;</span>
             </div>
 
             {/* Title */}
@@ -578,84 +580,84 @@ export default function Home() {
                 Stories Today,
               </h2>
               <div className="flex flex-col items-start">
-                <span className="font-script text-[32px] sm:text-[40px] md:text-[46px] text-[#E8DCC2] tracking-wide leading-none">Treasures Forever.</span>
-                {/* Subtle gold leaf flourish SVG below subtitle */}
-                <svg className="w-12 h-3 text-[#E8DCC2]/40 mt-0.5 fill-current" viewBox="0 0 100 20">
+                <span className="font-script text-[32px] sm:text-[40px] md:text-[46px] text-[#EEF7F2] tracking-wide leading-none">Treasures Forever.</span>
+                {/* Subtle flourish SVG below subtitle */}
+                <svg className="w-12 h-3 text-[#D7E8DF]/30 mt-0.5 fill-current" viewBox="0 0 100 20">
                   <path d="M10 10 C 30 20, 40 0, 50 10 C 60 20, 70 0, 90 10" stroke="currentColor" strokeWidth="1.5" fill="none" />
                 </svg>
               </div>
             </div>
 
             {/* Description */}
-            <p className="text-white/80 text-[12.5px] md:text-[13.5px] leading-relaxed max-w-[540px] font-sans">
+            <p className="text-[#C3EBE0] !text-[11px] sm:!text-[12.5px] md:!text-[13.5px] font-medium leading-relaxed max-w-[540px] font-sans">
               We capture the raw emotions, candid moments, and intricate details that make your wedding uniquely yours.
             </p>
 
             {/* Feature Icons Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 pt-1.5 w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-3 pt-1 w-full">
               {/* Feature 1 */}
-              <div className="group flex flex-col items-start space-y-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-10 h-10 rounded-full border border-[#E8DCC2]/35 flex items-center justify-center text-[#E8DCC2] group-hover:bg-[#E8DCC2] group-hover:text-[#08231C] group-hover:border-[#E8DCC2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(232,220,194,0.03)] shrink-0">
-                  <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                     <circle cx="12" cy="13" r="3" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <div className="flex flex-col font-sans font-medium">
-                  <span className="text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#E8DCC2] transition-colors duration-300">Photography</span>
-                  <span className="text-[9px] text-[#E8DCC2]/70 mt-0.5 group-hover:text-white/90 transition-colors duration-300">With Emotion</span>
+                <div className="flex flex-col font-sans">
+                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Photography</span>
+                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Emotion</span>
                 </div>
               </div>
 
               {/* Feature 2 */}
-              <div className="group flex flex-col items-start space-y-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-10 h-10 rounded-full border border-[#E8DCC2]/35 flex items-center justify-center text-[#E8DCC2] group-hover:bg-[#E8DCC2] group-hover:text-[#08231C] group-hover:border-[#E8DCC2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(232,220,194,0.03)] shrink-0">
-                  <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125V10.5h19.5v7.875c0 .621-.504 1.125-1.125 1.125H3.375z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 10.5V6.75A1.125 1.125 0 013.375 5.625h17.25a1.125 1.125 0 011.125 1.125V10.5H2.25z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 5.625L8.25 10.5m4.5-4.875L15 10.5m4.5-4.875L21.75 10.5" />
                   </svg>
                 </div>
                 <div className="flex flex-col font-sans">
-                  <span className="text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#E8DCC2] transition-colors duration-300">Cinematography</span>
-                  <span className="text-[9px] text-[#E8DCC2]/70 mt-0.5 group-hover:text-white/90 transition-colors duration-300">With Soul</span>
+                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Cinematography</span>
+                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Soul</span>
                 </div>
               </div>
 
               {/* Feature 3 */}
-              <div className="group flex flex-col items-start space-y-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-10 h-10 rounded-full border border-[#E8DCC2]/35 flex items-center justify-center text-[#E8DCC2] group-hover:bg-[#E8DCC2] group-hover:text-[#08231C] group-hover:border-[#E8DCC2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(232,220,194,0.03)] shrink-0">
-                  <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <rect x="3" y="3" width="18" height="18" rx="2" />
                     <circle cx="8.5" cy="8.5" r="1.5" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 15l-5-5a1.5 1.5 0 00-2.12 0l-5.38 5.38a1.5 1.5 0 01-2.12 0L5 14" />
                   </svg>
                 </div>
                 <div className="flex flex-col font-sans">
-                  <span className="text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#E8DCC2] transition-colors duration-300 whitespace-nowrap sm:whitespace-normal md:whitespace-nowrap">Artistic Storytelling</span>
-                  <span className="text-[9px] text-[#E8DCC2]/70 mt-0.5 group-hover:text-white/90 transition-colors duration-300">With Heart</span>
+                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300 whitespace-nowrap sm:whitespace-normal">Artistic Storytelling</span>
+                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Heart</span>
                 </div>
               </div>
 
               {/* Feature 4 */}
-              <div className="group flex flex-col items-start space-y-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-10 h-10 rounded-full border border-[#E8DCC2]/35 flex items-center justify-center text-[#E8DCC2] group-hover:bg-[#E8DCC2] group-hover:text-[#08231C] group-hover:border-[#E8DCC2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(232,220,194,0.03)] shrink-0">
-                  <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                   </svg>
                 </div>
                 <div className="flex flex-col font-sans">
-                  <span className="text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#E8DCC2] transition-colors duration-300">Memories</span>
-                  <span className="text-[9px] text-[#E8DCC2]/70 mt-0.5 group-hover:text-white/90 transition-colors duration-300">For a Lifetime</span>
+                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Memories</span>
+                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">For a Lifetime</span>
                 </div>
               </div>
             </div>
 
             {/* Explore Button */}
-            <div className="pt-2">
+            <div className="w-full flex justify-center sm:justify-start pt-2">
               <a
                 href="/portfolio"
-                className="inline-flex items-center justify-center gap-2 px-5 h-[40px] border border-[#E8DCC2]/60 hover:bg-[#E8DCC2] hover:text-[#0b3d34] text-[#E8DCC2] font-semibold text-[11px] uppercase tracking-widest rounded-[6px] transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_20px_rgba(232,220,194,0.25)] hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center justify-center gap-2 px-5 h-[40px] border border-[#D7E8DF]/60 hover:bg-[#EEF7F2] hover:text-[#0b3d34] text-[#EEF7F2] font-semibold text-[11px] uppercase tracking-widest rounded-[6px] transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_20px_rgba(238,247,242,0.2)] hover:-translate-y-0.5 active:translate-y-0"
               >
                 <span>EXPLORE OUR WORK</span>
                 <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -666,7 +668,7 @@ export default function Home() {
           </div>
 
           {/* Right Column: Generated HD Indian Couple Image */}
-          <div className="lg:col-span-6 relative w-full h-[200px] sm:h-[260px] lg:h-[320px] rounded-[24px] overflow-hidden border border-[#E8DCC2]/15 shadow-[0_20px_50px_rgba(0,0,0,0.4)] group select-none animate-[fadeIn_1s_ease-out_0.2s]">
+          <div className="lg:col-span-6 relative w-full h-[160px] xs:h-[180px] sm:h-[260px] lg:h-[320px] rounded-[24px] overflow-hidden border border-[#D7E8DF]/15 shadow-[0_20px_50px_rgba(0,0,0,0.4)] group select-none animate-[fadeIn_1s_ease-out_0.2s]">
             <Image
               src="/couple_green.png"
               alt="Om Photography signature wedding couple editorial shoot"
