@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { Play, Pause, ZoomIn, Download, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { getReels, ClientReel } from "../lib/portfolioStore";
 
 
 // ─── FAQ Accordion Item ───────────────────────────────────────────────────────
@@ -55,63 +57,283 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
+
+function ReelCard({
+  reel,
+  isMuted,
+  onToggleMute,
+}: {
+  reel: ClientReel;
+  isMuted: boolean;
+  onToggleMute: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Sync muted property on the video element
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
+  // Ensure autoplay playback starts on mount
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch((err) => {
+        console.warn("Autoplay was prevented on mount:", err);
+      });
+    }
+  }, []);
+
+  const handleCardClick = () => {
+    onToggleMute();
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleMute();
+  };
+
+  return (
+    <div
+      onClick={handleCardClick}
+      className="flex-shrink-0 w-[180px] sm:w-[240px] md:w-[280px] lg:w-[320px] aspect-[9/16] rounded-[16px] sm:rounded-[24px] overflow-hidden relative group/card cursor-pointer snap-start bg-[#18352F] border border-[#D9E6E0]/50 shadow-md hover:shadow-lg hover:translate-y-[-4px] transition-all duration-300"
+    >
+      {/* Video Background */}
+      <video
+        ref={videoRef}
+        src={reel.videoUrl}
+        poster={reel.poster}
+        preload="metadata"
+        loop
+        muted={isMuted}
+        autoPlay
+        playsInline
+        className="w-full h-full object-cover group-hover/card:scale-[1.04] transition-all duration-500"
+      />
+
+      {/* Ambient dark gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10 group-hover/card:via-black/35 transition-all duration-300 pointer-events-none" />
+
+      {/* Mute/Unmute Button (Top-Left) */}
+      <button
+        onClick={toggleMute}
+        className="absolute top-3 left-3 sm:top-4 sm:left-4 z-30 bg-black/50 backdrop-blur-[6px] hover:bg-[#0F5C4D] text-white rounded-full p-1.5 sm:p-2 border border-white/20 transition-all duration-300 shadow-md active:scale-95"
+        aria-label={isMuted ? "Unmute" : "Mute"}
+      >
+        {isMuted ? (
+          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path d="M11 5L6 9H2v6h4l5 4V5z" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        ) : (
+          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path d="M11 5L6 9H2v6h4l5 4V5z" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+        )}
+      </button>
+
+      {/* Reels Icon (Top-Right) */}
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/40 backdrop-blur-[4px] rounded-full p-1.5 sm:p-2 text-white border border-white/20 pointer-events-none">
+        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+          <path d="M2 12h20M12 2v20M2 7h5M2 17h5M17 7h5M17 17h5" />
+        </svg>
+      </div>
+
+      {/* Bottom Info Overlay */}
+      <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 text-white text-left pointer-events-none">
+        <h3 className="font-serif text-[13px] sm:text-[16px] md:text-[18px] font-semibold leading-tight mb-1 sm:mb-2 drop-shadow-sm line-clamp-2">
+          {reel.title}
+        </h3>
+        <div className="flex items-center gap-1 opacity-80 text-[9px] sm:text-[10px] md:text-[11px] font-semibold">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <span>{reel.views} Views</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+const testimonials = [
+  {
+    name: "Aarav & Diya",
+    location: "Married in Udaipur",
+    text: '"Om Photography ne hamari shaadi ko sach me yaadgaar bana diya! The team was professional, friendly and captured every single candid moment beautifully. We absolutely love our wedding film and album!"',
+    image: "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964300/portfolio/file_dy9mud.jpg"
+  },
+  {
+    name: "Kabir & Meera",
+    location: "Married in Jaipur",
+    text: '"We had an amazing pre-wedding shoot and main wedding event. The team\'s cinematic storytelling is outstanding. They knew exactly how to make us feel relaxed, resulting in beautiful, organic, lifelong memories."',
+    image: "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964265/portfolio/file_tr3i2z.jpg"
+  },
+  {
+    name: "Rohit & Anjali",
+    location: "Married in Delhi",
+    text: '"They don\'t just take pictures; they truly capture realistic emotions. Our family members are still praising their professional conduct and behavior during the event. The photos are absolute masterpieces of creative art."',
+    image: "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964743/portfolio/file_ocujyq.jpg"
+  },
+  {
+    name: "Vikram & Priya",
+    location: "Married in Jodhpur",
+    text: '"Om Photography captured our Jodhpur wedding beautifully. The team was invisible but everywhere at the same time. The visual storytelling, stunning colors, and emotional candids are simply breathtaking and truly outstanding."',
+    image: "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963476/portfolio/file_rjsxl0.jpg"
+  },
+  {
+    name: "Arjun & Riya",
+    location: "Married in Goa",
+    text: '"Highly recommended! They shot our beach wedding in Goa and did an incredible job. Every frame is like a cinematic movie poster. Truly professional, extremely talented, and a absolute joy to work."',
+    image: "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963372/portfolio/file_d4ompj.jpg"
+  },
+  {
+    name: "Yash & Sneha",
+    location: "Married in Mumbai",
+    text: '"The details they captured are incredible. From the decor to the emotional tears during Vidai, everything was perfect. We couldn\'t have asked for a better team to preserve our beautiful precious moments."',
+    image: "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964763/portfolio/file_ctd3hv.jpg"
+  }
+];
+
 export default function Home() {
+  const [unmutedReelId, setUnmutedReelId] = useState<string | null>(null);
+  const testimonialsScrollRef = useRef<HTMLDivElement>(null);
 
 
   const [contactModalOpen, setContactModalOpen] = useState(false);
 
-  // Lock body scroll when contact modal is open
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [lightboxZoom, setLightboxZoom] = useState(false);
+  const [isPlayingSlideshow, setIsPlayingSlideshow] = useState(false);
+
+  const handleOpenLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxZoom(false);
+    setIsPlayingSlideshow(false);
+  };
+
+  const handleCloseLightbox = () => {
+    setLightboxIndex(null);
+    setLightboxZoom(false);
+    setIsPlayingSlideshow(false);
+  };
+
+  const handlePrevPhoto = () => {
+    if (lightboxIndex === null) return;
+    setLightboxIndex((prev) => (prev === 0 ? masonryGallery.length - 1 : prev! - 1));
+    setLightboxZoom(false);
+  };
+
+  const handleNextPhoto = () => {
+    if (lightboxIndex === null) return;
+    setLightboxIndex((prev) => (prev === masonryGallery.length - 1 ? 0 : prev! + 1));
+    setLightboxZoom(false);
+  };
+
   useEffect(() => {
-    document.body.style.overflow = contactModalOpen ? "hidden" : "";
+    if (!isPlayingSlideshow || lightboxIndex === null) return;
+    const timer = setInterval(() => {
+      handleNextPhoto();
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [isPlayingSlideshow, lightboxIndex]);
+
+  // Lock body scroll when contact modal or lightbox is open
+  useEffect(() => {
+    document.body.style.overflow = (contactModalOpen || lightboxIndex !== null) ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [contactModalOpen]);
+  }, [contactModalOpen, lightboxIndex]);
 
   // Contact page routing helper is handled via static Links/hrefs pointing to /contact
 
   // Carousel images
   const carouselImages = [
-    "https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&q=80",
-    "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445802.jpg"
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964300/portfolio/file_dy9mud.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964265/portfolio/file_tr3i2z.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964743/portfolio/file_ocujyq.jpg",
+
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963476/portfolio/file_rjsxl0.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963372/portfolio/file_d4ompj.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964763/portfolio/file_ctd3hv.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963853/portfolio/file_rw9yxs.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963923/portfolio/file_sawley.jpg",
+
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783965309/portfolio/file_z798oz.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964082/portfolio/file_hrpi8w.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963772/portfolio/file_q4osbv.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964716/portfolio/file_ht8fvy.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963734/portfolio/file_drttld.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963460/portfolio/file_raldl4.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783963917/portfolio/file_g8qhae.jpg",
+    "https://res.cloudinary.com/eksh1jyi/image/upload/v1783964050/portfolio/file_xe7u2y.jpg",
   ];
 
 
 
-  const masonryGallery = [
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445793.jpg", category: "Wedding Story", title: "Portfolio Frame 01" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445797.jpg", category: "Wedding Story", title: "Portfolio Frame 02" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445798.jpg", category: "Bride Portrait", title: "Portfolio Frame 03" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445799.jpg", category: "Editorial Wedding", title: "Portfolio Frame 04" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445800.jpg", category: "Ceremony", title: "Portfolio Frame 05" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445802.jpg", category: "Candid Moment", title: "Portfolio Frame 06" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445803.jpg", category: "Rituals", title: "Portfolio Frame 07" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445804.jpg", category: "Bride Closeup", title: "Portfolio Frame 08" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445805.jpg", category: "Pre-Wedding", title: "Portfolio Frame 09" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445806.jpg", category: "Wedding Detail", title: "Portfolio Frame 10" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445807.jpg", category: "Couple Portrait", title: "Portfolio Frame 11" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445808.jpg", category: "Wedding Couple", title: "Portfolio Frame 12" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445809.jpg", category: "Cinematic Story", title: "Portfolio Frame 13" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445810.jpg", category: "Celebration", title: "Portfolio Frame 14" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445811.jpg", category: "Wedding Story", title: "Portfolio Frame 15" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445812.jpg", category: "Baraat", title: "Portfolio Frame 16" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445814.jpg", category: "Destination Wedding", title: "Portfolio Frame 17" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445815.jpg", category: "Candid Moment", title: "Portfolio Frame 18" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445816.jpg", category: "Wedding Detail", title: "Portfolio Frame 19" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445817.jpg", category: "Editorial Wedding", title: "Portfolio Frame 20" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447046.jpg", category: "Pre-Wedding", title: "Portfolio Frame 21" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447047.jpg", category: "Couple Portrait", title: "Portfolio Frame 22" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447048.jpg", category: "Wedding Story", title: "Portfolio Frame 23" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447049.jpg", category: "Bride Portrait", title: "Portfolio Frame 24" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447050.jpg", category: "Ceremony", title: "Portfolio Frame 25" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-447051.jpg", category: "Destination Wedding", title: "Portfolio Frame 26" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448068.jpg", category: "Groom Portrait", title: "Portfolio Frame 27" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448095.jpg", category: "Black and White", title: "Portfolio Frame 28" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448096.jpg", category: "Cinematic Story", title: "Portfolio Frame 29" },
-    { url: "https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-451747.jpg", category: "Luxury Wedding", title: "Portfolio Frame 30" },
-  ];
+  const [masonryGallery, setMasonryGallery] = useState<{ url: string; category: string; title: string }[]>([]);
+
+  useEffect(() => {
+    async function loadShowcase() {
+      try {
+        const res = await fetch("/api/db/photos?showcase=true");
+        if (!res.ok) throw new Error("Failed to fetch showcase");
+        const data = await res.json();
+        const mapped = data.map((p: any, idx: number) => ({
+          url: p.url,
+          category: p.category || "Wedding Story",
+          title: `Portfolio Frame ${(idx + 1).toString().padStart(2, "0")}`,
+        }));
+        setMasonryGallery(mapped);
+      } catch (err) {
+        console.error("Failed to load landing showcase images:", err);
+      }
+    }
+    loadShowcase();
+  }, []);
+
+  const [reels, setReels] = useState<ClientReel[]>([]);
+
+  useEffect(() => {
+    async function loadReels() {
+      try {
+        const fetchedReels = await getReels();
+        setReels(fetchedReels);
+      } catch (err) {
+        console.error("Failed to load database reels:", err);
+      }
+    }
+    loadReels();
+  }, []);
+
+  const [activeDot, setActiveDot] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      const progress = scrollLeft / (scrollWidth - clientWidth || 1);
+      const idx = Math.round(progress * (reels.length - 1));
+      if (!isNaN(idx) && idx >= 0 && idx < reels.length) {
+        setActiveDot(idx);
+      }
+    }
+  };
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollAmount = clientWidth * 0.8;
+      scrollRef.current.scrollTo({
+        left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-transparent text-[#18352F] overflow-x-hidden font-sans scroll-smooth">
@@ -125,7 +347,7 @@ export default function Home() {
 
 
         {/* Two columns section (Flex on mobile, Grid on desktop) */}
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 w-full relative z-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 pt-6 md:pt-10 lg:pt-12 w-full relative z-10">
           {/* Left Column (42%) */}
           <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center lg:pr-0 lg:text-center w-full flex-shrink-0">
             {/* Top Label with decorative green lines */}
@@ -197,7 +419,7 @@ export default function Home() {
             {/* Main Bigger Image */}
             <div className="relative w-[92%] h-[94%] rounded-[24px] overflow-hidden shadow-[0_10px_30px_rgba(15,92,77,0.08)] border border-[#D9E6E0]/30 z-10">
               <Image
-                src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=1200&q=80"
+                src="/hero-image.png"
                 alt="Premium wedding photography portrait of an Indian couple"
                 fill
                 priority
@@ -206,30 +428,14 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
             </div>
-
-            {/* Smaller Overlay Image 1 (Bottom Left) */}
-            <div className="absolute bottom-[-8%] left-[2%] w-[42%] h-[48%] rounded-[24px] overflow-hidden shadow-[0_20px_45px_rgba(15,92,77,0.12)] border-[5px] border-white z-20">
-              <Image
-                src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&q=80"
+            {/* Smaller Overlay Image (Bottom Left) */}
+            <div className="absolute bottom-[-8%] left-[2%] h-[48%] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(15,92,77,0.15)] border-[4px] border-white z-20 bg-white">
+              <img
+                src="https://res.cloudinary.com/eksh1jyi/image/upload/v1783964082/portfolio/file_hrpi8w.jpg"
                 alt="Bridal portrait detail shoot"
-                fill
-                sizes="35vw"
-                className="object-cover hover:scale-105 transition-transform duration-500"
+                className="h-full w-auto object-contain hover:scale-105 transition-transform duration-500"
               />
-            </div>
-
-            {/* Tiny Details Image 2 (Top Left - Floating accent) */}
-            <div className="absolute top-[8%] left-[12%] w-[25%] h-[30%] rounded-[24px] overflow-hidden shadow-[0_10px_25px_rgba(15,92,77,0.08)] border-[4px] border-white z-10 hidden sm:block">
-              <Image
-                src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80"
-                alt="Groom and couple smoke portrait"
-                fill
-                sizes="15vw"
-                className="object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-
-            {/* FLOATING STAT CARD */}
+            </div>            {/* FLOATING STAT CARD */}
             <div className="absolute bottom-[6%] right-[6%] bg-white/95 backdrop-blur-md border border-[#D9E6E0]/60 rounded-[22px] p-2 sm:p-2.5 flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(15,92,77,0.08)] text-center w-[90px] sm:w-[115px] z-30 transition-transform duration-300 hover:scale-105">
               <span className="font-serif text-[18px] sm:text-[24px] font-normal text-[#0F5C4D] leading-none tracking-tight">100+</span>
               <span className="text-[7px] sm:text-[9px] font-bold tracking-[0.12em] text-[#18352F] font-sans uppercase mt-1">WEDDINGS</span>
@@ -246,12 +452,12 @@ export default function Home() {
 
             <div className="relative w-full lg:w-[85%] h-full rounded-[24px] overflow-hidden shadow-[0_10px_30px_rgba(15,92,77,0.08)] z-10">
               <Image
-                src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=1200&q=80"
+                src="/hero-image.png"
                 alt="Premium wedding photography portrait of an Indian couple"
                 fill
                 priority
                 sizes="(min-width: 1024px) 58vw, 100vw"
-                className="object-cover lg:object-[center_25%]"
+                className="object-cover lg:object-center"
                 style={{
                   maskImage: 'linear-gradient(to right, transparent, black 15%)',
                   WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%)'
@@ -267,26 +473,47 @@ export default function Home() {
                 <span className="text-[7.5px] font-bold tracking-[0.08em] text-[#0F5C4D] font-sans uppercase">Memories For Life</span>
               </div>
             </div>
+
+
           </div>
         </div>
 
-        {/* IMAGE CAROUSEL CONTAINER (Height: 140px) */}
-        <div className="relative w-full bg-white border border-[#0F5C4D]/30 md:border-[#D9E6E0]/50 rounded-[18px] p-2 md:p-2.5 h-[80px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] flex items-center justify-between flex-shrink-0 mt-1.5 md:mt-0 shadow-[0_10px_30px_rgba(15,92,77,0.04)]">
-          {/* Carousel Images */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 w-full h-full overflow-hidden">
-            {carouselImages.slice(0, 6).map((src, index) => {
-              return (
-                <div key={index} className="relative flex-1 h-full rounded-[6px] sm:rounded-[16px] overflow-hidden group cursor-pointer shadow-sm">
-                  <Image
-                    src={src}
-                    alt={`Wedding moment ${index + 1}`}
-                    fill
-                    sizes="(min-width: 1024px) 16vw, (min-width: 768px) 25vw, 50vw"
-                    className="object-cover lg:object-[center_25%] group-hover:scale-[1.03] transition-transform duration-500"
-                  />
-                </div>
-              );
-            })}
+
+        {/* IMAGE CAROUSEL CONTAINER (Full Viewport Width covering screen) */}
+        <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] bg-white border-y border-[#0F5C4D]/25 h-[80px] sm:h-[110px] md:h-[135px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] flex items-center overflow-hidden mt-3.5 md:mt-4 shadow-[0_10px_30px_rgba(15,92,77,0.03)] z-10">
+          <style>{`
+            @keyframes marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+            .marquee-track {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              width: max-content;
+              animation: marquee 25s linear infinite;
+            }
+            .marquee-track:hover {
+              animation-play-state: paused;
+            }
+            @media (max-width: 768px) {
+              .marquee-track {
+                gap: 6px;
+                animation: marquee 12s linear infinite; /* Faster on mobile */
+              }
+            }
+          `}</style>
+
+          {/* We duplicate the images to make the scroll seamless */}
+          <div className="marquee-track">
+            {[...carouselImages, ...carouselImages].map((src, index) => (
+              <img
+                key={index}
+                src={src}
+                alt={`Wedding moment ${(index % carouselImages.length) + 1}`}
+                className="h-[80px] sm:h-[110px] md:h-[135px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] w-auto object-contain cursor-pointer transition-transform duration-300 hover:scale-[1.04] shrink-0"
+              />
+            ))}
           </div>
         </div>
 
@@ -351,8 +578,8 @@ export default function Home() {
       </section>
 
       {/* 3. ABOUT / INTRODUCTION SECTION */}
-      <section id="about" className="bg-white border-t border-[#D9E6E0] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-16 items-center">
+      <section id="about" className="bg-white border-t border-[#D9E6E0] py-12 md:py-14 px-4 sm:px-6 md:px-12 xl:px-24">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
 
           {/* Heading (Mobile Only) */}
           <div className="lg:hidden w-full flex flex-col items-center text-center mb-4">
@@ -388,18 +615,18 @@ export default function Home() {
               <div className="font-script text-[36px] text-[#1F6F63] mb-1 select-none">
                 Our Philosophy
               </div>
-              <h2 className="font-serif text-[42px] text-[#18352F] font-normal leading-tight tracking-tight mb-6">
+              <h2 className="font-serif lg:text-[26px] xl:text-[34px] 2xl:text-[40px] text-[#18352F] font-normal leading-tight tracking-tight mb-4 lg:whitespace-nowrap">
                 Capturing Love in Its Purest, Most Authentic Form
               </h2>
             </div>
 
-            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.65] md:leading-[1.8] font-inter mb-3 md:mb-6 px-1 lg:px-0">
+            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.65] md:leading-[1.8] font-inter mb-3 px-1 lg:px-0">
               Hi, I am Om, the lead photographer and founder of Om Photography. With over a decade of capturing premium luxury weddings across India and worldwide, our vision is simple: <strong>to capture your lifetime memories realistically.</strong>
             </p>
-            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.65] md:leading-[1.8] font-inter mb-4 md:mb-8 px-1 lg:px-0">
+            <p className="text-[#5E6C66] !text-[13px] xs:!text-[14px] md:!text-[15.5px] leading-[1.65] md:leading-[1.8] font-inter mb-4 md:mb-4.5 px-1 lg:px-0">
               We specialize in candid emotions, dramatic lighting, and cinematic story-telling. We believe that a wedding isn't just an event; it's a legacy of emotions, laughter, and tears that you will pass down for generations. Our team operates with micro-precision, ensuring that every fleeting moment is immortalized with editorial elegance.
             </p>
-            <div className="grid grid-cols-3 gap-2 md:gap-6 w-full pt-4 md:pt-6 border-t border-[#D9E6E0]">
+            <div className="grid grid-cols-3 gap-2 md:gap-4 w-full pt-4 md:pt-4 border-t border-[#D9E6E0]">
               <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
                 <div className="text-[18px] sm:text-[22px] md:text-[28px] font-serif font-bold text-[#0F5C4D]">10+</div>
                 <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#5E6C66] mt-0.5">Years Experience</div>
@@ -413,9 +640,9 @@ export default function Home() {
                 <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#5E6C66] mt-0.5">Happy Clients</div>
               </div>
             </div>
-            
+
             {/* Learn More Button */}
-            <div className="pt-6 md:pt-8 w-full flex justify-center lg:justify-start">
+            <div className="pt-6 md:pt-5 w-full flex justify-center lg:justify-start">
               <a
                 href="/about"
                 className="inline-flex items-center justify-center gap-2 px-6 h-[46px] border-2 border-[#0F5C4D] bg-[#0F5C4D] hover:bg-transparent hover:text-[#0F5C4D] text-white font-semibold text-[11px] md:text-[12px] uppercase tracking-widest rounded-[10px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(15,92,77,0.15)]"
@@ -449,6 +676,7 @@ export default function Home() {
                 key={`${item.title}-${index}`}
                 className="masonry-card group"
                 style={{ animationDelay: `${index * 70}ms` }}
+                onClick={() => handleOpenLightbox(index)}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -457,11 +685,6 @@ export default function Home() {
                   loading="lazy"
                   className="masonry-image"
                 />
-                <div className="masonry-overlay">
-                  <span className="text-[11px] uppercase tracking-[0.28em] text-[#DCEFE8] font-semibold">{item.category}</span>
-                  <span className="mt-2 font-serif text-white text-[24px] leading-tight">{item.title}</span>
-                  <span className="mt-4 text-white/85 text-[12px] uppercase tracking-[0.22em] font-semibold">View Project &rarr;</span>
-                </div>
               </article>
             ))}
           </div>
@@ -469,73 +692,72 @@ export default function Home() {
       </section>
 
       {/* 5. SERVICES & EXPERIENCE SECTION */}
-      <section id="services" className="bg-white border-t border-[#D9E6E0] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
+      <section id="services" className="bg-white border-t border-[#D9E6E0] py-10 md:py-12 px-4 sm:px-6 md:px-12 xl:px-24">
         <div className="max-w-[1440px] mx-auto flex flex-col items-center">
-          <div className="font-script text-[24px] md:text-[36px] text-[#1F6F63] mb-1">Our Services</div>
-          <h2 className="font-serif text-[22px] sm:text-[34px] md:text-[42px] text-[#18352F] font-normal tracking-tight text-center mb-6 md:mb-16">
+          <div className="font-script text-[22px] md:text-[36px] text-[#1F6F63] mb-0.5">Our Services</div>
+          <h2 className="font-serif text-[22px] sm:text-[32px] md:text-[42px] text-[#18352F] font-normal tracking-tight text-center mb-3 md:mb-8">
             What We Specialize In
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 w-full">
             {/* Service 1 */}
-            <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
-                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
-                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                    <circle cx="12" cy="13" r="4" />
+            <div className="group bg-white border border-[#D9E6E0] rounded-[18px] p-3.5 sm:p-4.5 md:p-5 flex flex-col items-start hover:-translate-y-1 hover:border-[#0F5C4D] hover:shadow-[0_12px_35px_rgba(15,92,77,0.06)] transition-all duration-300 cursor-pointer">
+              <div className="flex flex-row items-center gap-3 mb-3 w-full">
+                <div className="w-9 h-9 rounded-full bg-[#0F5C4D]/5 border border-[#0F5C4D]/10 flex items-center justify-center text-[#0F5C4D] group-hover:bg-[#0F5C4D] group-hover:text-white group-hover:border-[#0F5C4D] transition-all duration-300 shrink-0">
+                  <svg className="w-4 h-4 stroke-[2] transition-transform duration-300 group-hover:scale-105" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                    <circle cx="12" cy="13" r="3" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Candid Photography</h3>
+                <h3 className="font-serif text-[15px] sm:text-[16px] md:text-[17px] text-[#18352F] group-hover:text-[#0F5C4D] font-semibold leading-tight transition-colors duration-300">Candid Photography</h3>
               </div>
-              <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
+              <p className="text-[#5E6C66] text-[10.5px] sm:text-[11px] md:text-[11.5px] leading-[1.5] font-inter">
                 Capturing natural, unscripted emotions, stolen glances, and real laughter as it happens without forcing poses.
               </p>
             </div>
 
             {/* Service 2 */}
-            <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
-                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
-                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <polygon points="23 7 16 12 23 17 23 7" />
-                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+            <div className="group bg-white border border-[#D9E6E0] rounded-[18px] p-3.5 sm:p-4.5 md:p-5 flex flex-col items-start hover:-translate-y-1 hover:border-[#0F5C4D] hover:shadow-[0_12px_35px_rgba(15,92,77,0.06)] transition-all duration-300 cursor-pointer">
+              <div className="flex flex-row items-center gap-3 mb-3 w-full">
+                <div className="w-9 h-9 rounded-full bg-[#0F5C4D]/5 border border-[#0F5C4D]/10 flex items-center justify-center text-[#0F5C4D] group-hover:bg-[#0F5C4D] group-hover:text-white group-hover:border-[#0F5C4D] transition-all duration-300 shrink-0">
+                  <svg className="w-4 h-4 stroke-[2] transition-transform duration-300 group-hover:scale-105" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <polygon points="23 7 16 12 23 17 23 7" strokeLinecap="round" strokeLinejoin="round" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Cinematic Films</h3>
+                <h3 className="font-serif text-[15px] sm:text-[16px] md:text-[17px] text-[#18352F] group-hover:text-[#0F5C4D] font-semibold leading-tight transition-colors duration-300">Cinematic Films</h3>
               </div>
-              <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
+              <p className="text-[#5E6C66] text-[10.5px] sm:text-[11px] md:text-[11.5px] leading-[1.5] font-inter">
                 Creating bespoke cinematic wedding highlights, teasers, and documentary-style films of your royal celebrations.
               </p>
             </div>
 
             {/* Service 3 */}
-            <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
-                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
-                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <div className="group bg-white border border-[#D9E6E0] rounded-[18px] p-3.5 sm:p-4.5 md:p-5 flex flex-col items-start hover:-translate-y-1 hover:border-[#0F5C4D] hover:shadow-[0_12px_35px_rgba(15,92,77,0.06)] transition-all duration-300 cursor-pointer">
+              <div className="flex flex-row items-center gap-3 mb-3 w-full">
+                <div className="w-9 h-9 rounded-full bg-[#0F5C4D]/5 border border-[#0F5C4D]/10 flex items-center justify-center text-[#0F5C4D] group-hover:bg-[#0F5C4D] group-hover:text-white group-hover:border-[#0F5C4D] transition-all duration-300 shrink-0">
+                  <svg className="w-4 h-4 stroke-[2] transition-transform duration-300 group-hover:scale-105" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Drone Shoots</h3>
+                <h3 className="font-serif text-[15px] sm:text-[16px] md:text-[17px] text-[#18352F] group-hover:text-[#0F5C4D] font-semibold leading-tight transition-colors duration-300">Drone Shoots</h3>
               </div>
-              <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
+              <p className="text-[#5E6C66] text-[10.5px] sm:text-[11px] md:text-[11.5px] leading-[1.5] font-inter">
                 Grand aerial cinematography capturing the scale, majesty, and breath-taking architecture of your wedding destination.
               </p>
             </div>
 
             {/* Service 4 */}
-            <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start hover:-translate-y-1.5 hover:border-[#0F5C4D] hover:shadow-[0_10px_30px_rgba(15,92,77,0.08)] transition-all duration-300">
-              <div className="flex flex-row items-center gap-3 mb-3 md:mb-4 w-full">
-                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white border border-[#0F5C4D] flex items-center justify-center text-[#0F5C4D] shrink-0">
-                  <svg className="w-4.5 h-4.5 md:w-5 md:h-5 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                    <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5V4.5z" />
+            <div className="group bg-white border border-[#D9E6E0] rounded-[18px] p-3.5 sm:p-4.5 md:p-5 flex flex-col items-start hover:-translate-y-1 hover:border-[#0F5C4D] hover:shadow-[0_12px_35px_rgba(15,92,77,0.06)] transition-all duration-300 cursor-pointer">
+              <div className="flex flex-row items-center gap-3 mb-3 w-full">
+                <div className="w-9 h-9 rounded-full bg-[#0F5C4D]/5 border border-[#0F5C4D]/10 flex items-center justify-center text-[#0F5C4D] group-hover:bg-[#0F5C4D] group-hover:text-white group-hover:border-[#0F5C4D] transition-all duration-300 shrink-0">
+                  <svg className="w-4 h-4 stroke-[2] transition-transform duration-300 group-hover:scale-105" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-[16px] sm:text-[17px] md:text-[18px] text-[#0F5C4D] font-semibold leading-tight">Premium Albums</h3>
+                <h3 className="font-serif text-[15px] sm:text-[16px] md:text-[17px] text-[#18352F] group-hover:text-[#0F5C4D] font-semibold leading-tight transition-colors duration-300">Premium Albums</h3>
               </div>
-              <p className="text-[#5E6C66] text-[11.5px] md:text-[13px] leading-[1.6] font-inter">
+              <p className="text-[#5E6C66] text-[10.5px] sm:text-[11px] md:text-[11.5px] leading-[1.5] font-inter">
                 Handcrafted leather albums with gold gilded edges and flush mount pages, custom-designed to tell your unique love story.
               </p>
             </div>
@@ -551,7 +773,7 @@ export default function Home() {
       </div>
 
       {/* 5.5 BRAND PROMISE BANNER SECTION */}
-      <section className="bg-[#0b3d34] text-white w-full relative overflow-hidden py-5 md:py-7 border-t border-b border-[#0F5C4D]/20">
+      <section className="bg-[#0b3d34] text-white w-full relative overflow-hidden py-8 md:py-7 border-t border-b border-[#0F5C4D]/20">
         {/* Circular line decoration on right side */}
         {/* Circular line decoration on right side */}
         {/* Circular line decoration on right side */}
@@ -564,118 +786,121 @@ export default function Home() {
         <div className="absolute bottom-[5%] right-[5%] w-[100px] h-[100px] opacity-[0.06] hidden lg:block z-0" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '12px 12px' }} />
 
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-10 items-center px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
-          
+
           {/* Left Column: Text & Features */}
-          <div className="lg:col-span-6 flex flex-col items-start text-left space-y-2.5 sm:space-y-3.5 md:space-y-4 animate-[fadeIn_0.8s_ease-out]">
+          <div className="lg:col-span-6 flex flex-col items-start text-left space-y-2 sm:space-y-2.5 md:space-y-3 animate-[fadeIn_0.8s_ease-out]">
             {/* Logo and branding */}
             <div className="flex flex-col select-none font-serif text-white tracking-wide">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[24px] font-bold leading-none tracking-[0.5px]">Om</span>
+              <div className="flex items-center gap-1">
+                <span className="text-[20px] font-bold leading-none tracking-[0.5px]">Om</span>
                 {/* Small camera logo spark */}
-                <svg className="w-4.5 h-4.5 text-[#EEF7F2] fill-none stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-[#EEF7F2] fill-none stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="3" />
                   <path d="M19 10h.01M21 19a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2h3l2-3h6l2 3h3a2 2 0 012 2v10z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span className="text-[8px] uppercase tracking-[5px] text-[#D7E8DF] mt-0.5 font-sans leading-none font-semibold">Photo Studio</span>
+              <span className="text-[7.5px] uppercase tracking-[4px] text-[#D7E8DF] mt-0.5 font-sans leading-none font-semibold">Photo Studio</span>
             </div>
 
             {/* Subtitle tag line */}
-            <div className="flex items-center gap-1.5 sm:gap-2 select-none max-w-full overflow-hidden">
-              <span className="text-[#D7E8DF]/45 text-[10px] sm:text-[12px] font-sans font-normal shrink-0">&#10230;</span>
-              <span className="text-[#EEF7F2] text-[7.5px] xs:text-[9px] sm:text-[9.5px] md:text-[10px] font-semibold tracking-[1.5px] xs:tracking-[2.5px] sm:tracking-[3px] uppercase font-sans whitespace-nowrap shrink-0">
+            <div className="flex items-center gap-1.5 select-none max-w-full overflow-hidden">
+              <span className="text-[#D7E8DF]/45 text-[9px] sm:text-[11px] font-sans font-normal shrink-0">&#10230;</span>
+              <span className="text-[#EEF7F2] text-[7px] xs:text-[8px] sm:text-[8.5px] md:text-[9px] font-semibold tracking-[1px] xs:tracking-[2px] sm:tracking-[2.5px] uppercase font-sans whitespace-nowrap shrink-0">
                 TIMELESS MOMENTS. ETERNAL MEMORIES
               </span>
-              <span className="text-[#D7E8DF]/45 text-[10px] sm:text-[12px] font-sans font-normal shrink-0">&#10231;</span>
+              <span className="text-[#D7E8DF]/45 text-[9px] sm:text-[11px] font-sans font-normal shrink-0">&#10231;</span>
             </div>
 
             {/* Title */}
             <div className="flex flex-col space-y-0.5">
-              <h2 className="font-serif text-[26px] sm:text-[34px] md:text-[40px] text-white font-normal leading-[1.1] tracking-tight">
+              <h2 className="font-serif text-[22px] sm:text-[28px] md:text-[32px] text-white font-normal leading-[1.1] tracking-tight">
                 Stories Today,
               </h2>
               <div className="flex flex-col items-start">
-                <span className="font-script text-[32px] sm:text-[40px] md:text-[46px] text-[#EEF7F2] tracking-wide leading-none">Treasures Forever.</span>
+                <span className="font-script text-[26px] sm:text-[32px] md:text-[38px] text-[#EEF7F2] tracking-wide leading-none">Treasures Forever.</span>
                 {/* Subtle flourish SVG below subtitle */}
-                <svg className="w-12 h-3 text-[#D7E8DF]/30 mt-0.5 fill-current" viewBox="0 0 100 20">
+                <svg className="w-9 h-2 text-[#D7E8DF]/30 mt-0.5 fill-current" viewBox="0 0 100 20">
                   <path d="M10 10 C 30 20, 40 0, 50 10 C 60 20, 70 0, 90 10" stroke="currentColor" strokeWidth="1.5" fill="none" />
                 </svg>
               </div>
             </div>
 
             {/* Description */}
-            <p className="text-[#C3EBE0] !text-[11px] sm:!text-[12.5px] md:!text-[13.5px] font-medium leading-relaxed max-w-[540px] font-sans">
+            <p 
+              className="!text-[10px] sm:!text-[11.5px] md:!text-[12.5px] font-medium leading-relaxed max-w-[540px] font-sans"
+              style={{ color: '#ffffff' }}
+            >
               We capture the raw emotions, candid moments, and intricate details that make your wedding uniquely yours.
             </p>
 
             {/* Feature Icons Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-3 pt-1 w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-2 pt-0.5 w-full">
               {/* Feature 1 */}
-              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
-                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-1.5 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                     <circle cx="12" cy="13" r="3" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
                 <div className="flex flex-col font-sans">
-                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Photography</span>
-                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Emotion</span>
+                  <span className="!text-[8px] sm:!text-[9.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Photography</span>
+                  <span className="!text-[6.5px] sm:!text-[8px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Emotion</span>
                 </div>
               </div>
 
               {/* Feature 2 */}
-              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
-                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-1.5 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125V10.5h19.5v7.875c0 .621-.504 1.125-1.125 1.125H3.375z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 10.5V6.75A1.125 1.125 0 013.375 5.625h17.25a1.125 1.125 0 011.125 1.125V10.5H2.25z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 5.625L8.25 10.5m4.5-4.875L15 10.5m4.5-4.875L21.75 10.5" />
                   </svg>
                 </div>
                 <div className="flex flex-col font-sans">
-                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Cinematography</span>
-                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Soul</span>
+                  <span className="!text-[8px] sm:!text-[9.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Cinematography</span>
+                  <span className="!text-[6.5px] sm:!text-[8px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Soul</span>
                 </div>
               </div>
 
               {/* Feature 3 */}
-              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
-                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-1.5 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <rect x="3" y="3" width="18" height="18" rx="2" />
                     <circle cx="8.5" cy="8.5" r="1.5" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 15l-5-5a1.5 1.5 0 00-2.12 0l-5.38 5.38a1.5 1.5 0 01-2.12 0L5 14" />
                   </svg>
                 </div>
                 <div className="flex flex-col font-sans">
-                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300 whitespace-nowrap sm:whitespace-normal">Artistic Storytelling</span>
-                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Heart</span>
+                  <span className="!text-[8px] sm:!text-[9.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300 whitespace-nowrap sm:whitespace-normal">Artistic Story</span>
+                  <span className="!text-[6.5px] sm:!text-[8px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">With Heart</span>
                 </div>
               </div>
 
               {/* Feature 4 */}
-              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-2 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
-                  <svg className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <div className="group flex flex-row sm:flex-col items-center sm:items-start gap-1.5 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer">
+                <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full border border-[#D7E8DF]/30 flex items-center justify-center text-[#EEF7F2] group-hover:bg-[#EEF7F2] group-hover:text-[#0b3d34] group-hover:border-[#EEF7F2] group-hover:scale-105 transition-all duration-300 shadow-[0_4px_12px_rgba(238,247,242,0.03)] shrink-0">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                   </svg>
                 </div>
                 <div className="flex flex-col font-sans">
-                  <span className="!text-[9px] sm:!text-[10.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Memories</span>
-                  <span className="!text-[7.5px] sm:!text-[9px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">For a Lifetime</span>
+                  <span className="!text-[8px] sm:!text-[9.5px] font-semibold uppercase tracking-wider text-white group-hover:text-[#EEF7F2] transition-colors duration-300">Memories</span>
+                  <span className="!text-[6.5px] sm:!text-[8px] text-[#D7E8DF]/80 mt-0.5 group-hover:text-white transition-colors duration-300">For a Lifetime</span>
                 </div>
               </div>
             </div>
 
             {/* Explore Button */}
-            <div className="w-full flex justify-center sm:justify-start pt-2">
+            <div className="w-full flex justify-center sm:justify-start pt-1">
               <a
                 href="/portfolio"
-                className="inline-flex items-center justify-center gap-2 px-5 h-[40px] border border-[#D7E8DF]/60 hover:bg-[#EEF7F2] hover:text-[#0b3d34] text-[#EEF7F2] font-semibold text-[11px] uppercase tracking-widest rounded-[6px] transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_20px_rgba(238,247,242,0.2)] hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center justify-center gap-1.5 px-4 h-[34px] border border-[#D7E8DF]/60 hover:bg-[#EEF7F2] hover:text-[#0b3d34] text-[#EEF7F2] font-semibold text-[9.5px] uppercase tracking-widest rounded-[6px] transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_20px_rgba(238,247,242,0.2)] hover:-translate-y-0.5 active:translate-y-0"
               >
                 <span>EXPLORE OUR WORK</span>
-                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </a>
@@ -700,106 +925,215 @@ export default function Home() {
       </section>
 
       {/* 6. TESTIMONIALS / CLIENT REVIEWS */}
-      <section className="bg-[#F5FBF8] border-t border-[#D9E6E0] py-8 md:py-20 px-4 sm:px-6 md:px-12 xl:px-24">
+      <section className="bg-[#F5FBF8] border-t border-[#D9E6E0] py-10 md:py-12 px-4 sm:px-6 md:px-12 xl:px-24">
         <div className="max-w-[1440px] mx-auto flex flex-col items-center">
-          <div className="font-script text-[22px] md:text-[36px] text-[#1F6F63] mb-1">Testimonials</div>
-          <h2 className="font-serif text-[22px] sm:text-[32px] md:text-[42px] text-[#18352F] font-normal tracking-tight text-center mb-6 md:mb-16">
+          <div className="font-script text-[22px] md:text-[36px] text-[#1F6F63] mb-0.5">Testimonials</div>
+          <h2 className="font-serif text-[22px] sm:text-[32px] md:text-[42px] text-[#18352F] font-normal tracking-tight text-center mb-3 md:mb-8">
             Words From Our Beautiful Couples
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 w-full">
-            {/* Review 1 */}
-            <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-5 sm:p-6 md:p-8 flex flex-col items-start text-left shadow-[0_10px_30px_rgba(15,92,77,0.04)]">
-              <div className="flex items-center gap-3.5 md:gap-4 mb-4 w-full">
-                <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-[#0F5C4D] shrink-0">
-                  <Image
-                    src="https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445804.jpg"
-                    alt="Aarav and Diya"
-                    fill
-                    sizes="(max-width: 768px) 48px, 56px"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col items-start justify-center">
-                  <div className="flex items-center gap-0.5 text-[#0F5C4D] mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
-                    ))}
+          {/* Carousel Slider */}
+          <div className="max-w-[1440px] mx-auto relative w-full group mt-2">
+            {/* Left Arrow Button */}
+            <button
+              onClick={() => {
+                if (testimonialsScrollRef.current) {
+                  testimonialsScrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
+                }
+              }}
+              className="hidden sm:flex absolute left-[-16px] md:left-[-24px] top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-[2px] border border-[#D9E6E0] rounded-full items-center justify-center text-[#18352F] hover:bg-[#0F5C4D] hover:text-white transition-all duration-300 shadow-md hover:scale-105"
+              aria-label="Previous Slide"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {/* Scroll Container */}
+            <div
+              ref={testimonialsScrollRef}
+              className="w-full flex gap-3 md:gap-5 overflow-x-auto scrollbar-none snap-x snap-mandatory px-2 py-3 scroll-smooth"
+            >
+              {testimonials.map((t, idx) => (
+                <div
+                  key={idx}
+                  className="flex-shrink-0 w-[240px] sm:w-[280px] md:w-[300px] snap-start bg-white border border-[#D9E6E0] rounded-[18px] p-4 sm:p-5 md:p-6 flex flex-col items-start text-left shadow-[0_10px_30px_rgba(15,92,77,0.03)]"
+                >
+                  <div className="flex items-center gap-3.5 md:gap-4 mb-4 w-full">
+                    <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-[#0F5C4D] shrink-0">
+                      <Image
+                        src={t.image}
+                        alt={t.name}
+                        fill
+                        sizes="(max-width: 768px) 48px, 56px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col items-start justify-center">
+                      <div className="flex items-center gap-0.5 text-[#0F5C4D] mb-1">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                          </svg>
+                        ))}
+                      </div>
+                      <h4 className="font-serif text-[15px] md:text-[17px] font-semibold text-[#18352F] leading-tight">
+                        {t.name}
+                      </h4>
+                      <span className="text-[9px] md:text-[10px] text-[#0F5C4D] uppercase tracking-[0.5px] mt-0.5 font-sans">
+                        {t.location}
+                      </span>
+                    </div>
                   </div>
-                  <h4 className="font-serif text-[15px] md:text-[17px] font-semibold text-[#18352F] leading-tight">Aarav & Diya</h4>
-                  <span className="text-[9px] md:text-[10px] text-[#0F5C4D] uppercase tracking-[0.5px] mt-0.5 font-sans">Married in Udaipur</span>
+                  <p
+                    className="text-[#5E6C66] leading-[1.45] italic font-inter"
+                    style={{ fontSize: '13px' }}
+                  >
+                    {t.text}
+                  </p>
                 </div>
-              </div>
-              <p className="text-[#5E6C66] text-[10.5px] md:text-[11px] leading-[1.5] italic font-inter">
-                "Om Photography ne hamari shaadi ko sach me yaadgaar bana diya! The team was so friendly and professional, they captured emotional candids and details that we didn't even notice. We absolutely love our wedding film and album!"
-              </p>
+              ))}
             </div>
 
-            {/* Review 2 */}
-            <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-5 sm:p-6 md:p-8 flex flex-col items-start text-left shadow-[0_10px_30px_rgba(15,92,77,0.04)]">
-              <div className="flex items-center gap-3.5 md:gap-4 mb-4 w-full">
-                <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-[#0F5C4D] shrink-0">
-                  <Image
-                    src="https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-448068.jpg"
-                    alt="Kabir and Meera"
-                    fill
-                    sizes="(max-width: 768px) 48px, 56px"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col items-start justify-center">
-                  <div className="flex items-center gap-0.5 text-[#0F5C4D] mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
-                    ))}
-                  </div>
-                  <h4 className="font-serif text-[15px] md:text-[17px] font-semibold text-[#18352F] leading-tight">Kabir & Meera</h4>
-                  <span className="text-[9px] md:text-[10px] text-[#0F5C4D] uppercase tracking-[0.5px] mt-0.5 font-sans">Married in Jaipur</span>
-                </div>
-              </div>
-              <p className="text-[#5E6C66] text-[10.5px] md:text-[11px] leading-[1.5] italic font-inter">
-                "We had our pre-wedding shoot in Jaisalmer and wedding in Jaipur. The team's cinematic visual storytelling is outstanding. They knew exactly how to make us feel relaxed, resulting in beautiful, organic memories."
-              </p>
-            </div>
-
-            {/* Review 3 */}
-            <div className="bg-white border border-[#D9E6E0] rounded-[18px] p-5 sm:p-6 md:p-8 flex flex-col items-start text-left shadow-[0_10px_30px_rgba(15,92,77,0.04)]">
-              <div className="flex items-center gap-3.5 md:gap-4 mb-4 w-full">
-                <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-[#0F5C4D] shrink-0">
-                  <Image
-                    src="https://wezoree.com/upload/user_photos/21481/preview-photographers-sai-photo-wedding--portfolio-photo-445808.jpg"
-                    alt="Rohit and Anjali"
-                    fill
-                    sizes="(max-width: 768px) 48px, 56px"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col items-start justify-center">
-                  <div className="flex items-center gap-0.5 text-[#0F5C4D] mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
-                    ))}
-                  </div>
-                  <h4 className="font-serif text-[15px] md:text-[17px] font-semibold text-[#18352F] leading-tight">Rohit & Anjali</h4>
-                  <span className="text-[9px] md:text-[10px] text-[#0F5C4D] uppercase tracking-[0.5px] mt-0.5 font-sans">Married in Delhi</span>
-                </div>
-              </div>
-              <p className="text-[#5E6C66] text-[10.5px] md:text-[11px] leading-[1.5] italic font-inter">
-                "They don't just take pictures; they truly capture realistic emotions. Our family members are still praising their professional conduct and behavior during the event. The photos are absolute masterpieces of editorial art."
-              </p>
-            </div>
+            {/* Right Arrow Button */}
+            <button
+              onClick={() => {
+                if (testimonialsScrollRef.current) {
+                  testimonialsScrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+                }
+              }}
+              className="hidden sm:flex absolute right-[-16px] md:right-[-24px] top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-[2px] border border-[#D9E6E0] rounded-full items-center justify-center text-[#18352F] hover:bg-[#0F5C4D] hover:text-white transition-all duration-300 shadow-md hover:scale-105"
+              aria-label="Next Slide"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </section>
 
+      {/* 7. REELS SHOWCASE / CINEMATIC MOMENTS */}
+      {reels.length > 0 && (
+        <section className="bg-white border-t border-[#D9E6E0] py-10 md:py-12 px-4 sm:px-6 md:px-12 xl:px-24">
+          {/* Title / Header */}
+          <div className="max-w-[1440px] mx-auto flex flex-col items-center text-center mb-4 md:mb-8">
+            <div className="flex items-center gap-3 mb-1.5">
+              <span className="w-8 h-[1px] bg-[#0F5C4D]" />
+              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-[#0F5C4D] font-bold">
+                Cinematic Moments
+              </span>
+              <span className="w-8 h-[1px] bg-[#0F5C4D]" />
+            </div>
+            <h2 className="font-serif text-[28px] sm:text-[38px] md:text-[48px] text-[#18352F] font-normal tracking-tight">
+              Experience Our <span className="font-script text-[#1F6F63] italic font-normal">Reels</span>
+            </h2>
+            <p className="text-[#5E6C66] !text-[11px] sm:!text-[15px] md:!text-[18px] lg:!text-[20px] mt-1.5 max-w-[550px] leading-relaxed">
+              Short stories. Big emotions. Watch our latest wedding reels and feel the magic we create behind the lens.
+            </p>
+          </div>
+
+          {/* Carousel Slider */}
+          <div className="max-w-[1440px] mx-auto relative w-full group">
+            {/* Left Arrow Button */}
+            <button
+              onClick={() => scroll("left")}
+              className="hidden sm:flex absolute left-[-16px] md:left-[-24px] top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-[2px] border border-[#D9E6E0] rounded-full items-center justify-center text-[#18352F] hover:bg-[#0F5C4D] hover:text-white transition-all duration-300 shadow-md hover:scale-105"
+              aria-label="Previous Slide"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {/* Scroll Container */}
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="w-full flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory px-2 py-2.5 scroll-smooth"
+            >
+              {reels.map((reel) => (
+                <ReelCard
+                  key={reel.id}
+                  reel={reel}
+                  isMuted={unmutedReelId !== reel.id}
+                  onToggleMute={() => {
+                    setUnmutedReelId((prev) => (prev === reel.id ? null : reel.id));
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Right Arrow Button */}
+            <button
+              onClick={() => scroll("right")}
+              className="hidden sm:flex absolute right-[-16px] md:right-[-24px] top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-[2px] border border-[#D9E6E0] rounded-full items-center justify-center text-[#18352F] hover:bg-[#0F5C4D] hover:text-white transition-all duration-300 shadow-md hover:scale-105"
+              aria-label="Next Slide"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Carousel Indicators (Dots) */}
+          <div className="flex justify-center gap-2 mt-6">
+            {reels.map((_, idx) => (
+              <button
+                key={idx}
+                className={`h-2 rounded-full transition-all duration-300 ${activeDot === idx ? "w-6 bg-[#0F5C4D]" : "w-2 bg-[#DCEFE8] hover:bg-[#0F5C4D]/40"
+                  }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Bottom Banner */}
+          <div className="max-w-[1000px] mx-auto mt-12 md:mt-16 bg-[#F5FBF8] border border-[#D9E6E0] rounded-[20px] sm:rounded-[24px] p-4.5 sm:p-4.5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-3.5 md:gap-5 shadow-[0_10px_40px_rgba(15,92,77,0.03)] hover:shadow-[0_15px_45px_rgba(15,92,77,0.06)] transition-all duration-300">
+            <div className="flex items-center gap-3 sm:gap-4 text-left">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl bg-[#DCEFE8] flex items-center justify-center text-[#0F5C4D] shrink-0">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+                  <line x1="7" y1="2" x2="7" y2="22" />
+                  <line x1="17" y1="2" x2="17" y2="22" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <line x1="2" y1="7" x2="7" y2="7" />
+                  <line x1="2" y1="17" x2="7" y2="17" />
+                  <line x1="17" y1="17" x2="22" y2="17" />
+                  <line x1="17" y1="7" x2="22" y2="7" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-serif text-[14px] sm:text-[16px] md:text-[18px] font-semibold text-[#18352F]">
+                  Love what you see?
+                </h4>
+                <p className="text-[#5E6C66] text-[10px] sm:text-[11px] md:text-[12.5px] mt-0.5 leading-relaxed">
+                  Let us capture your story in the most beautiful way.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 w-full md:w-auto self-stretch md:self-auto shrink-0">
+              <a
+                href="/contact"
+                className="w-full sm:w-auto h-[38px] sm:h-[40px] md:h-[44px] px-4 sm:px-6 whitespace-nowrap bg-[#0F5C4D] text-white rounded-[10px] sm:rounded-[12px] flex items-center justify-center gap-2 font-semibold text-[11.5px] sm:text-[12px] md:text-[13px] hover:bg-[#083D34] hover:scale-[1.02] transition-all duration-300 shadow-md shadow-[#0F5C4D]/10"
+              >
+                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M19.82 2H4.18C2.97 2 2 2.97 2 4.18v15.64C2 21.03 2.97 22 4.18 22h15.64c1.21 0 2.18-.97 2.18-2.18V4.18C22 2.97 21.03 2 19.82 2z" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="2" y1="10" x2="22" y2="10" />
+                </svg>
+                <span>BOOK A SESSION</span>
+              </a>
+              <a
+                href="/portfolio"
+                className="w-full sm:w-auto h-[38px] sm:h-[40px] md:h-[44px] px-4 sm:px-6 whitespace-nowrap border-2 border-[#D9E6E0] bg-white text-[#0f5c4d] hover:border-[#0F5C4D] hover:bg-[#F5FBF8] rounded-[10px] sm:rounded-[12px] flex items-center justify-center gap-2 font-semibold text-[11.5px] sm:text-[12px] md:text-[13px] transition-all duration-300"
+              >
+                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" />
+                  <polygon points="10 8 16 12 10 16 10 8" />
+                </svg>
+                <span>VIEW PORTFOLIO</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* 8. FAQ SECTION */}
-      <section id="faq" className="relative bg-[#FDFAF5] py-10 md:py-20 px-4 md:px-6 overflow-hidden">
+      <section id="faq" className="relative bg-[#FDFAF5] py-14 md:py-20 px-4 md:px-6 overflow-hidden">
         {/* Subtle warm dot pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.4]"
           style={{ backgroundImage: 'radial-gradient(circle, #0F5C4D15 1px, transparent 1px)', backgroundSize: '36px 36px' }}
@@ -900,25 +1234,25 @@ export default function Home() {
 
 
       {/* ─── FLOATING CONTACT US BUTTON ──────────────────────────────────────── */}
-      <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-[80]">
+      <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-[80] flex flex-col items-center gap-1 group">
         <button
           onClick={() => setContactModalOpen(true)}
-          className="relative group flex items-center gap-0 hover:gap-2.5 w-11 hover:w-auto h-11 md:w-14 md:h-14 px-3.5 md:px-4 rounded-full bg-[#0F5C4D] text-white shadow-[0_8px_28px_rgba(15,92,77,0.3)] hover:shadow-[0_12px_40px_rgba(15,92,77,0.45)] hover:bg-[#1F6F63] active:scale-95 transition-all duration-300 overflow-hidden"
+          className="relative flex items-center justify-center w-11 h-11 md:w-14 md:h-14 rounded-full bg-[#0F5C4D] text-white shadow-[0_8px_28px_rgba(15,92,77,0.3)] hover:shadow-[0_12px_40px_rgba(15,92,77,0.45)] hover:bg-[#1F6F63] active:scale-95 transition-all duration-300 border border-white/10"
           aria-label="Open contact hub"
         >
           {/* Pulsing ring */}
           <span className="absolute inset-0 rounded-full bg-[#0F5C4D]/35 animate-ping pointer-events-none" />
 
-          {/* Contact / headset icon */}
+          {/* Call icon */}
           <svg className="w-5 h-5 md:w-6 md:h-6 shrink-0 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-
-          {/* Expandable label */}
-          <span className="font-bold text-[10px] md:text-[12px] tracking-[1.5px] uppercase whitespace-nowrap max-w-0 group-hover:max-w-[120px] overflow-hidden transition-all duration-300 opacity-0 group-hover:opacity-100">
-            Contact Us
-          </span>
         </button>
+
+        {/* Small merging text directly below */}
+        <span className="font-sans font-bold text-[7px] md:text-[8px] tracking-[1px] uppercase text-[#0F5C4D] bg-white/95 border border-[#0F5C4D]/15 px-2 py-0.5 rounded-full shadow-md transition-all duration-300 group-hover:bg-[#0F5C4D] group-hover:text-white pointer-events-none select-none">
+          Contact Us
+        </span>
       </div>
 
       {/* POPUP MODAL / LOCALIZED POPOVER */}
@@ -1111,6 +1445,81 @@ export default function Home() {
         </>
       )}
 
+      {/* LIGHTBOX / IMAGE VIEWER */}
+      {lightboxIndex !== null && masonryGallery[lightboxIndex as number] && (
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col justify-between select-none animate-in fade-in duration-200">
+          <div className="h-[55px] px-5 border-b border-white/10 flex justify-between items-center text-white bg-black/40">
+            <div className="text-xs font-sans text-white/70">
+              {(lightboxIndex as number) + 1} of {masonryGallery.length}
+            </div>
+            <div className="flex items-center gap-3.5">
+              <button
+                onClick={() => setIsPlayingSlideshow(!isPlayingSlideshow)}
+                className="p-1.5 hover:bg-white/10 rounded-md transition-colors"
+                title={isPlayingSlideshow ? "Pause" : "Play"}
+              >
+                {isPlayingSlideshow ? <Pause size={16} /> : <Play size={16} />}
+              </button>
+              <button
+                onClick={() => setLightboxZoom(!lightboxZoom)}
+                className="p-1.5 hover:bg-white/10 rounded-md transition-colors"
+                title="Zoom"
+              >
+                <ZoomIn size={16} className={lightboxZoom ? "text-[#0F5C4D]" : ""} />
+              </button>
+              <a
+                href={masonryGallery[lightboxIndex as number].url}
+                download={`om-photography-${lightboxIndex as number}.jpg`}
+                target="_blank"
+                rel="noreferrer"
+                className="p-1.5 hover:bg-white/10 rounded-md transition-colors"
+                title="Download"
+              >
+                <Download size={16} />
+              </a>
+              <div className="w-[1px] h-3.5 bg-white/20" />
+              <button onClick={handleCloseLightbox} className="p-1.5 hover:bg-white/10 rounded-md transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 relative flex items-center justify-center p-4">
+            <button
+              onClick={handlePrevPhoto}
+              className="absolute left-4 w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white hover:text-[#0F5C4D] hover:border-[#0F5C4D] transition-all z-10"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <div
+              className={`relative max-w-full max-h-[80vh] flex items-center justify-center transition-all duration-300 ${lightboxZoom ? "scale-125 cursor-zoom-out" : "scale-100"
+                }`}
+              onClick={() => setLightboxZoom(!lightboxZoom)}
+            >
+              <img
+                src={masonryGallery[lightboxIndex as number].url}
+                alt={masonryGallery[lightboxIndex as number].category}
+                className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-200"
+              />
+            </div>
+            <button
+              onClick={handleNextPhoto}
+              className="absolute right-4 w-10 h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white hover:text-[#0F5C4D] hover:border-[#0F5C4D] transition-all z-10"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          <div className="h-[50px] px-5 border-t border-white/10 flex items-center justify-center bg-black/40 text-white/60 text-[11px] font-sans">
+            <div>
+              <span className="text-[#0F5C4D] font-semibold uppercase mr-1.5">
+                {masonryGallery[lightboxIndex as number].category}
+              </span>
+              | &copy; OM Photography
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

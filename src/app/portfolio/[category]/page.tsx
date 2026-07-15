@@ -118,21 +118,28 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
 
   // Load state on mount
   useEffect(() => {
-    const cats = getCategories();
-    const gals = getGalleries();
-    setCategories(cats);
-    
-    // Dynamic Route pre-selection based on parameter categoryId
-    const currentCat = cats.find((c) => c.id === categoryId) || cats.find((c) => c.id === "weddings") || cats[0] || null;
-    setActiveCategory(currentCat);
+    async function loadData() {
+      try {
+        const cats = await getCategories();
+        const gals = await getGalleries();
+        setCategories(cats);
 
-    if (currentCat) {
-      const catGals = gals.filter((g) => g.categoryId === currentCat.id);
-      setGalleries(catGals);
-      if (catGals.length > 0) {
-        setActiveGallery(catGals[0]);
+        // Dynamic Route pre-selection based on parameter categoryId
+        const currentCat = cats.find((c) => c.id === categoryId) || cats.find((c) => c.id === "weddings") || cats[0] || null;
+        setActiveCategory(currentCat);
+
+        if (currentCat) {
+          const catGals = gals.filter((g) => g.categoryId === currentCat.id);
+          setGalleries(catGals);
+          if (catGals.length > 0) {
+            setActiveGallery(catGals[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load portfolio data:", error);
       }
     }
+    loadData();
 
     const storedAdmin = localStorage.getItem("om_admin_mode");
     if (storedAdmin === "true") {
@@ -141,14 +148,19 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
   }, [categoryId]);
 
   // Handle category selection change
-  const handleSelectCategory = (cat: Category) => {
+  const handleSelectCategory = async (cat: Category) => {
     setActiveCategory(cat);
-    const catGals = getGalleries().filter((g) => g.categoryId === cat.id);
-    setGalleries(catGals);
-    if (catGals.length > 0) {
-      setActiveGallery(catGals[0]);
-    } else {
-      setActiveGallery(null);
+    try {
+      const allGals = await getGalleries();
+      const catGals = allGals.filter((g) => g.categoryId === cat.id);
+      setGalleries(catGals);
+      if (catGals.length > 0) {
+        setActiveGallery(catGals[0]);
+      } else {
+        setActiveGallery(null);
+      }
+    } catch (e) {
+      console.error(e);
     }
     // Reset view options
     setSearchQuery("");
@@ -205,38 +217,46 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
     localStorage.setItem("om_admin_mode", String(nextAdmin));
   };
 
-  const handleAddCategory = (e: React.FormEvent) => {
+  const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCatName.trim()) return;
 
     const id = newCatName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     const cover = newCatCover.trim() || "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80";
 
-    const added = addCategory({
-      id,
-      name: newCatName,
-      coverUrl: cover,
-    });
+    try {
+      const added = await addCategory({
+        id,
+        name: newCatName,
+        coverUrl: cover,
+      });
 
-    const updatedCats = getCategories();
-    setCategories(updatedCats);
-    setActiveCategory(added);
-    setNewCatName("");
-    setNewCatCover("");
-    setShowAddFolderModal(false);
+      const updatedCats = await getCategories();
+      setCategories(updatedCats);
+      setActiveCategory(added);
+      setNewCatName("");
+      setNewCatCover("");
+      setShowAddFolderModal(false);
+    } catch (error) {
+      console.error("Failed to add category:", error);
+    }
   };
 
-  const handleDeleteCategory = (id: string, name: string, e: React.MouseEvent) => {
+  const handleDeleteCategory = async (id: string, name: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (confirm(`Are you sure you want to delete the "${name}" folder? This will delete all client shoots inside.`)) {
-      deleteCategory(id);
-      const updatedCats = getCategories();
-      setCategories(updatedCats);
-      if (updatedCats.length > 0) {
-        handleSelectCategory(updatedCats[0]);
-      } else {
-        setActiveCategory(null);
-        setActiveGallery(null);
+      try {
+        await deleteCategory(id);
+        const updatedCats = await getCategories();
+        setCategories(updatedCats);
+        if (updatedCats.length > 0) {
+          await handleSelectCategory(updatedCats[0]);
+        } else {
+          setActiveCategory(null);
+          setActiveGallery(null);
+        }
+      } catch (error) {
+        console.error("Failed to delete category:", error);
       }
     }
   };
@@ -251,54 +271,64 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
     }
   };
 
-  const handleCreateGallery = (e: React.FormEvent) => {
+  const handleCreateGallery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeCategory || !newGalName.trim()) return;
 
     const id = newGalName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now();
-    const added = addGallery({
-      id,
-      categoryId: activeCategory.id,
-      name: newGalName,
-      description: newGalDesc || "A premium curated shoot capturing beautiful moments.",
-      date: newGalDate || new Date().toISOString().split("T")[0],
-      location: newGalLoc || "India",
-      photographer: "Om",
-      coverUrl: newGalCover || undefined,
-      isPublic: newGalPublic,
-      password: newGalPublic ? undefined : newGalPass || "1234",
-    });
+    try {
+      const added = await addGallery({
+        id,
+        categoryId: activeCategory.id,
+        name: newGalName,
+        description: newGalDesc || "A premium curated shoot capturing beautiful moments.",
+        date: newGalDate || new Date().toISOString().split("T")[0],
+        location: newGalLoc || "India",
+        photographer: "Om",
+        coverUrl: newGalCover || undefined,
+        isPublic: newGalPublic,
+        password: newGalPublic ? undefined : newGalPass || "1234",
+      });
 
-    const updatedGals = getGalleries().filter((g) => g.categoryId === activeCategory.id);
-    setGalleries(updatedGals);
-    setActiveGallery(added);
-    
-    setNewGalName("");
-    setNewGalDesc("");
-    setNewGalDate("");
-    setNewGalLoc("");
-    setNewGalCover("");
-    setNewGalPublic(true);
-    setNewGalPass("");
-    setShowAddGalleryModal(false);
+      const allGals = await getGalleries();
+      const updatedGals = allGals.filter((g) => g.categoryId === activeCategory.id);
+      setGalleries(updatedGals);
+      setActiveGallery(added);
+
+      setNewGalName("");
+      setNewGalDesc("");
+      setNewGalDate("");
+      setNewGalLoc("");
+      setNewGalCover("");
+      setNewGalPublic(true);
+      setNewGalPass("");
+      setShowAddGalleryModal(false);
+    } catch (error) {
+      console.error("Failed to create gallery:", error);
+    }
   };
 
-  const handleDeleteGallery = (id: string, name: string) => {
+  const handleDeleteGallery = async (id: string, name: string) => {
     if (confirm(`Are you sure you want to delete the client gallery "${name}"?`)) {
-      deleteGallery(id);
-      if (activeCategory) {
-        const updatedGals = getGalleries().filter((g) => g.categoryId === activeCategory.id);
-        setGalleries(updatedGals);
-        if (updatedGals.length > 0) {
-          setActiveGallery(updatedGals[0]);
-        } else {
-          setActiveGallery(null);
+      try {
+        await deleteGallery(id);
+        if (activeCategory) {
+          const allGals = await getGalleries();
+          const updatedGals = allGals.filter((g) => g.categoryId === activeCategory.id);
+          setGalleries(updatedGals);
+          if (updatedGals.length > 0) {
+            setActiveGallery(updatedGals[0]);
+          } else {
+            setActiveGallery(null);
+          }
         }
+      } catch (error) {
+        console.error("Failed to delete gallery:", error);
       }
     }
   };
 
-  const handleAddPhoto = (e: React.FormEvent) => {
+  const handleAddPhoto = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeGallery || !newPhotoUrl.trim()) return;
 
@@ -314,16 +344,21 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
       photos: [...activeGallery.photos, newPhoto],
     };
 
-    updateGallery(updatedGallery);
-    setActiveGallery(updatedGallery);
-    
-    if (activeCategory) {
-      setGalleries(getGalleries().filter((g) => g.categoryId === activeCategory.id));
+    try {
+      await updateGallery(updatedGallery);
+      setActiveGallery(updatedGallery);
+
+      if (activeCategory) {
+        const allGals = await getGalleries();
+        setGalleries(allGals.filter((g) => g.categoryId === activeCategory.id));
+      }
+      setNewPhotoUrl("");
+    } catch (error) {
+      console.error("Failed to add photo:", error);
     }
-    setNewPhotoUrl("");
   };
 
-  const handleDeletePhoto = (photoId: string) => {
+  const handleDeletePhoto = async (photoId: string) => {
     if (!activeGallery) return;
     if (confirm("Delete this photo?")) {
       const updatedGallery = {
@@ -331,10 +366,15 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         photos: activeGallery.photos.filter((p) => p.id !== photoId),
       };
 
-      updateGallery(updatedGallery);
-      setActiveGallery(updatedGallery);
-      if (activeCategory) {
-        setGalleries(getGalleries().filter((g) => g.categoryId === activeCategory.id));
+      try {
+        await updateGallery(updatedGallery);
+        setActiveGallery(updatedGallery);
+        if (activeCategory) {
+          const allGals = await getGalleries();
+          setGalleries(allGals.filter((g) => g.categoryId === activeCategory.id));
+        }
+      } catch (error) {
+        console.error("Failed to delete photo:", error);
       }
     }
   };

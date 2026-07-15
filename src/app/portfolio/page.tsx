@@ -66,7 +66,6 @@ export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState("All Photos");
   const [sortBy, setSortBy] = useState("Latest");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(8);
 
   // Sidebar expanded and dropdown states
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -121,10 +120,28 @@ export default function Portfolio() {
 
   // Load state on mount
   useEffect(() => {
-    const cats = getCategories();
-    const gals = getGalleries();
-    setCategories(cats);
-    setGalleries(gals);
+    async function loadData() {
+      try {
+        const cats = await getCategories();
+        const gals = await getGalleries();
+        setCategories(cats);
+        setGalleries(gals);
+
+        // Pre-select first category if available
+        if (cats.length > 0) {
+          const firstCat = cats[0];
+          setActiveCategory(firstCat);
+          const catGals = gals.filter((g) => g.categoryId === firstCat.id);
+          setGalleries(catGals);
+          if (catGals.length > 0) {
+            setActiveGallery(catGals[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load portfolio data:", error);
+      }
+    }
+    loadData();
 
     const storedAdmin = localStorage.getItem("om_admin_mode");
     if (storedAdmin === "true") {
@@ -136,34 +153,40 @@ export default function Portfolio() {
   const getAllPhotos = () => {
     const uniqueUrls = new Set<string>();
     const list: Photo[] = [];
-    galleries.forEach((g) => {
-      if (g.photos) {
-        g.photos.forEach((p) => {
-          if (!uniqueUrls.has(p.url)) {
-            uniqueUrls.add(p.url);
-            list.push(p);
-          }
-        });
-      }
-    });
+    if (Array.isArray(galleries)) {
+      galleries.forEach((g) => {
+        if (g.photos) {
+          g.photos.forEach((p) => {
+            if (!uniqueUrls.has(p.url)) {
+              uniqueUrls.add(p.url);
+              list.push(p);
+            }
+          });
+        }
+      });
+    }
     return list;
   };
 
   // Handle category selection change
-  const handleSelectCategory = (cat: Category) => {
+  const handleSelectCategory = async (cat: Category) => {
     setActiveCategory(cat);
-    const catGals = getGalleries().filter((g) => g.categoryId === cat.id);
-    setGalleries(catGals);
-    if (catGals.length > 0) {
-      setActiveGallery(catGals[0]);
-    } else {
-      setActiveGallery(null);
+    try {
+      const allGals = await getGalleries();
+      const catGals = allGals.filter((g) => g.categoryId === cat.id);
+      setGalleries(catGals);
+      if (catGals.length > 0) {
+        setActiveGallery(catGals[0]);
+      } else {
+        setActiveGallery(null);
+      }
+    } catch (e) {
+      console.error(e);
     }
     // Reset view options
     setSearchQuery("");
     setActiveFilter("All Photos");
     setFavoritesOnly(false);
-    setVisibleCount(8);
   };
 
   // Lock logic
@@ -214,38 +237,46 @@ export default function Portfolio() {
     localStorage.setItem("om_admin_mode", String(nextAdmin));
   };
 
-  const handleAddCategory = (e: React.FormEvent) => {
+  const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCatName.trim()) return;
 
     const id = newCatName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     const cover = newCatCover.trim() || "/placeholder.svg";
 
-    const added = addCategory({
-      id,
-      name: newCatName,
-      coverUrl: cover,
-    });
+    try {
+      const added = await addCategory({
+        id,
+        name: newCatName,
+        coverUrl: cover,
+      });
 
-    const updatedCats = getCategories();
-    setCategories(updatedCats);
-    setActiveCategory(added);
-    setNewCatName("");
-    setNewCatCover("");
-    setShowAddFolderModal(false);
+      const updatedCats = await getCategories();
+      setCategories(updatedCats);
+      setActiveCategory(added);
+      setNewCatName("");
+      setNewCatCover("");
+      setShowAddFolderModal(false);
+    } catch (error) {
+      console.error("Failed to add category:", error);
+    }
   };
 
-  const handleDeleteCategory = (id: string, name: string, e: React.MouseEvent) => {
+  const handleDeleteCategory = async (id: string, name: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (confirm(`Are you sure you want to delete the "${name}" folder? This will delete all client shoots inside.`)) {
-      deleteCategory(id);
-      const updatedCats = getCategories();
-      setCategories(updatedCats);
-      if (updatedCats.length > 0) {
-        handleSelectCategory(updatedCats[0]);
-      } else {
-        setActiveCategory(null);
-        setActiveGallery(null);
+      try {
+        await deleteCategory(id);
+        const updatedCats = await getCategories();
+        setCategories(updatedCats);
+        if (updatedCats.length > 0) {
+          await handleSelectCategory(updatedCats[0]);
+        } else {
+          setActiveCategory(null);
+          setActiveGallery(null);
+        }
+      } catch (error) {
+        console.error("Failed to delete category:", error);
       }
     }
   };
@@ -260,54 +291,64 @@ export default function Portfolio() {
     }
   };
 
-  const handleCreateGallery = (e: React.FormEvent) => {
+  const handleCreateGallery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeCategory || !newGalName.trim()) return;
 
     const id = newGalName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now();
-    const added = addGallery({
-      id,
-      categoryId: activeCategory.id,
-      name: newGalName,
-      description: newGalDesc || "A premium curated shoot capturing beautiful moments.",
-      date: newGalDate || new Date().toISOString().split("T")[0],
-      location: newGalLoc || "India",
-      photographer: "Om",
-      coverUrl: newGalCover || undefined,
-      isPublic: newGalPublic,
-      password: newGalPublic ? undefined : newGalPass || "1234",
-    });
+    try {
+      const added = await addGallery({
+        id,
+        categoryId: activeCategory.id,
+        name: newGalName,
+        description: newGalDesc || "A premium curated shoot capturing beautiful moments.",
+        date: newGalDate || new Date().toISOString().split("T")[0],
+        location: newGalLoc || "India",
+        photographer: "Om",
+        coverUrl: newGalCover || undefined,
+        isPublic: newGalPublic,
+        password: newGalPublic ? undefined : newGalPass || "1234",
+      });
 
-    const updatedGals = getGalleries().filter((g) => g.categoryId === activeCategory.id);
-    setGalleries(updatedGals);
-    setActiveGallery(added);
+      const allGals = await getGalleries();
+      const updatedGals = allGals.filter((g) => g.categoryId === activeCategory.id);
+      setGalleries(updatedGals);
+      setActiveGallery(added);
 
-    setNewGalName("");
-    setNewGalDesc("");
-    setNewGalDate("");
-    setNewGalLoc("");
-    setNewGalCover("");
-    setNewGalPublic(true);
-    setNewGalPass("");
-    setShowAddGalleryModal(false);
+      setNewGalName("");
+      setNewGalDesc("");
+      setNewGalDate("");
+      setNewGalLoc("");
+      setNewGalCover("");
+      setNewGalPublic(true);
+      setNewGalPass("");
+      setShowAddGalleryModal(false);
+    } catch (error) {
+      console.error("Failed to create gallery:", error);
+    }
   };
 
-  const handleDeleteGallery = (id: string, name: string) => {
+  const handleDeleteGallery = async (id: string, name: string) => {
     if (confirm(`Are you sure you want to delete the client gallery "${name}"?`)) {
-      deleteGallery(id);
-      if (activeCategory) {
-        const updatedGals = getGalleries().filter((g) => g.categoryId === activeCategory.id);
-        setGalleries(updatedGals);
-        if (updatedGals.length > 0) {
-          setActiveGallery(updatedGals[0]);
-        } else {
-          setActiveGallery(null);
+      try {
+        await deleteGallery(id);
+        if (activeCategory) {
+          const allGals = await getGalleries();
+          const updatedGals = allGals.filter((g) => g.categoryId === activeCategory.id);
+          setGalleries(updatedGals);
+          if (updatedGals.length > 0) {
+            setActiveGallery(updatedGals[0]);
+          } else {
+            setActiveGallery(null);
+          }
         }
+      } catch (error) {
+        console.error("Failed to delete gallery:", error);
       }
     }
   };
 
-  const handleAddPhoto = (e: React.FormEvent) => {
+  const handleAddPhoto = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeGallery || !newPhotoUrl.trim()) return;
 
@@ -323,16 +364,21 @@ export default function Portfolio() {
       photos: [...activeGallery.photos, newPhoto],
     };
 
-    updateGallery(updatedGallery);
-    setActiveGallery(updatedGallery);
+    try {
+      await updateGallery(updatedGallery);
+      setActiveGallery(updatedGallery);
 
-    if (activeCategory) {
-      setGalleries(getGalleries().filter((g) => g.categoryId === activeCategory.id));
+      if (activeCategory) {
+        const allGals = await getGalleries();
+        setGalleries(allGals.filter((g) => g.categoryId === activeCategory.id));
+      }
+      setNewPhotoUrl("");
+    } catch (error) {
+      console.error("Failed to add photo:", error);
     }
-    setNewPhotoUrl("");
   };
 
-  const handleDeletePhoto = (photoId: string) => {
+  const handleDeletePhoto = async (photoId: string) => {
     if (!activeGallery) return;
     if (confirm("Delete this photo?")) {
       const updatedGallery = {
@@ -340,10 +386,15 @@ export default function Portfolio() {
         photos: activeGallery.photos.filter((p) => p.id !== photoId),
       };
 
-      updateGallery(updatedGallery);
-      setActiveGallery(updatedGallery);
-      if (activeCategory) {
-        setGalleries(getGalleries().filter((g) => g.categoryId === activeCategory.id));
+      try {
+        await updateGallery(updatedGallery);
+        setActiveGallery(updatedGallery);
+        if (activeCategory) {
+          const allGals = await getGalleries();
+          setGalleries(allGals.filter((g) => g.categoryId === activeCategory.id));
+        }
+      } catch (error) {
+        console.error("Failed to delete photo:", error);
       }
     }
   };
@@ -376,7 +427,6 @@ export default function Portfolio() {
   };
 
   const filteredPhotos = getFilteredPhotos();
-  const visiblePhotos = filteredPhotos.slice(0, visibleCount);
 
   // Lightbox handlers
   const handleOpenLightbox = (index: number) => {
@@ -678,7 +728,6 @@ export default function Portfolio() {
                       <button
                         onClick={() => {
                           setFavoritesOnly(false);
-                          setVisibleCount(12);
                           if (window.innerWidth < 768) setSidebarOpen(false);
                         }}
                         className={`text-left text-xs py-1.5 transition-colors ${!favoritesOnly ? "text-[#0F5C4D] font-bold" : "text-[#5E6C66] hover:text-[#0F5C4D]"}`}
@@ -688,7 +737,6 @@ export default function Portfolio() {
                       <button
                         onClick={() => {
                           setFavoritesOnly(true);
-                          setVisibleCount(12);
                           if (window.innerWidth < 768) setSidebarOpen(false);
                         }}
                         className={`text-left text-xs py-1.5 transition-colors flex items-center justify-between ${favoritesOnly ? "text-red-500 font-bold" : "text-[#5E6C66] hover:text-red-500"}`}
@@ -814,7 +862,7 @@ export default function Portfolio() {
               ) : (
                 <>
                   <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 md:gap-5">
-                    {visiblePhotos.map((photo, idx) => (
+                    {filteredPhotos.map((photo, idx) => (
                       <div
                         key={photo.id}
                         className="break-inside-avoid mb-4 md:mb-5 group relative rounded-xl overflow-hidden bg-white border border-[#D9E6E0] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
@@ -848,17 +896,6 @@ export default function Portfolio() {
                       </div>
                     ))}
                   </div>
-
-                  {visibleCount < filteredPhotos.length && (
-                    <div className="text-center mt-10">
-                      <button
-                        onClick={() => setVisibleCount((prev) => prev + 12)}
-                        className="h-11 px-8 rounded-[14px] border border-[#0F5C4D] text-[#0F5C4D] hover:bg-[#0F5C4D] hover:text-white font-semibold text-[10.5px] uppercase tracking-[1.5px] transition-all duration-300 shadow-sm"
-                      >
-                        Load More Photos
-                      </button>
-                    </div>
-                  )}
                 </>
               )}
             </div>

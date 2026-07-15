@@ -76,20 +76,17 @@ p {
 
 .masonry-card:hover {
   box-shadow: 0 20px 45px rgba(15, 92, 77, 0.15);
-  transform: translateY(-4px);
 }
 
 .masonry-image {
   display: block;
   height: auto;
-  transform: scale(1);
-  transition: transform 850ms cubic-bezier(0.22, 1, 0.36, 1), filter 850ms ease;
+  transition: filter 850ms ease;
   width: 100%;
 }
 
 .masonry-card:hover .masonry-image {
   filter: saturate(0.9) contrast(1.04);
-  transform: scale(1.03);
 }
 
 .masonry-overlay {
