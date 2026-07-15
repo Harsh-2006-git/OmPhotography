@@ -12,12 +12,6 @@ if (dns && typeof dns.setServers === "function") {
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env"
-  );
-}
-
 // Cast global as any to bypass strict TypeScript checks on globalThis properties
 let cached = (global as any).mongoose;
 
@@ -28,6 +22,12 @@ if (!cached) {
 async function dbConnect(): Promise<mongoose.Mongoose> {
   if (cached.conn) {
     return cached.conn;
+  }
+
+  if (!MONGODB_URI) {
+    throw new Error(
+      "Please define the MONGODB_URI environment variable inside .env"
+    );
   }
 
   if (!cached.promise) {

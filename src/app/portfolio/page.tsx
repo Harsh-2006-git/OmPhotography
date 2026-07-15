@@ -51,7 +51,76 @@ import {
   Users,
   Flame,
   CameraOff,
+  Tag,
 } from "lucide-react";
+
+const compressImage = async (file: File): Promise<File> => {
+  const MAX_SIZE = 500 * 1024; // 0.5 MB
+  if (file.size <= MAX_SIZE) return file;
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        const maxDim = 2000;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.85;
+        const compressNext = () => {
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                resolve(file);
+                return;
+              }
+              if (blob.size <= MAX_SIZE || quality <= 0.15) {
+                const compressedFile = new File([blob], file.name, {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                quality -= 0.1;
+                compressNext();
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+        compressNext();
+      };
+      img.onerror = () => resolve(file);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+};
 
 export default function Portfolio() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -69,14 +138,36 @@ export default function Portfolio() {
 
   // Sidebar expanded and dropdown states
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [foldersDropdownOpen, setFoldersDropdownOpen] = useState(true);
-  const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(true);
+  const [sectionsDropdownOpen, setSectionsDropdownOpen] = useState(true);
+  const [foldersDropdownOpen, setFoldersDropdownOpen] = useState(false);
+  const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
   const [recentDropdownOpen, setRecentDropdownOpen] = useState(false);
+
+  // Photo section (default = Wedding)
+  const [selectedSection, setSelectedSection] = useState("Wedding");
+  const [allGalleries, setAllGalleries] = useState<ClientGallery[]>([]);
 
   // Admin States
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminLoginError, setAdminLoginError] = useState("");
+  const [adminLoginLoading, setAdminLoginLoading] = useState(false);
   const [showAddFolderModal, setShowAddFolderModal] = useState(false);
   const [showAddGalleryModal, setShowAddGalleryModal] = useState(false);
+  const [showAddPhotoModal, setShowAddPhotoModal] = useState(false);
+  const [showMovePhotoModal, setShowMovePhotoModal] = useState(false);
+  const [photoToMove, setPhotoToMove] = useState<(Photo & { gallery?: ClientGallery }) | null>(null);
+  const [moveTargetSections, setMoveTargetSections] = useState<string[]>([]);
+  const [photoToDelete, setPhotoToDelete] = useState<Photo | null>(null);
+  // Upload state
+  const [uploadFiles, setUploadFiles] = useState<File[]>([]);
+  const [uploadPreviews, setUploadPreviews] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [addPhotoGalleryId, setAddPhotoGalleryId] = useState("");
+  const [newPhotoCats, setNewPhotoCats] = useState<string[]>([]);
+  const [compressionStatus, setCompressionStatus] = useState("");
 
   // Forms
   const [newCatName, setNewCatName] = useState("");
@@ -125,6 +216,7 @@ export default function Portfolio() {
         const cats = await getCategories();
         const gals = await getGalleries();
         setCategories(cats);
+        setAllGalleries(gals);
         setGalleries(gals);
 
         // Pre-select first category if available
@@ -152,25 +244,31 @@ export default function Portfolio() {
   // Get all unique photos across all galleries
   const getAllPhotos = () => {
     const uniqueUrls = new Set<string>();
-    const list: Photo[] = [];
-    if (Array.isArray(galleries)) {
-      galleries.forEach((g) => {
+    const list: (Photo & { gallery?: ClientGallery })[] = [];
+
+    // Use allGalleries to search globally, falling back to galleries
+    const sourceGalleries = allGalleries && allGalleries.length > 0 ? allGalleries : galleries;
+
+    if (sourceGalleries) {
+      sourceGalleries.forEach((g) => {
         if (g.photos) {
           g.photos.forEach((p) => {
             if (!uniqueUrls.has(p.url)) {
               uniqueUrls.add(p.url);
-              list.push(p);
+              list.push({ ...p, gallery: g });
             }
           });
         }
       });
     }
+
     return list;
   };
 
   // Handle category selection change
   const handleSelectCategory = async (cat: Category) => {
     setActiveCategory(cat);
+    setSelectedSection("All");
     try {
       const allGals = await getGalleries();
       const catGals = allGals.filter((g) => g.categoryId === cat.id);
@@ -232,9 +330,71 @@ export default function Portfolio() {
   }, [lightboxIndex]);
 
   const handleToggleAdmin = () => {
-    const nextAdmin = !isAdmin;
-    setIsAdmin(nextAdmin);
-    localStorage.setItem("om_admin_mode", String(nextAdmin));
+    if (isAdmin) {
+      // Logout
+      setIsAdmin(false);
+      localStorage.removeItem("om_admin_mode");
+    } else {
+      // Open login modal
+      setAdminPassword("");
+      setAdminLoginError("");
+      setShowAdminLoginModal(true);
+    }
+  };
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminLoginLoading(true);
+    setAdminLoginError("");
+    try {
+      const res = await fetch("/api/auth/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: adminPassword }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setIsAdmin(true);
+        localStorage.setItem("om_admin_mode", "true");
+        setShowAdminLoginModal(false);
+        setAdminPassword("");
+      } else {
+        setAdminLoginError(data.error || "Incorrect password.");
+      }
+    } catch {
+      setAdminLoginError("Network error. Please try again.");
+    } finally {
+      setAdminLoginLoading(false);
+    }
+  };
+
+  const handleMovePhoto = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!photoToMove) return;
+    try {
+      const allGals = await getGalleries();
+      // Find which gallery currently owns this photo
+      const sourceGallery = allGals.find(g => g.photos?.some(p => p.id === photoToMove.id));
+      if (!sourceGallery) return;
+
+      // Update the photo's category (section tags) in-place within the same gallery
+      const sectionsString = moveTargetSections.join(", ");
+      const updatedPhotos = sourceGallery.photos.map(p =>
+        p.id === photoToMove.id ? { ...p, category: sectionsString } : p
+      );
+      await updateGallery({ ...sourceGallery, photos: updatedPhotos });
+
+      // Refresh
+      const refreshed = await getGalleries();
+      setAllGalleries(refreshed);
+      if (activeCategory) setGalleries(refreshed.filter(g => g.categoryId === activeCategory.id));
+
+      setShowMovePhotoModal(false);
+      setPhotoToMove(null);
+      setMoveTargetSections([]);
+    } catch (err) {
+      console.error("Failed to change photo section:", err);
+    }
   };
 
   const handleAddCategory = async (e: React.FormEvent) => {
@@ -378,24 +538,37 @@ export default function Portfolio() {
     }
   };
 
-  const handleDeletePhoto = async (photoId: string) => {
-    if (!activeGallery) return;
-    if (confirm("Delete this photo?")) {
+  const handleDeletePhoto = async () => {
+    if (!photoToDelete) return;
+    try {
+      // Find which gallery owns this photo — works even when activeGallery is null
+      const allGals = await getGalleries();
+      const ownerGallery = allGals.find(g => g.photos?.some(p => p.id === photoToDelete.id));
+      if (!ownerGallery) {
+        console.error("Gallery not found for photo", photoToDelete.id);
+        setPhotoToDelete(null);
+        return;
+      }
+
       const updatedGallery = {
-        ...activeGallery,
-        photos: activeGallery.photos.filter((p) => p.id !== photoId),
+        ...ownerGallery,
+        photos: ownerGallery.photos.filter((p) => p.id !== photoToDelete.id),
       };
 
-      try {
-        await updateGallery(updatedGallery);
+      await updateGallery(updatedGallery);
+
+      // Refresh all state
+      const refreshed = await getGalleries();
+      setAllGalleries(refreshed);
+      if (activeCategory) setGalleries(refreshed.filter((g) => g.categoryId === activeCategory.id));
+      // If the deleted photo was in the currently active gallery, update it too
+      if (activeGallery && activeGallery.id === ownerGallery.id) {
         setActiveGallery(updatedGallery);
-        if (activeCategory) {
-          const allGals = await getGalleries();
-          setGalleries(allGals.filter((g) => g.categoryId === activeCategory.id));
-        }
-      } catch (error) {
-        console.error("Failed to delete photo:", error);
       }
+
+      setPhotoToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete photo:", error);
     }
   };
 
@@ -410,15 +583,58 @@ export default function Portfolio() {
     setClientFavorites(updated);
   };
 
+
   // Filtering, Searching, Sorting
   const getFilteredPhotos = () => {
     let list = getAllPhotos();
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter((p) => p.category.toLowerCase().includes(q));
+    // 1. Sidebar Image Type Section Filter
+    if (selectedSection !== "All") {
+      list = list.filter((p) => {
+        const catLower = (p.category || "").toLowerCase();
+        const galNameLower = (p.gallery?.name || "").toLowerCase();
+        const galIdLower = (p.gallery?.categoryId || "").toLowerCase();
+        const urlLower = (p.url || "").toLowerCase();
+        const idLower = (p.id || "").toLowerCase();
+
+        if (selectedSection === "Haldi") {
+          return catLower.includes("haldi") || galNameLower.includes("haldi") || urlLower.includes("haldi") || idLower.includes("haldi");
+        }
+        if (selectedSection === "Collage") {
+          return catLower.includes("collage") || urlLower.includes("collage") || idLower.includes("collage");
+        }
+        if (selectedSection === "Destination") {
+          return galIdLower.includes("destination") || galNameLower.includes("destination") || catLower.includes("destination");
+        }
+        if (selectedSection === "Portraits") {
+          return catLower.includes("portrait") || galIdLower.includes("portrait") || catLower.includes("fashion") || catLower.includes("bride") || catLower.includes("groom");
+        }
+        if (selectedSection === "Ring Ceremony") {
+          return catLower.includes("ring") || galNameLower.includes("ring") || urlLower.includes("ring") || idLower.includes("ring");
+        }
+        if (selectedSection === "Wedding") {
+          const isHaldi = catLower.includes("haldi") || galNameLower.includes("haldi") || urlLower.includes("haldi") || idLower.includes("haldi");
+          const isCollage = catLower.includes("collage") || urlLower.includes("collage") || idLower.includes("collage");
+          const isDestination = galIdLower.includes("destination") || galNameLower.includes("destination") || catLower.includes("destination");
+          const isPortrait = catLower.includes("portrait") || galIdLower.includes("portrait") || catLower.includes("fashion") || catLower.includes("bride") || catLower.includes("groom");
+          const isRing = catLower.includes("ring") || galNameLower.includes("ring") || urlLower.includes("ring") || idLower.includes("ring");
+
+          return !isHaldi && !isCollage && !isDestination && !isPortrait && !isRing;
+        }
+        return true;
+      });
     }
 
+    // 2. Search query filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((p) =>
+        (p.category || "").toLowerCase().includes(q) ||
+        (p.gallery?.name || "").toLowerCase().includes(q)
+      );
+    }
+
+    // 3. Favorites only filter
     if (favoritesOnly) {
       list = list.filter((p) => clientFavorites.includes(p.id));
     }
@@ -538,33 +754,33 @@ export default function Portfolio() {
           </section>
         </div>
 
-        {/* Backdrop for expanded sidebar on mobile */}
-        {sidebarOpen && (
-          <div 
-            onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[3px] md:hidden transition-all duration-300"
-          />
-        )}
-
         {/* Double-Column Layout: Sidebar + Curated Portfolio */}
-        <div className="flex flex-row w-full max-w-[1440px] mx-auto min-h-screen relative mt-8 gap-0 md:gap-6 px-0 md:px-6">
-          
-          {/* SIDEBAR COLUMN */}
-          <aside 
+        <div className="flex flex-row w-full relative mt-8 min-h-[80vh]">
+
+          {/* Mobile backdrop — fixed below header, covers visible viewport only */}
+          {sidebarOpen && (
+            <div
+              onClick={() => setSidebarOpen(false)}
+              className="fixed left-0 right-0 top-[60px] bottom-0 z-40 bg-black/40 backdrop-blur-[3px] md:hidden transition-all duration-300"
+            />
+          )}
+
+          {/* SIDEBAR — mobile: sticky thin strip; expanded: fixed panel anchored below header */}
+          <aside
             className={`transition-all duration-300 border-r border-[#D9E6E0] shrink-0 bg-white
-              ${sidebarOpen 
-                ? "w-[260px] fixed left-0 top-0 bottom-0 h-screen z-50 shadow-2xl rounded-r-2xl" 
-                : "w-[50px] relative border-r"
+              ${sidebarOpen
+                ? "fixed left-0 top-[60px] w-[260px] h-[calc(100vh-60px)] z-50 shadow-2xl rounded-r-2xl overflow-y-auto"
+                : "sticky top-[70px] self-start h-[calc(100vh-70px)] w-[50px] z-10 border-r"
               }
-              md:w-[250px] lg:w-[270px] md:relative md:left-auto md:top-auto md:bottom-auto md:h-auto md:shadow-none md:border-r md:z-auto md:rounded-none
+              md:sticky md:top-[70px] md:self-start md:h-[calc(100vh-70px)] md:w-[250px] lg:md:w-[270px] md:border-r md:z-10 md:shadow-sm md:rounded-none md:left-auto
             `}
           >
-            {/* Sidebar Sticky Wrapper */}
-            <div className="h-full md:sticky md:top-[95px] md:h-[calc(100vh-120px)] overflow-y-auto flex flex-col justify-between py-5 select-none scrollbar-none">
-              
+            {/* Sidebar Content Wrapper */}
+            <div className="h-full overflow-y-auto flex flex-col justify-between py-5 select-none scrollbar-none">
+
               {/* Top part: Toggles and contents */}
               <div className={`flex flex-col gap-5 ${sidebarOpen ? "px-5" : "px-2 md:px-5"}`}>
-                
+
                 {/* Mobile Expand / Collapse Toggle button */}
                 <div className="md:hidden pb-2 border-b border-[#D9E6E0]/45 flex justify-center items-center">
                   {!sidebarOpen ? (
@@ -595,7 +811,7 @@ export default function Portfolio() {
                 <div className="relative">
                   {/* Mobile Collapsed Search Button */}
                   <div className={`${sidebarOpen ? "hidden" : "block md:hidden"} text-center`}>
-                    <button 
+                    <button
                       onClick={() => setSidebarOpen(true)}
                       className="w-8 h-8 rounded-full bg-[#0F5C4D]/5 border border-[#0F5C4D]/15 flex items-center justify-center text-[#0F5C4D] hover:bg-[#0F5C4D]/10 transition-colors mx-auto"
                       aria-label="Search"
@@ -603,7 +819,7 @@ export default function Portfolio() {
                       <Search size={14} />
                     </button>
                   </div>
-                  
+
                   {/* Active Search Input (visible on desktop always, and on mobile when open) */}
                   <div className={`${sidebarOpen ? "block" : "hidden md:block"} relative w-full`}>
                     <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -617,180 +833,32 @@ export default function Portfolio() {
                   </div>
                 </div>
 
-                {/* 2. Dropdown 1: Portfolio Categories */}
-                <div className="flex flex-col gap-1.5">
-                  <button 
-                    onClick={() => {
-                      if (!sidebarOpen) {
-                        setSidebarOpen(true);
-                        setFoldersDropdownOpen(true);
-                      } else {
-                        setFoldersDropdownOpen(!foldersDropdownOpen);
-                      }
-                    }}
-                    className="flex items-center justify-between w-full text-left py-1 text-[#18352F] hover:text-[#0F5C4D] transition-colors"
-                  >
-                    <div className={`flex items-center gap-2.5 w-full md:w-auto ${sidebarOpen ? "justify-start" : "justify-center md:justify-start"}`}>
-                      <Folder size={16} className="text-[#0F5C4D]" />
-                      <span className={`text-[11px] font-bold uppercase tracking-wider font-sans ${sidebarOpen ? "block" : "hidden md:block"}`}>
-                        Categories
-                      </span>
-                      {isAdmin && sidebarOpen && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowAddFolderModal(true);
-                          }}
-                          className="ml-2 p-1 text-[#0F5C4D] hover:bg-[#0F5C4D]/10 rounded-full transition-colors flex items-center justify-center"
-                          title="Create Category"
-                        >
-                          <Plus size={11} />
-                        </button>
-                      )}
-                      {isAdmin && !sidebarOpen && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowAddFolderModal(true);
-                          }}
-                          className="hidden md:flex ml-2 p-1 text-[#0F5C4D] hover:bg-[#0F5C4D]/10 rounded-full transition-colors items-center justify-center"
-                          title="Create Category"
-                        >
-                          <Plus size={11} />
-                        </button>
-                      )}
-                    </div>
-                    <ChevronRight 
-                      size={12} 
-                      className={`text-gray-400 transition-transform duration-200 ${sidebarOpen ? "block" : "hidden md:block"} ${foldersDropdownOpen ? "rotate-90" : ""}`} 
-                    />
-                  </button>
-                  
-                  {/* Dropdown List */}
-                  {foldersDropdownOpen && (
-                    <div className={`${sidebarOpen ? "flex" : "hidden md:flex"} flex-col pl-6 gap-1.5 border-l border-gray-100`}>
-                      {categories.map((cat) => (
-                        <div key={cat.id} className="flex items-center justify-between group/cat py-0.5">
-                          <button
-                            onClick={() => {
-                              handleSelectCategory(cat);
-                              if (window.innerWidth < 768) setSidebarOpen(false);
-                            }}
-                            className={`text-left text-xs py-1 transition-colors flex-1 truncate ${activeCategory?.id === cat.id ? "text-[#0F5C4D] font-bold" : "text-[#5E6C66] hover:text-[#0F5C4D]"}`}
-                          >
-                            {cat.name}
-                          </button>
-                          {isAdmin && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteCategory(cat.id, cat.name, e);
-                              }}
-                              className="opacity-0 group-hover/cat:opacity-100 p-1 text-[#C85D5D] hover:bg-red-50 rounded transition-all ml-1.5 flex items-center justify-center"
-                              title="Delete Category"
-                            >
-                              <Trash2 size={11} />
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {/* Photo Sections Filter */}
+                <div className="flex flex-col gap-2.5">
+                  <div className={`flex items-center gap-2.5 w-full md:w-auto ${sidebarOpen ? "justify-start" : "justify-center md:justify-start"} pb-2 border-b border-[#D9E6E0]/45`}>
+                    <ImageIcon size={15} className="text-[#0F5C4D]" />
+                    <span className={`text-[11px] font-bold uppercase tracking-wider font-sans ${sidebarOpen ? "block" : "hidden md:block"} text-[#18352F]`}>
+                      Filter By Section
+                    </span>
+                  </div>
 
-                {/* 3. Dropdown 2: Quick Filters */}
-                <div className="flex flex-col gap-1.5">
-                  <button 
-                    onClick={() => {
-                      if (!sidebarOpen) {
-                        setSidebarOpen(true);
-                        setFiltersDropdownOpen(true);
-                      } else {
-                        setFiltersDropdownOpen(!filtersDropdownOpen);
-                      }
-                    }}
-                    className="flex items-center justify-between w-full text-left py-1 text-[#18352F] hover:text-[#0F5C4D] transition-colors"
-                  >
-                    <div className={`flex items-center gap-2.5 w-full md:w-auto ${sidebarOpen ? "justify-start" : "justify-center md:justify-start"}`}>
-                      <Heart size={16} className="text-[#0F5C4D]" />
-                      <span className={`text-[11px] font-bold uppercase tracking-wider font-sans ${sidebarOpen ? "block" : "hidden md:block"}`}>
-                        Quick Filters
-                      </span>
-                    </div>
-                    <ChevronRight 
-                      size={12} 
-                      className={`text-gray-400 transition-transform duration-200 ${sidebarOpen ? "block" : "hidden md:block"} ${filtersDropdownOpen ? "rotate-90" : ""}`} 
-                    />
-                  </button>
-
-                  {filtersDropdownOpen && (
-                    <div className={`${sidebarOpen ? "flex" : "hidden md:flex"} flex-col pl-6 gap-1 border-l border-gray-100`}>
+                  <div className={`${sidebarOpen ? "flex" : "hidden md:flex"} flex-col pl-2 gap-1.5`}>
+                    {["All", "Wedding", "Haldi", "Destination", "Portraits", "Collage", "Ring Ceremony"].map((sec) => (
                       <button
+                        key={sec}
                         onClick={() => {
-                          setFavoritesOnly(false);
+                          setSelectedSection(sec);
                           if (window.innerWidth < 768) setSidebarOpen(false);
                         }}
-                        className={`text-left text-xs py-1.5 transition-colors ${!favoritesOnly ? "text-[#0F5C4D] font-bold" : "text-[#5E6C66] hover:text-[#0F5C4D]"}`}
+                        className={`text-left text-xs py-1.5 px-3 rounded-lg transition-all ${selectedSection === sec
+                          ? "bg-[#0F5C4D] text-white font-semibold shadow-sm"
+                          : "text-[#5E6C66] hover:bg-gray-50 hover:text-[#0F5C4D]"
+                          }`}
                       >
-                        All Shoots
+                        {sec} {sec === "All" ? "Captures" : ""}
                       </button>
-                      <button
-                        onClick={() => {
-                          setFavoritesOnly(true);
-                          if (window.innerWidth < 768) setSidebarOpen(false);
-                        }}
-                        className={`text-left text-xs py-1.5 transition-colors flex items-center justify-between ${favoritesOnly ? "text-red-500 font-bold" : "text-[#5E6C66] hover:text-red-500"}`}
-                      >
-                        <span>Favorites</span>
-                        <span className="text-[9.5px] bg-red-50 text-red-500 px-1.5 py-0.5 rounded-full font-bold">
-                          {clientFavorites.length}
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* 4. Dropdown 3: Recent Shoots */}
-                <div className="flex flex-col gap-1.5">
-                  <button 
-                    onClick={() => {
-                      if (!sidebarOpen) {
-                        setSidebarOpen(true);
-                        setRecentDropdownOpen(true);
-                      } else {
-                        setRecentDropdownOpen(!recentDropdownOpen);
-                      }
-                    }}
-                    className="flex items-center justify-between w-full text-left py-1 text-[#18352F] hover:text-[#0F5C4D] transition-colors"
-                  >
-                    <div className={`flex items-center gap-2.5 w-full md:w-auto ${sidebarOpen ? "justify-start" : "justify-center md:justify-start"}`}>
-                      <Camera size={16} className="text-[#0F5C4D]" />
-                      <span className={`text-[11px] font-bold uppercase tracking-wider font-sans ${sidebarOpen ? "block" : "hidden md:block"}`}>
-                        Recent Shoots
-                      </span>
-                    </div>
-                    <ChevronRight 
-                      size={12} 
-                      className={`text-gray-400 transition-transform duration-200 ${sidebarOpen ? "block" : "hidden md:block"} ${recentDropdownOpen ? "rotate-90" : ""}`} 
-                    />
-                  </button>
-
-                  {recentDropdownOpen && (
-                    <div className={`${sidebarOpen ? "flex" : "hidden md:flex"} flex-col pl-6 gap-1.5 border-l border-gray-100 max-h-[160px] overflow-y-auto`}>
-                      {galleries.slice(0, 8).map((gal) => (
-                        <button
-                          key={gal.id}
-                          onClick={() => {
-                            setActiveGallery(gal);
-                            if (window.innerWidth < 768) setSidebarOpen(false);
-                          }}
-                          className={`text-left text-[11px] py-1 truncate transition-colors ${activeGallery?.id === gal.id ? "text-[#0F5C4D] font-bold" : "text-[#5E6C66] hover:text-[#0F5C4D]"}`}
-                        >
-                          {gal.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
 
               </div>
@@ -798,7 +866,7 @@ export default function Portfolio() {
               {/* Bottom Admin Control */}
               <div className={`pt-4 border-t border-[#D9E6E0]/45 flex flex-col gap-2 ${sidebarOpen ? "px-5" : "px-2 md:px-5"}`}>
                 {!sidebarOpen ? (
-                  <button 
+                  <button
                     onClick={() => handleToggleAdmin()}
                     className="w-8 h-8 rounded-full bg-[#0F5C4D]/5 border border-[#0F5C4D]/15 flex items-center justify-center text-[#0F5C4D] hover:bg-[#0F5C4D]/10 transition-colors mx-auto"
                     aria-label="Admin control"
@@ -806,34 +874,64 @@ export default function Portfolio() {
                     {isAdmin ? <LogOut size={13} /> : <Lock size={13} />}
                   </button>
                 ) : (
-                  <button
-                    onClick={handleToggleAdmin}
-                    className="flex items-center justify-center gap-1.5 h-8.5 w-full rounded-full text-[9.5px] font-bold tracking-wider uppercase transition-all duration-300 border border-[#0F5C4D] text-[#0F5C4D] bg-transparent hover:bg-[#0F5C4D]/10 md:hidden"
-                  >
-                    {isAdmin ? <LogOut size={11} /> : <Lock size={11} />}
-                    <span>{isAdmin ? "Logout" : "Admin Dashboard"}</span>
-                  </button>
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <button
+                      onClick={handleToggleAdmin}
+                      className="flex items-center justify-center gap-1.5 h-8.5 w-full rounded-full text-[9.5px] font-bold tracking-wider uppercase transition-all duration-300 border border-[#0F5C4D] text-[#0F5C4D] bg-transparent hover:bg-[#0F5C4D]/10 md:hidden"
+                    >
+                      {isAdmin ? <LogOut size={11} /> : <Lock size={11} />}
+                      <span>{isAdmin ? "Logout" : "Admin Dashboard"}</span>
+                    </button>
+                    {isAdmin && (
+                      <Link
+                        href="/portfolio/classify"
+                        className="flex items-center justify-center gap-1.5 h-8.5 w-full rounded-full text-[9.5px] font-bold tracking-wider uppercase bg-[#1F6F63] border border-transparent text-white hover:bg-[#0F5C4D] transition-colors md:hidden"
+                      >
+                        <Tag size={11} />
+                        <span>Classify Tool</span>
+                      </Link>
+                    )}
+                  </div>
                 )}
                 <div className="hidden md:block">
                   <button
                     onClick={handleToggleAdmin}
                     className={`flex items-center justify-center gap-1.5 h-8.5 w-full rounded-full text-[9.5px] font-bold tracking-wider uppercase transition-all duration-300 border ${isAdmin
-                        ? "bg-[#0F5C4D] border-transparent text-white shadow-sm"
-                        : "border-[#0F5C4D] text-[#0F5C4D] bg-transparent hover:bg-[#0F5C4D]/10"
+                      ? "bg-[#0F5C4D] border-transparent text-white shadow-sm"
+                      : "border-[#0F5C4D] text-[#0F5C4D] bg-transparent hover:bg-[#0F5C4D]/10"
                       }`}
                   >
                     {isAdmin ? <LogOut size={11} /> : <Lock size={11} />}
                     <span>{isAdmin ? "Logout Admin" : "Admin Dashboard"}</span>
                   </button>
                 </div>
+                {isAdmin && (
+                  <div className="hidden md:flex flex-col gap-1.5">
+                    <Link
+                      href="/portfolio/classify"
+                      className="flex items-center justify-center gap-1.5 h-8.5 w-full rounded-full text-[9.5px] font-bold tracking-wider uppercase bg-[#1F6F63] border border-transparent text-white hover:bg-[#0F5C4D] transition-colors"
+                    >
+                      <Tag size={11} />
+                      <span>Classify Tool</span>
+                    </Link>
+                    <button
+                      onClick={() => setShowAddPhotoModal(true)}
+                      className="flex items-center justify-center gap-1.5 h-8.5 w-full rounded-full text-[9.5px] font-bold tracking-wider uppercase bg-[#0F5C4D]/10 border border-[#0F5C4D] text-[#0F5C4D] hover:bg-[#0F5C4D]/20 transition-colors"
+                    >
+                      <Plus size={11} />
+                      <span>Add Photo</span>
+                    </button>
+
+                  </div>
+                )}
               </div>
 
             </div>
           </aside>
-          
+
           {/* MAIN CONTENT AREA */}
-          <div className="flex-1 min-w-0 pl-4 md:pl-0 pr-4 md:pr-0">
-             
+          <div className="flex-1 min-w-0 pl-2 md:pl-6 pr-4 md:pr-6">
+
 
 
             {/* CURATED PORTFOLIO GRID HEADER */}
@@ -862,11 +960,11 @@ export default function Portfolio() {
               ) : (
                 <>
                   <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 md:gap-5">
-                    {filteredPhotos.map((photo, idx) => (
+                    {filteredPhotos.map((photo) => (
                       <div
                         key={photo.id}
                         className="break-inside-avoid mb-4 md:mb-5 group relative rounded-xl overflow-hidden bg-white border border-[#D9E6E0] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
-                        onClick={() => handleOpenLightbox(idx)}
+                        onClick={() => handleOpenLightbox(filteredPhotos.findIndex((p) => p.id === photo.id))}
                       >
                         <img
                           src={photo.url}
@@ -875,7 +973,34 @@ export default function Portfolio() {
                           className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3.5 text-white">
-                          <div className="flex justify-end">
+                          <div className="flex justify-between items-start">
+                            {/* Admin controls — only visible when logged in as admin */}
+                            {isAdmin ? (
+                              <div className="flex gap-1.5" onClick={(e) => e.stopPropagation()}>
+                                {/* Move to another gallery */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setPhotoToMove(photo);
+                                    setMoveTargetSections((photo.category || "").split(",").map(t => t.trim()).filter(Boolean));
+                                    setShowMovePhotoModal(true);
+                                  }}
+                                  className="w-7 h-7 rounded-full bg-blue-500/80 backdrop-blur-md border border-blue-300/40 flex items-center justify-center text-white hover:bg-blue-400 transition-colors"
+                                  title="Move to another section"
+                                >
+                                  <Tag size={11} />
+                                </button>
+                                {/* Delete photo */}
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); setPhotoToDelete(photo); }}
+                                  className="w-7 h-7 rounded-full bg-red-500/80 backdrop-blur-md border border-red-300/40 flex items-center justify-center text-white hover:bg-red-400 transition-colors"
+                                  title="Delete photo"
+                                >
+                                  <Trash2 size={11} />
+                                </button>
+                              </div>
+                            ) : <div />}
+                            {/* Favorite button */}
                             <button
                               onClick={(e) => handleToggleFavorite(photo.id, e)}
                               className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center text-white hover:text-red-500 hover:bg-white/40 transition-colors"
@@ -890,7 +1015,7 @@ export default function Portfolio() {
                             <span className="text-[8.5px] uppercase tracking-wider text-[#DCEFE8] font-semibold">
                               {photo.category}
                             </span>
-                            <p className="text-[11px] font-sans text-white/95 mt-0.5">View Frame &rsaquo;</p>
+                            <div className="text-[11px] font-sans text-white/95 mt-0.5">View Frame &rsaquo;</div>
                           </div>
                         </div>
                       </div>
@@ -904,29 +1029,114 @@ export default function Portfolio() {
         </div>
 
         {/* Booking Call to Action Banner */}
-        <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 mt-12 mb-8">
-          <div className="relative rounded-[24px] overflow-hidden bg-[#0F5C4D] text-white p-8 md:p-12 text-center shadow-xl border border-[#1F6F63]/30">
-            {/* Subtle background gradient texture */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(220,239,232,0.12),transparent_70%)] pointer-events-none" />
-            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(11,61,52,0.4))] pointer-events-none" />
-            
-            <div className="relative z-10 max-w-[650px] mx-auto space-y-4">
-              <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-[#DCEFE8]">
-                Reserve Your Date
-              </span>
-              <h2 className="font-serif text-[24px] md:text-[34px] font-normal leading-tight tracking-tight text-white uppercase">
-                Let's Immortalize Your Moments
+        <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 mt-16 mb-8">
+          <div
+            className="relative rounded-[28px] overflow-hidden shadow-2xl"
+            style={{
+              background:
+                "linear-gradient(135deg, #071a14 0%, #0d3d30 35%, #0F5C4D 65%, #071a14 100%)",
+            }}
+          >
+            {/* Radial glow — top right */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse 60% 55% at 75% 10%, rgba(159,221,193,0.18) 0%, transparent 70%)",
+              }}
+            />
+            {/* Radial glow — bottom left */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse 50% 45% at 15% 90%, rgba(15,92,77,0.5) 0%, transparent 65%)",
+              }}
+            />
+
+            {/* Shimmer strip across top */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#9FDDC1]/70 to-transparent" />
+            {/* Shimmer strip across bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#9FDDC1]/30 to-transparent" />
+
+            {/* Decorative corner bracket — top left */}
+            <div className="absolute top-5 left-5 w-10 h-10 border-t-2 border-l-2 border-[#9FDDC1]/30 rounded-tl-lg" />
+            {/* Decorative corner bracket — top right */}
+            <div className="absolute top-5 right-5 w-10 h-10 border-t-2 border-r-2 border-[#9FDDC1]/20 rounded-tr-lg" />
+            {/* Decorative corner bracket — bottom left */}
+            <div className="absolute bottom-5 left-5 w-10 h-10 border-b-2 border-l-2 border-[#9FDDC1]/20 rounded-bl-lg" />
+            {/* Decorative corner bracket — bottom right */}
+            <div className="absolute bottom-5 right-5 w-10 h-10 border-b-2 border-r-2 border-[#9FDDC1]/30 rounded-br-lg" />
+
+            {/* Floating ambient dots */}
+            <div className="absolute top-10 right-[14%] w-1.5 h-1.5 rounded-full bg-[#9FDDC1]/50" />
+            <div className="absolute top-16 right-[16%] w-1 h-1 rounded-full bg-[#9FDDC1]/30" />
+            <div className="absolute bottom-12 left-[9%] w-1.5 h-1.5 rounded-full bg-[#9FDDC1]/40" />
+            <div className="absolute bottom-18 left-[11%] w-1 h-1 rounded-full bg-[#9FDDC1]/25" />
+
+            {/* Content */}
+            <div className="relative z-10 px-6 py-14 md:py-20 md:px-16 flex flex-col items-center text-center">
+
+              {/* Eyebrow pill */}
+              <div className="inline-flex items-center gap-2.5 mb-6 px-4 py-1.5 rounded-full border border-[#9FDDC1]/40 bg-[#9FDDC1]/10">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9FDDC1] animate-pulse" />
+                <span className="text-[9.5px] font-bold uppercase tracking-[0.3em] text-[#9FDDC1] font-sans">
+                  Reserve Your Date
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9FDDC1] animate-pulse" />
+              </div>
+
+              {/* Main heading — fully white */}
+              <h2 className="font-serif text-[28px] sm:text-[38px] md:text-[50px] lg:text-[56px] font-normal leading-[1.15] tracking-tight mb-5 uppercase text-white">
+                Let&apos;s{" "}
+                <span className="text-[#9FDDC1] relative inline-block">
+                  Immortalize
+                  <span
+                    className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, transparent, #9FDDC1, transparent)",
+                    }}
+                  />
+                </span>{" "}
+                Your<br className="hidden sm:block" /> Moments
               </h2>
-              <p className="text-[#DCEFE8]/90 text-xs md:text-sm font-sans leading-relaxed max-w-[500px] mx-auto font-normal">
-                Specializing in candid emotions, dramatic lighting, and cinematic story-telling. Let us capture your legacy of emotions with micro-precision.
-              </p>
-              <div className="pt-2">
+
+              {/* Decorative divider */}
+              <div className="flex items-center gap-3 mb-6 w-full max-w-[360px]">
+                <span className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-[#9FDDC1]/40" />
+                <Camera size={14} className="text-[#9FDDC1] shrink-0" />
+                <span className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-[#9FDDC1]/40" />
+              </div>
+
+              {/* Description */}
+              <div className="text-white text-[13px] md:text-[15px] font-sans leading-relaxed max-w-[520px] font-normal mb-8" style={{ color: '#ffffff' }}>
+                Specializing in candid emotions, dramatic lighting, and cinematic story-telling.{" "}
+                <span style={{ color: 'rgba(255,255,255,0.85)' }}>
+                  Let us capture your legacy of emotions with micro-precision.
+                </span>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center h-10 px-6 rounded-full bg-white text-[#0F5C4D] font-bold text-xs uppercase tracking-wider hover:bg-[#DCEFE8] hover:scale-[1.02] transition-all duration-300 shadow-md"
+                  className="group inline-flex items-center gap-2 h-12 px-8 rounded-full bg-white text-[#0F5C4D] font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-[#9FDDC1] transition-all duration-300 shadow-lg hover:shadow-[0_0_35px_rgba(159,221,193,0.35)] hover:scale-[1.03]"
                 >
-                  Book Your Session &rarr;
+                  Book Your Session
+                  <span className="group-hover:translate-x-1 transition-transform duration-300 inline-block">→</span>
                 </Link>
+                <Link
+                  href="/portfolio"
+                  className="inline-flex items-center gap-2 h-12 px-7 rounded-full border border-white/40 text-white font-semibold text-[11px] uppercase tracking-[0.2em] hover:border-[#9FDDC1]/80 hover:text-[#9FDDC1] transition-all duration-300"
+                >
+                  View Full Portfolio
+                </Link>
+              </div>
+
+              {/* Social proof trust line */}
+              <div className="mt-7 text-[10.5px] font-sans tracking-[0.15em] uppercase" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                ✦ &nbsp; Trusted by 200+ couples across India &nbsp; ✦
               </div>
             </div>
           </div>
@@ -937,6 +1147,471 @@ export default function Portfolio() {
           <div className="h-[1px] bg-gradient-to-r from-transparent via-[#D9E6E0] to-transparent w-full" />
         </div>
       </main>
+
+      {/* DELETE PHOTO CONFIRMATION MODAL */}
+      {photoToDelete && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-white border border-[#D9E6E0] rounded-[24px] w-full max-w-[360px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            {/* Red danger header strip */}
+            <div className="h-1 w-full bg-gradient-to-r from-red-400 via-red-500 to-red-400" />
+
+            <div className="p-6 flex flex-col items-center text-center gap-4">
+              {/* Warning icon */}
+              <div className="w-12 h-12 rounded-full bg-red-50 border border-red-100 flex items-center justify-center">
+                <Trash2 size={20} className="text-red-500" />
+              </div>
+
+              {/* Title */}
+              <div>
+                <h3 className="text-[15px] font-bold text-[#18352F] mb-1">Delete this photo?</h3>
+                <p className="text-[11px] text-[#5E6C66] leading-relaxed">
+                  This action is <span className="font-semibold text-red-500">permanent</span> and cannot be undone.
+                  The photo will be removed from the gallery.
+                </p>
+              </div>
+
+              {/* Photo preview */}
+              <div className="w-full rounded-[14px] overflow-hidden border border-[#D9E6E0] relative">
+                <img
+                  src={photoToDelete.url}
+                  alt="Photo to delete"
+                  className="w-full h-32 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                  <span className="text-[10px] font-bold text-white uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 border border-white/30">
+                    {photoToDelete.category}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-2.5 w-full">
+                <button
+                  onClick={() => setPhotoToDelete(null)}
+                  className="flex-1 h-10 rounded-[14px] border border-[#D9E6E0] text-[#5E6C66] font-bold text-[11px] uppercase tracking-wider hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeletePhoto}
+                  className="flex-1 h-10 rounded-[14px] bg-red-500 text-white font-bold text-[11px] uppercase tracking-wider hover:bg-red-600 transition-all flex items-center justify-center gap-1.5 shadow-sm hover:shadow-red-200 hover:shadow-md"
+                >
+                  <Trash2 size={12} /> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN LOGIN MODAL */}
+      {showAdminLoginModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-white border border-[#D9E6E0] rounded-[24px] w-full max-w-[380px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div
+              className="px-6 py-5 flex items-center gap-3"
+              style={{ background: "linear-gradient(135deg, #071a14 0%, #0F5C4D 100%)" }}
+            >
+              <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center">
+                <Lock size={16} className="text-white" />
+              </div>
+              <div>
+                <div style={{ color: '#ffffff', fontSize: 14, fontWeight: 700 }}>Admin Dashboard</div>
+                <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 11 }}>Enter your password to continue</div>
+              </div>
+              <button
+                onClick={() => setShowAdminLoginModal(false)}
+                className="ml-auto w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+              >
+                <X size={13} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleAdminLogin} className="p-6 flex flex-col gap-4">
+              <div className="relative">
+                <input
+                  type="password"
+                  autoFocus
+                  required
+                  placeholder="Admin password"
+                  value={adminPassword}
+                  onChange={(e) => { setAdminPassword(e.target.value); setAdminLoginError(""); }}
+                  className="w-full h-11 px-4 pr-10 border border-[#D9E6E0] rounded-[14px] text-[13px] focus:outline-none focus:border-[#0F5C4D] focus:ring-2 focus:ring-[#0F5C4D]/10 transition-all text-[#18352F] bg-[#F5FBF8]"
+                />
+                <Lock size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              </div>
+
+              {/* Error */}
+              {adminLoginError && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-100 rounded-xl">
+                  <ShieldAlert size={13} className="text-red-500 shrink-0" />
+                  <span className="text-[11px] text-red-600">{adminLoginError}</span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={adminLoginLoading}
+                className="h-11 rounded-[14px] bg-[#0F5C4D] text-white font-bold text-[11px] uppercase tracking-wider hover:bg-[#1F6F63] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+              >
+                {adminLoginLoading ? (
+                  <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Verifying...</>
+                ) : (
+                  <><Unlock size={13} /> Login as Admin</>
+                )}
+              </button>
+
+              <div className="text-center">
+                <span className="text-[10px] text-[#5E6C66]">Password is stored securely in environment variables</span>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD PHOTO MODAL — Multi-image Cloudinary upload with real galleries & compression */}
+      {showAddPhotoModal && (() => {
+        const sidebarSectionsList = ["Wedding", "Haldi", "Destination", "Portraits", "Collage", "Ring Ceremony"];
+
+        const handleFileChange = (filesList: FileList | null) => {
+          if (!filesList) return;
+          const filesArray = Array.from(filesList);
+          setUploadFiles(filesArray);
+          const previews = filesArray.map(file => URL.createObjectURL(file));
+          setUploadPreviews(previews);
+        };
+
+        const handleToggleNewPhotoCat = (sec: string) => {
+          setNewPhotoCats(prev =>
+            prev.includes(sec) ? prev.filter(s => s !== sec) : [...prev, sec]
+          );
+        };
+
+        const handleUploadAndAdd = async (e: React.FormEvent) => {
+          e.preventDefault();
+          if (uploadFiles.length === 0) return;
+          const targetGallery = allGalleries.find(g => g.id === (addPhotoGalleryId || allGalleries[0]?.id));
+          if (!targetGallery) return;
+
+          setIsUploading(true);
+          setUploadProgress(5);
+
+          try {
+            const uploadedPhotos: Photo[] = [];
+            const sectionsString = newPhotoCats.join(", ");
+
+            for (let i = 0; i < uploadFiles.length; i++) {
+              const file = uploadFiles[i];
+              setCompressionStatus(`Compressing ${i + 1}/${uploadFiles.length}: ${file.name}...`);
+
+              // Perform client-side compression
+              const compressedFile = await compressImage(file);
+              const originalSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+              const compressedSizeMB = (compressedFile.size / (1024 * 1024)).toFixed(2);
+
+              setCompressionStatus(`Uploading ${i + 1}/${uploadFiles.length}: ${file.name} (${compressedSizeMB}MB)...`);
+
+              const fd = new FormData();
+              fd.append("file", compressedFile);
+
+              const res = await fetch("/api/upload", { method: "POST", body: fd });
+              if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || `Upload failed for ${file.name}`);
+              }
+
+              const data = await res.json();
+              if (!data.url) throw new Error(`Upload failed for ${file.name}`);
+
+              uploadedPhotos.push({
+                id: "ph-" + Date.now() + "-" + i,
+                url: data.url,
+                category: sectionsString,
+                likes: 0,
+              });
+
+              const stepProgress = Math.round(((i + 1) / uploadFiles.length) * 90);
+              setUploadProgress(stepProgress);
+            }
+
+            setCompressionStatus("Saving all photos to MongoDB gallery...");
+            const updated = {
+              ...targetGallery,
+              photos: [...(targetGallery.photos || []), ...uploadedPhotos]
+            };
+            await updateGallery(updated);
+            setUploadProgress(100);
+            setCompressionStatus("Successfully uploaded all photos!");
+
+            // Refresh data
+            const refreshed = await getGalleries();
+            setAllGalleries(refreshed);
+            if (activeCategory) setGalleries(refreshed.filter(g => g.categoryId === activeCategory.id));
+            if (activeGallery && activeGallery.id === targetGallery.id) {
+              setActiveGallery(updated);
+            }
+
+            setTimeout(() => {
+              setShowAddPhotoModal(false);
+              setUploadFiles([]);
+              setUploadPreviews([]);
+              setNewPhotoCats([]);
+              setCompressionStatus("");
+              setIsUploading(false);
+              setUploadProgress(0);
+            }, 800);
+
+          } catch (err: any) {
+            console.error(err);
+            setCompressionStatus(`Error: ${err.message || "Upload failed."}`);
+            setIsUploading(false);
+          }
+        };
+
+        return (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <div className="bg-white border border-[#D9E6E0] rounded-[24px] w-full max-w-[480px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+              {/* Header */}
+              <div className="px-5 py-4 border-b border-[#D9E6E0]/40 flex justify-between items-center bg-[#F5FBF8]">
+                <div className="flex items-center gap-2">
+                  <ImageIcon size={15} className="text-[#0F5C4D]" />
+                  <h3 className="text-[14px] font-bold text-[#18352F]">Upload Photos</h3>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowAddPhotoModal(false);
+                    setUploadFiles([]);
+                    setUploadPreviews([]);
+                    setNewPhotoCats([]);
+                  }}
+                  className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-[#5E6C66] hover:bg-red-50 hover:text-red-500 transition-colors"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+
+              <form onSubmit={handleUploadAndAdd} className="p-5 space-y-4">
+                {/* File Picker */}
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#5E6C66] mb-1.5">Select Photos</label>
+                  <label
+                    htmlFor="photo-upload-input"
+                    className={`flex flex-col items-center justify-center w-full rounded-[14px] border-2 border-dashed cursor-pointer transition-all ${uploadPreviews.length > 0 ? "border-[#0F5C4D]/40 bg-[#F5FBF8] p-3" : "border-[#D9E6E0] hover:border-[#0F5C4D]/50 bg-[#F5FBF8] p-6"
+                      }`}
+                  >
+                    {uploadPreviews.length > 0 ? (
+                      <div className="w-full">
+                        <div className="grid grid-cols-4 gap-2 max-h-[160px] overflow-y-auto p-1">
+                          {uploadPreviews.map((src, idx) => (
+                            <div key={idx} className="relative aspect-square rounded-[8px] overflow-hidden border border-[#D9E6E0]">
+                              <img src={src} alt="Preview" className="w-full h-full object-cover" />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="text-center mt-2.5 text-[11px] font-bold text-[#0F5C4D]">
+                          {uploadFiles.length} file{uploadFiles.length > 1 ? "s" : ""} selected
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <Camera size={24} className="text-[#0F5C4D]/40 mb-2" />
+                        <span className="text-[11px] font-semibold text-[#5E6C66]">Click to select images</span>
+                        <span className="text-[10px] text-[#5E6C66]/60 mt-0.5">Select one or more files — Auto Compressed</span>
+                      </>
+                    )}
+                  </label>
+                  <input
+                    id="photo-upload-input"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e.target.files)}
+                  />
+                </div>
+
+                {/* Upload & Compression Progress */}
+                {isUploading && (
+                  <div className="space-y-1.5 p-3.5 bg-[#F5FBF8] border border-[#0F5C4D]/10 rounded-[14px]">
+                    <div className="flex justify-between text-[10px] text-[#5E6C66]">
+                      <span className="font-semibold text-[#0F5C4D]">{compressionStatus}</span>
+                      <span>{uploadProgress}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-[#D9E6E0] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#0F5C4D] rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+
+
+                {/* Multi-Section Selection Tag Chips */}
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#5E6C66] mb-2">Sections / Tags</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {sidebarSectionsList.map((sec) => {
+                      const isChecked = newPhotoCats.includes(sec);
+                      return (
+                        <button
+                          key={sec}
+                          type="button"
+                          onClick={() => handleToggleNewPhotoCat(sec)}
+                          className={`flex items-center gap-2.5 px-3 py-2 rounded-[10px] border text-left text-xs transition-all ${isChecked
+                            ? "border-[#0F5C4D] bg-[#0F5C4D]/5 text-[#0F5C4D] font-bold"
+                            : "border-[#D9E6E0] bg-[#F5FBF8] text-[#18352F] hover:border-[#0F5C4D]/35"
+                            }`}
+                        >
+                          <span className={`w-3.5 h-3.5 rounded-[4px] border flex items-center justify-center transition-all ${isChecked
+                            ? "border-[#0F5C4D] bg-[#0F5C4D] text-white"
+                            : "border-gray-300 bg-white"
+                            }`}>
+                            {isChecked && <Check size={8} strokeWidth={3} />}
+                          </span>
+                          <span>{sec}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddPhotoModal(false);
+                      setUploadFiles([]);
+                      setUploadPreviews([]);
+                      setNewPhotoCats([]);
+                    }}
+                    className="h-9 px-4 rounded-[12px] text-[11px] font-bold text-[#5E6C66] hover:bg-gray-100 transition-colors"
+                  >Cancel</button>
+                  <button
+                    type="submit"
+                    disabled={uploadFiles.length === 0 || isUploading}
+                    className="h-9 px-5 rounded-[12px] text-[11px] font-bold bg-[#0F5C4D] text-white hover:bg-[#1F6F63] disabled:opacity-50 transition-colors flex items-center gap-1.5"
+                  >
+                    {isUploading ? (
+                      <><span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Uploading…</>
+                    ) : (
+                      <><Plus size={12} /> Upload & Add</>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* CHANGE PHOTO SECTION MODAL */}
+      {showMovePhotoModal && photoToMove && (() => {
+        const sidebarSectionsList = ["Wedding", "Haldi", "Destination", "Portraits", "Collage", "Ring Ceremony"];
+
+        const handleToggleSection = (section: string) => {
+          setMoveTargetSections((prev) =>
+            prev.includes(section)
+              ? prev.filter((s) => s !== section)
+              : [...prev, section]
+          );
+        };
+
+        return (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <div className="bg-white border border-[#D9E6E0] rounded-[24px] w-full max-w-[400px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+              {/* Header */}
+              <div className="px-5 py-4 border-b border-[#D9E6E0]/40 flex justify-between items-center bg-[#F5FBF8]">
+                <div className="flex items-center gap-2">
+                  <Tag size={14} className="text-[#0F5C4D]" />
+                  <h3 className="text-[14px] font-bold text-[#18352F]">Change Photo Sections</h3>
+                </div>
+                <button
+                  onClick={() => { setShowMovePhotoModal(false); setPhotoToMove(null); setMoveTargetSections([]); }}
+                  className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-[#5E6C66] hover:bg-red-50 hover:text-red-500 transition-colors"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+
+              <div className="p-5 space-y-4">
+                {/* Photo preview with current section badge */}
+                <div className="flex gap-3 items-center p-3 bg-[#F5FBF8] border border-[#D9E6E0] rounded-[14px]">
+                  <img src={photoToMove.url} alt="" className="w-14 h-14 object-cover rounded-lg shrink-0" />
+                  <div>
+                    <div className="text-[10px] text-[#5E6C66]">Current section tags</div>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {(photoToMove.category || "").split(",").map(s => s.trim()).filter(Boolean).map((s, idx) => (
+                        <span key={idx} className="text-[9px] font-bold text-[#0F5C4D] px-2 py-0.5 rounded-full bg-[#0F5C4D]/10 border border-[#0F5C4D]/25">
+                          {s}
+                        </span>
+                      ))}
+                      {!(photoToMove.category || "").trim() && (
+                        <span className="text-[9px] font-bold text-gray-400 px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200">
+                          Untagged
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[10px] text-[#5E6C66] mt-1.5">Gallery: {photoToMove.gallery?.name ?? "Unknown"}</div>
+                  </div>
+                </div>
+
+                <form onSubmit={handleMovePhoto} className="space-y-4">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#5E6C66] mb-2">
+                      Select Sections
+                      <span className="ml-1.5 text-[#0F5C4D] normal-case font-normal">(Select all that apply)</span>
+                    </label>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {sidebarSectionsList.map((sec) => {
+                        const isChecked = moveTargetSections.includes(sec);
+                        return (
+                          <button
+                            key={sec}
+                            type="button"
+                            onClick={() => handleToggleSection(sec)}
+                            className={`flex items-center gap-2.5 px-3 py-2.5 rounded-[12px] border text-left text-xs transition-all ${isChecked
+                              ? "border-[#0F5C4D] bg-[#0F5C4D]/5 text-[#0F5C4D] font-bold"
+                              : "border-[#D9E6E0] bg-[#F5FBF8] text-[#18352F] hover:border-[#0F5C4D]/35"
+                              }`}
+                          >
+                            <span className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all ${isChecked
+                              ? "border-[#0F5C4D] bg-[#0F5C4D] text-white"
+                              : "border-gray-300 bg-white"
+                              }`}>
+                              {isChecked && <Check size={10} strokeWidth={3} />}
+                            </span>
+                            <span>{sec}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => { setShowMovePhotoModal(false); setPhotoToMove(null); setMoveTargetSections([]); }}
+                      className="h-9 px-4 rounded-[12px] text-[11px] font-bold text-[#5E6C66] hover:bg-gray-100 transition-colors"
+                    >Cancel</button>
+                    <button
+                      type="submit"
+                      className="h-9 px-5 rounded-[12px] text-[11px] font-bold bg-[#0F5C4D] text-white hover:bg-[#1F6F63] transition-colors flex items-center gap-1.5"
+                    >
+                      <Tag size={11} /> Save Sections
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* CREATE PORTFOLIO FOLDER MODAL */}
       {showAddFolderModal && (
