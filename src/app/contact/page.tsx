@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -362,9 +363,14 @@ export default function Contact() {
           <div className="lg:col-span-7 flex flex-col h-full">
             <div className="bg-white border border-[#D9E6E0] rounded-[24px] p-4 sm:p-6 md:p-8 lg:p-10 shadow-[0_8px_32px_rgba(15,92,77,0.03)] flex flex-col justify-between h-full">
               <div className="h-full flex flex-col justify-between">
-                <h2 className="font-serif text-[18px] md:text-[22px] text-[#18352F] font-normal tracking-tight border-b border-[#D9E6E0] pb-2.5 mb-5 shrink-0">
-                  Booking Inquiry
-                </h2>
+                <div className="flex items-center justify-between border-b border-[#D9E6E0] pb-2.5 mb-5 shrink-0">
+                  <h2 className="font-serif text-[18px] md:text-[22px] text-[#18352F] font-normal tracking-tight">
+                    Booking Inquiry
+                  </h2>
+                  <Link href="/email-templates" className="text-[10px] uppercase tracking-wider font-semibold text-[#0F5C4D] hover:underline">
+                    Preview Templates &rarr;
+                  </Link>
+                </div>
 
                 {isSubmitting ? (
                   <div className="w-full bg-white border border-[#D9E6E0] rounded-[20px] p-6 md:p-12 text-center shadow-sm flex-1 flex flex-col justify-center items-center animate-[fadeIn_0.3s_ease-out]">
