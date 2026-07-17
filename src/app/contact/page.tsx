@@ -13,6 +13,7 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
     phone: "",
     date: "",
     location: "",
@@ -49,17 +50,34 @@ export default function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
       setIsSubmitting(false);
-      setFormSubmitted(true);
-      setTimeout(() => {
-        setFormSubmitted(false);
-        setFormData({ name: "", phone: "", date: "", location: "", message: "" });
-      }, 4000);
-    }, 1500);
+      if (response.ok) {
+        setFormSubmitted(true);
+        setFormData({ name: "", email: "", phone: "", date: "", location: "", message: "" });
+        setTimeout(() => {
+          setFormSubmitted(false);
+        }, 4000);
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || "Failed to send inquiry. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      setIsSubmitting(false);
+      alert("An error occurred. Please check your internet connection.");
+    }
   };
 
   const revealVariants = {
@@ -86,19 +104,96 @@ export default function Contact() {
 
 
       {/* 2. CONTACT CONTENT SECTION */}
-      <main ref={sectionRef} className="flex-1 pt-[90px] md:pt-[120px] pb-16 px-4 sm:px-6 md:px-12 xl:px-24 max-w-[1440px] mx-auto w-full">
-        {/* Intro Header */}
-        <div className="text-center max-w-[800px] mx-auto mb-10 md:mb-14 flex flex-col items-center">
-          <div className="font-script text-[32px] md:text-[46px] text-[#0F5C4D] mb-1 select-none animate-[fadeIn_0.6s_ease-out]">Connect</div>
-          <h1 className="font-serif text-[34px] sm:text-[44px] md:text-[52px] text-[#18352F] font-normal leading-[1.15] tracking-tight mb-4">
-            
-              Let's Document Your Legacy
-            
-          </h1>
-          <p className="text-[#5E6C66] text-[13.5px] sm:text-[15px] md:text-[16px] leading-[1.7] max-w-[620px] mx-auto font-sans">
-            Have questions or ready to book your session? Share your love story and wedding details below. We are excited to collaborate with you.
-          </p>
+      <main ref={sectionRef} className="flex-1 pb-16">
+
+        {/* ====== HERO SECTION (matches Services page) ====== */}
+        <section className="relative w-full h-[210px] sm:h-[240px] md:h-[48vh] md:min-h-[420px] md:max-h-[500px] mt-16 md:mt-0 pt-[var(--header-height)] flex items-center justify-center bg-[#F5FBF8] overflow-hidden border-b border-[#D9E6E0]">
+
+        {/* Left Floral Image — blends seamlessly into hero bg */}
+          <div className="absolute left-0 bottom-0 top-0 w-[220px] sm:w-[260px] md:w-[320px] lg:w-[400px] pointer-events-none z-0 select-none hidden md:flex items-end">
+            <div className="relative w-full h-full">
+              <Image
+                src="/contact/floral-right.png"
+                alt=""
+                fill
+                sizes="(max-width: 768px) 220px, 400px"
+                priority
+                className="object-contain object-bottom-left"
+                style={{ mixBlendMode: "multiply" }}
+              />
+              {/* Fade right edge into hero bg */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#F5FBF8]" />
+              {/* Fade top edge into hero bg */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#F5FBF8] via-transparent to-transparent" style={{ height: "40%" }} />
+            </div>
+          </div>
+
+          {/* Right Floral Image — blends seamlessly into hero bg */}
+          <div className="absolute right-0 bottom-0 top-0 w-[220px] sm:w-[260px] md:w-[320px] lg:w-[400px] pointer-events-none z-0 select-none hidden md:flex items-end">
+            <div className="relative w-full h-full">
+              <Image
+                src="/contact/floral-left.png"
+                alt=""
+                fill
+                sizes="(max-width: 768px) 220px, 400px"
+                priority
+                className="object-contain object-bottom-right"
+                style={{ mixBlendMode: "multiply" }}
+              />
+              {/* Fade left edge into hero bg */}
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-[#F5FBF8]" />
+              {/* Fade top edge into hero bg */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#F5FBF8] via-transparent to-transparent" style={{ height: "40%" }} />
+            </div>
+          </div>
+
+          {/* Center Content */}
+          <div className="relative z-10 max-w-[90%] sm:max-w-[600px] md:max-w-[750px] lg:max-w-[850px] mx-auto px-4 text-center flex flex-col items-center justify-center">
+
+            {/* Small Badge */}
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <span className="text-[10px] sm:text-[11px] md:text-[12px] uppercase tracking-[0.25em] font-bold text-[#0F5C4D]">
+                • GET IN TOUCH •
+              </span>
+            </div>
+
+            {/* Heading */}
+            <h1 className="font-serif text-[24px] xs:text-[28px] sm:text-[34px] md:text-[42px] lg:text-[48px] text-[#18352F] font-normal leading-tight tracking-tight mb-1">
+              Contact &amp; Booking
+            </h1>
+            <div className="font-script text-[42px] xs:text-[50px] sm:text-[58px] md:text-[72px] lg:text-[80px] text-[#1F6F63] leading-none select-none mb-2 md:mb-3">
+              Let&apos;s Connect.
+            </div>
+
+            {/* Gold Divider */}
+            <div className="w-12 h-[1px] bg-[#C5A880]/60 my-2 md:my-3 mx-auto"></div>
+
+            {/* Short Description */}
+            <p className="hidden md:block text-[#5E6C66] md:text-[15px] lg:text-[17px] leading-relaxed max-w-[95%] sm:max-w-[480px] md:max-w-[580px] lg:max-w-[700px] mx-auto mb-0 font-inter">
+              Ready to begin your love story? Share your details below and we&apos;ll craft a bespoke package tailored to your vision and wedding day.
+            </p>
+
+          </div>
+
+        </section>
+
+        {/* Bottom Decorative Emblem */}
+        <div className="relative w-full h-0 z-20 pointer-events-none select-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center bg-[#F5FBF8] px-5 py-2 border border-[#D9E6E0] rounded-full shadow-sm">
+            <div className="w-1.5 h-1.5 bg-[#C5A880] rotate-45" />
+            <div className="w-14 sm:w-20 md:w-32 h-[1px] bg-[#C5A880]/40 mx-2" />
+            <div className="w-3 h-3 border border-[#0F5C4D] bg-white rotate-45 flex items-center justify-center">
+              <div className="w-1 h-1 bg-[#0F5C4D]" />
+            </div>
+            <div className="w-14 sm:w-20 md:w-32 h-[1px] bg-[#C5A880]/40 mx-2" />
+            <div className="w-1.5 h-1.5 bg-[#C5A880] rotate-45" />
+          </div>
         </div>
+
+
+
+        {/* ====== CONTACT CONTENT ====== */}
+        <div className="px-4 sm:px-6 md:px-12 xl:px-24 max-w-[1440px] mx-auto w-full pt-14 md:pt-20 pb-10">
 
         {/* Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
@@ -307,6 +402,22 @@ export default function Contact() {
                             className="w-full h-[42px] md:h-[46px] bg-white border border-[#D9E6E0] rounded-[8px] px-3.5 text-[12.5px] md:text-[13.5px] text-[#18352F] focus:outline-none focus:border-[#0F5C4D] focus:bg-white focus:ring-[3px] focus:ring-[#0F5C4D]/10 transition-all font-sans"
                           />
                         </div>
+                        {/* Email */}
+                        <div className="flex flex-col">
+                          <label className="text-[10px] md:text-[11px] uppercase font-semibold text-[#5E6C66] tracking-[1px] mb-1.5 font-sans">Email Address</label>
+                          <input
+                            type="email"
+                            name="email"
+                            required
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            placeholder="e.g. rahul@example.com"
+                            className="w-full h-[42px] md:h-[46px] bg-white border border-[#D9E6E0] rounded-[8px] px-3.5 text-[12.5px] md:text-[13.5px] text-[#18352F] focus:outline-none focus:border-[#0F5C4D] focus:bg-white focus:ring-[3px] focus:ring-[#0F5C4D]/10 transition-all font-sans"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                         {/* Phone */}
                         <div className="flex flex-col">
                           <label className="text-[10px] md:text-[11px] uppercase font-semibold text-[#5E6C66] tracking-[1px] mb-1.5 font-sans">Phone Number</label>
@@ -320,9 +431,6 @@ export default function Contact() {
                             className="w-full h-[42px] md:h-[46px] bg-white border border-[#D9E6E0] rounded-[8px] px-3.5 text-[12.5px] md:text-[13.5px] text-[#18352F] focus:outline-none focus:border-[#0F5C4D] focus:bg-white focus:ring-[3px] focus:ring-[#0F5C4D]/10 transition-all font-sans"
                           />
                         </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                         {/* Event Date */}
                         <div className="flex flex-col">
                           <label className="text-[10px] md:text-[11px] uppercase font-semibold text-[#5E6C66] tracking-[1px] mb-1.5 font-sans">Event Date</label>
@@ -335,6 +443,9 @@ export default function Contact() {
                             className="w-full h-[42px] md:h-[46px] bg-white border border-[#D9E6E0] rounded-[8px] px-3.5 text-[12.5px] md:text-[13.5px] text-[#18352F] focus:outline-none focus:border-[#0F5C4D] focus:bg-white focus:ring-[3px] focus:ring-[#0F5C4D]/10 transition-all font-sans"
                           />
                         </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-4 md:gap-5">
                         {/* Event Location */}
                         <div className="flex flex-col">
                           <label className="text-[10px] md:text-[11px] uppercase font-semibold text-[#5E6C66] tracking-[1px] mb-1.5 font-sans">Event Location (City)</label>
@@ -385,8 +496,8 @@ export default function Contact() {
         <section className="mt-12 md:mt-16 bg-white border border-[#D9E6E0] rounded-[24px] overflow-hidden shadow-[0_8px_32px_rgba(15,92,77,0.02)] p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
             <div>
-              <h3 className="font-serif text-[20px] md:text-[24px] text-[#18352F] font-normal tracking-tight">Studio Map & Directions</h3>
-              <p className="text-[#5E6C66] text-[13px] md:text-[14px] mt-0.5 font-sans">Visit us for face-to-face consultation and album walkthroughs</p>
+              <h3 className="font-serif text-[16px] sm:text-[20px] md:text-[24px] text-[#18352F] font-normal tracking-tight">Studio Map & Directions</h3>
+              <p className="hidden sm:block text-[#5E6C66] text-[13px] md:text-[14px] mt-0.5 font-sans">Visit us for face-to-face consultation and album walkthroughs</p>
             </div>
             <a 
               href="https://www.google.com/search?client=ms-android-xiaomi-rvo2b&sca_esv=598771579&sxsrf=ACQVn0-D-HT2u5mkksMuOOz7zgfWYIi8iA:1705402659306&q=om+photography+studio+umaria&ludocid=15290579333970816527&ibp=gwp;0,7&lsig=AB86z5WoWqUIwEp0XlGIRlX2IOa7&kgs=9f3f4c0e2129f922&shndl=-1&shem=lcsnce,lsp&source=sh/x/loc/act/m1/2&fbclid=PARlRTSAODu9tleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAafMKLMGpgkVXFGnHl9WDfB8Hsbk8gj1Cx7fNUL8ViaIB6PjBW8rcjryHSnYxA_aem_9mav3X1IKAYqLf86BLoKSQ#lpg=cid:CgIgAQ%3D%3D" 
@@ -416,6 +527,7 @@ export default function Contact() {
             ></iframe>
           </div>
         </section>
+        </div>{/* ====== END CONTACT CONTENT ====== */}
       </main>
 
       {/* 3. FOOTER (Bottom Section) */}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%" fill="none">
+  <!-- Elegant soft white/gold luxury corner floral decoration -->
+  <g transform="translate(10, 10)">
+    <!-- Curving branches -->
+    <path d="M5,185 C25,145 65,95 125,75 C145,68 165,65 180,62" stroke="#C89B5D" stroke-width="1.0" stroke-linecap="round" opacity="0.3" />
+    <path d="M5,185 C45,165 95,125 115,65 C122,45 125,25 128,10" stroke="#C89B5D" stroke-width="1.0" stroke-linecap="round" opacity="0.3" />
+    
+    <!-- Flower Bloom (Main Bottom-Left corner) -->
+    <g transform="translate(25, 160)">
+      <!-- Petals -->
+      <path d="M-15,-15 C-25,-5 -25,10 -15,15 C-5,25 10,25 15,15 C25,5 25,-10 15,-15 C5,-25 -10,-25 -15,-15 Z" fill="#FCFAF6" stroke="#C89B5D" stroke-width="0.8" opacity="0.8" />
+      <circle cx="0" cy="0" r="14" fill="#FCFAF6" stroke="#C89B5D" stroke-width="0.5" />
+      <!-- Inner detail lines -->
+      <path d="M-7,-7 Q0,0 7,7" stroke="#C89B5D" stroke-width="0.5" opacity="0.4" />
+      <path d="M-7,7 Q0,0 7,-7" stroke="#C89B5D" stroke-width="0.5" opacity="0.4" />
+      <!-- Flower Center -->
+      <circle cx="0" cy="0" r="4" fill="#C89B5D" opacity="0.75" />
+    </g>
+
+    <!-- Smaller Flower Bloom -->
+    <g transform="translate(75, 125) scale(0.65)">
+      <path d="M-15,-15 C-25,-5 -25,10 -15,15 C-5,25 10,25 15,15 C25,5 25,-10 15,-15 C5,-25 -10,-25 -15,-15 Z" fill="#FCFAF6" stroke="#C89B5D" stroke-width="0.8" opacity="0.8" />
+      <circle cx="0" cy="0" r="14" fill="#FCFAF6" stroke="#C89B5D" stroke-width="0.5" />
+      <circle cx="0" cy="0" r="4" fill="#C89B5D" opacity="0.75" />
+    </g>
+
+    <!-- Leaf 1 -->
+    <path d="M125,75 C120,60 135,50 145,55 C150,60 140,70 125,75 Z" fill="#C89B5D" opacity="0.15" />
+    <path d="M125,75 Q135,62 145,55" stroke="#C89B5D" stroke-width="0.6" opacity="0.3" />
+
+    <!-- Leaf 2 -->
+    <path d="M115,65 C100,58 92,72 98,82 C104,88 110,76 115,65 Z" fill="#C89B5D" opacity="0.15" />
+    <path d="M115,65 Q106,74 98,82" stroke="#C89B5D" stroke-width="0.6" opacity="0.3" />
+  </g>
+</svg>

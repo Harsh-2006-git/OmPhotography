@@ -159,8 +159,8 @@ export default function AboutPage() {
                   </div>
                   <div className="relative flex-1 rounded-[16px] overflow-hidden border border-[#D9E6E0]/60 shadow-[0_4px_12px_rgba(0,0,0,0.02)] min-h-[60px] md:min-h-[100px] lg:min-h-[148px] aspect-square md:aspect-[4/3] lg:aspect-auto">
                     <Image
-                      src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=400&h=400&q=80"
-                      alt="Couple Sunset Portrait"
+                      src="/about/candid_wedding_walk.png"
+                      alt="Joyful Indian bride and groom walk during luxury wedding ceremony"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-500 select-none pointer-events-none"
                       sizes="(max-width: 768px) 30vw, 200px"
@@ -419,8 +419,8 @@ export default function AboutPage() {
               {/* Main Image */}
               <div className="relative w-[85%] h-[90%] rounded-[24px] overflow-hidden border border-[#D9E6E0] shadow-xl group z-0">
                 <Image
-                  src="https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?auto=format&fit=crop&w=800&q=80"
-                  alt="Intricate details from premium Indian wedding ceremony, emotional bride and groom"
+                  src="/about/palace_wedding_couple.png"
+                  alt="Premium editorial wedding portrait of bride and groom in traditional designer attire at heritage palace"
                   fill
                   sizes="(max-width: 1024px) 100vw, 550px"
                   className="object-cover group-hover:scale-102 transition-transform duration-700 pointer-events-none select-none"
@@ -428,10 +428,10 @@ export default function AboutPage() {
               </div>
 
               {/* Overlapping Secondary Image */}
-              <div className="absolute bottom-[5%] right-0 w-[45%] aspect-square rounded-[20px] overflow-hidden border-8 border-white shadow-2xl hover:scale-103 transition-transform duration-500 z-10">
+              <div className="absolute bottom-[3%] right-[-3%] md:right-[-6%] w-[38%] md:w-[35%] aspect-square rounded-[20px] overflow-hidden border-4 md:border-8 border-white shadow-2xl hover:scale-103 transition-transform duration-500 z-10">
                 <Image
-                  src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=600&q=80"
-                  alt="Wedding details: hands with rings close up"
+                  src="/about/wedding_details_hands.png"
+                  alt="Indian wedding details: intricate henna and holding hands close up"
                   fill
                   sizes="250px"
                   className="object-cover select-none pointer-events-none"

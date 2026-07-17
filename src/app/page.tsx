@@ -429,11 +429,14 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
             </div>
             {/* Smaller Overlay Image (Bottom Left) */}
-            <div className="absolute bottom-[-18%] left-[2%] h-[60%] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(15,92,77,0.15)] border-[4px] border-white z-20 bg-white">
-              <img
+            <div className="absolute bottom-[-18%] left-[2%] h-[60%] aspect-[3/4] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(15,92,77,0.15)] border-[4px] border-white z-20 bg-white">
+              <Image
                 src="https://res.cloudinary.com/eksh1jyi/image/upload/v1783964082/portfolio/file_hrpi8w.jpg"
                 alt="Bridal portrait detail shoot"
-                className="h-full w-auto object-contain hover:scale-105 transition-transform duration-500"
+                fill
+                priority
+                sizes="150px"
+                className="object-cover hover:scale-105 transition-transform duration-500"
               />
             </div>            {/* FLOATING STAT CARD */}
             <div className="absolute bottom-[6%] right-[6%] bg-white/95 backdrop-blur-md border border-[#D9E6E0]/60 rounded-[22px] p-2 sm:p-2.5 flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(15,92,77,0.08)] text-center w-[90px] sm:w-[115px] z-30 transition-transform duration-300 hover:scale-105">
