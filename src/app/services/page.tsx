@@ -7,8 +7,8 @@ import Footer from "../../components/Footer";
 
 // Animated component dependencies
 import { Card, CardContent, CardHeader } from "../../components/ui/card";
-import { TimelineContent } from "../../components/ui/timeline-animation";
-import { VerticalCutReveal } from "../../components/ui/vertical-cut-reveal";
+
+
 import { cn } from "@/lib/utils";
 import NumberFlow from "@number-flow/react";
 import { Briefcase, CheckCheck, Database, Server } from "lucide-react";
@@ -378,45 +378,21 @@ export default function Services() {
                 CURATED INVESTMENT PLANS
               </span>
               <h2 className="font-serif text-[34px] sm:text-[44px] md:text-[54px] text-[#18352F] font-normal leading-tight tracking-tight mt-1 mb-2">
-                <VerticalCutReveal
-                  splitBy="words"
-                  staggerDuration={0.15}
-                  staggerFrom="first"
-                  reverse={true}
-                  containerClassName="justify-center"
-                  transition={{
-                    type: "spring",
-                    stiffness: 250,
-                    damping: 40,
-                    delay: 0,
-                  }}
-                >
+                
                   We've got a plan that's perfect for you
-                </VerticalCutReveal>
+                
               </h2>
 
-              <TimelineContent
-                as="p"
-                animationNum={0}
-                timelineRef={pricingSectionRef}
-                customVariants={revealVariants}
-                className="text-[#5E6C66] text-[13.5px] md:text-[15.5px] max-w-[580px] leading-relaxed font-sans"
-              >
+              <p className="text-[#5E6C66] text-[13.5px] md:text-[15.5px] max-w-[580px] leading-relaxed font-sans">
                 Trusted by hundreds of couples worldwide. We help capture legacy stories with artistic elegance. Explore our booking packages below.
-              </TimelineContent>
+              </p>
 
             </article>
 
             {/* Pricing Cards Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-[1200px] mx-auto pt-6">
               {plans.map((plan, index) => (
-                <TimelineContent
-                  key={plan.name}
-                  as="div"
-                  animationNum={2 + index}
-                  timelineRef={pricingSectionRef}
-                  customVariants={revealVariants}
-                >
+                <div key={plan.name}>
                   <Card
                     className={`relative border border-[#D9E6E0] rounded-[18px] flex flex-col justify-between h-full p-6 md:p-8 transition-all duration-300 ${plan.popular
                         ? "ring-2 ring-[#0F5C4D] bg-[#F5FBF8] shadow-[0_12px_40px_rgba(15,92,77,0.08)]"
@@ -495,7 +471,7 @@ export default function Services() {
                       </div>
                     </CardContent>
                   </Card>
-                </TimelineContent>
+                </div>
               ))}
             </div>
           </div>

@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { TimelineContent } from "../../components/ui/timeline-animation";
-import { VerticalCutReveal } from "../../components/ui/vertical-cut-reveal";
+
+
 
 export default function Contact() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -91,43 +91,19 @@ export default function Contact() {
         <div className="text-center max-w-[800px] mx-auto mb-10 md:mb-14 flex flex-col items-center">
           <div className="font-script text-[32px] md:text-[46px] text-[#0F5C4D] mb-1 select-none animate-[fadeIn_0.6s_ease-out]">Connect</div>
           <h1 className="font-serif text-[34px] sm:text-[44px] md:text-[52px] text-[#18352F] font-normal leading-[1.15] tracking-tight mb-4">
-            <VerticalCutReveal
-              splitBy="words"
-              staggerDuration={0.12}
-              staggerFrom="first"
-              reverse={true}
-              containerClassName="justify-center"
-              transition={{
-                type: "spring",
-                stiffness: 250,
-                damping: 40,
-                delay: 0,
-              }}
-            >
+            
               Let's Document Your Legacy
-            </VerticalCutReveal>
+            
           </h1>
-          <TimelineContent
-            as="p"
-            animationNum={0}
-            timelineRef={sectionRef}
-            customVariants={revealVariants}
-            className="text-[#5E6C66] text-[13.5px] sm:text-[15px] md:text-[16px] leading-[1.7] max-w-[620px] mx-auto font-sans"
-          >
+          <p className="text-[#5E6C66] text-[13.5px] sm:text-[15px] md:text-[16px] leading-[1.7] max-w-[620px] mx-auto font-sans">
             Have questions or ready to book your session? Share your love story and wedding details below. We are excited to collaborate with you.
-          </TimelineContent>
+          </p>
         </div>
 
         {/* Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch">
           {/* Left Column: Sidebar with Quick Action & Social Links */}
-          <TimelineContent
-            as="div"
-            animationNum={1}
-            timelineRef={sectionRef}
-            customVariants={revealVariants}
-            className="lg:col-span-5 flex flex-col h-full"
-          >
+          <div className="lg:col-span-5 flex flex-col h-full">
             <div className="bg-white border border-[#D9E6E0] rounded-[24px] p-4 sm:p-6 md:p-8 shadow-[0_8px_32px_rgba(15,92,77,0.03)] flex flex-col justify-between h-full space-y-6 md:space-y-8">
               <div className="flex-1 flex flex-col justify-between">
                 <div>
@@ -285,16 +261,10 @@ export default function Contact() {
                   <a href="/#about" className="hover:text-[#0F5C4D] transition-colors">About Us</a>
                 </div>
               </div>
-            </TimelineContent>
+            </div>
 
           {/* Right Column: Booking Form */}
-          <TimelineContent
-            as="div"
-            animationNum={2}
-            timelineRef={sectionRef}
-            customVariants={revealVariants}
-            className="lg:col-span-7 flex flex-col h-full"
-          >
+          <div className="lg:col-span-7 flex flex-col h-full">
             <div className="bg-white border border-[#D9E6E0] rounded-[24px] p-4 sm:p-6 md:p-8 lg:p-10 shadow-[0_8px_32px_rgba(15,92,77,0.03)] flex flex-col justify-between h-full">
               <div className="h-full flex flex-col justify-between">
                 <h2 className="font-serif text-[18px] md:text-[22px] text-[#18352F] font-normal tracking-tight border-b border-[#D9E6E0] pb-2.5 mb-5 shrink-0">
@@ -408,18 +378,11 @@ export default function Contact() {
                 )}
               </div>
             </div>
-          </TimelineContent>
+          </div>
         </div>
 
         {/* 3. STUDIO LOCATION MAP */}
-        <TimelineContent
-          as="section"
-          id="studio-map"
-          animationNum={3}
-          timelineRef={sectionRef}
-          customVariants={revealVariants}
-          className="mt-12 md:mt-16 bg-white border border-[#D9E6E0] rounded-[24px] overflow-hidden shadow-[0_8px_32px_rgba(15,92,77,0.02)] p-4 md:p-6"
-        >
+        <section className="mt-12 md:mt-16 bg-white border border-[#D9E6E0] rounded-[24px] overflow-hidden shadow-[0_8px_32px_rgba(15,92,77,0.02)] p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
             <div>
               <h3 className="font-serif text-[20px] md:text-[24px] text-[#18352F] font-normal tracking-tight">Studio Map & Directions</h3>
@@ -452,7 +415,7 @@ export default function Contact() {
               className="absolute inset-0 w-full h-full grayscale-[20%] hover:grayscale-0 transition-all duration-700"
             ></iframe>
           </div>
-        </TimelineContent>
+        </section>
       </main>
 
       {/* 3. FOOTER (Bottom Section) */}

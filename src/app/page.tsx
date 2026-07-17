@@ -347,7 +347,7 @@ export default function Home() {
 
 
         {/* Two columns section (Flex on mobile, Grid on desktop) */}
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 pt-6 md:pt-10 lg:pt-12 w-full relative z-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 pt-3 md:pt-10 lg:pt-12 w-full relative z-10">
           {/* Left Column (42%) */}
           <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center lg:pr-0 lg:text-center w-full flex-shrink-0">
             {/* Top Label with decorative green lines */}
@@ -417,7 +417,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-[#DCEFE8] rounded-[24px] transform rotate-2 scale-[0.98] pointer-events-none opacity-60 z-0" />
 
             {/* Main Bigger Image */}
-            <div className="relative w-[92%] h-[94%] rounded-[24px] overflow-hidden shadow-[0_10px_30px_rgba(15,92,77,0.08)] border border-[#D9E6E0]/30 z-10">
+            <div className="relative w-[96%] h-[98%] rounded-[24px] overflow-hidden shadow-[0_10px_30px_rgba(15,92,77,0.08)] border border-[#D9E6E0]/30 z-10">
               <Image
                 src="/hero-image.png"
                 alt="Premium wedding photography portrait of an Indian couple"
@@ -429,7 +429,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
             </div>
             {/* Smaller Overlay Image (Bottom Left) */}
-            <div className="absolute bottom-[-8%] left-[2%] h-[48%] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(15,92,77,0.15)] border-[4px] border-white z-20 bg-white">
+            <div className="absolute bottom-[-18%] left-[2%] h-[60%] rounded-[20px] overflow-hidden shadow-[0_15px_35px_rgba(15,92,77,0.15)] border-[4px] border-white z-20 bg-white">
               <img
                 src="https://res.cloudinary.com/eksh1jyi/image/upload/v1783964082/portfolio/file_hrpi8w.jpg"
                 alt="Bridal portrait detail shoot"
@@ -437,7 +437,7 @@ export default function Home() {
               />
             </div>            {/* FLOATING STAT CARD */}
             <div className="absolute bottom-[6%] right-[6%] bg-white/95 backdrop-blur-md border border-[#D9E6E0]/60 rounded-[22px] p-2 sm:p-2.5 flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(15,92,77,0.08)] text-center w-[90px] sm:w-[115px] z-30 transition-transform duration-300 hover:scale-105">
-              <span className="font-serif text-[18px] sm:text-[24px] font-normal text-[#0F5C4D] leading-none tracking-tight">100+</span>
+              <span className="font-sans text-[18px] sm:text-[24px] font-bold text-[#0F5C4D] leading-none tracking-tight">100+</span>
               <span className="text-[7px] sm:text-[9px] font-bold tracking-[0.12em] text-[#18352F] font-sans uppercase mt-1">WEDDINGS</span>
               <span className="text-[5.5px] sm:text-[7px] font-medium tracking-[0.08em] text-[#5E6C66] font-sans uppercase">Captured</span>
               <div className="w-6 h-[1px] bg-[#D9E6E0]/80 my-1" />
@@ -466,7 +466,7 @@ export default function Home() {
 
               {/* FLOATING STAT CARD */}
               <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md border border-[#D9E6E0]/60 rounded-[22px] p-3 flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(15,92,77,0.08)] text-center w-[130px] z-20 transition-transform duration-300 hover:scale-105">
-                <span className="font-serif text-[28px] font-normal text-[#0F5C4D] leading-none tracking-tight">100+</span>
+                <span className="font-sans text-[28px] font-bold text-[#0F5C4D] leading-none tracking-tight">100+</span>
                 <span className="text-[9.5px] font-bold tracking-[0.15em] text-[#18352F] font-sans uppercase mt-1">WEDDINGS</span>
                 <span className="text-[7.5px] font-medium tracking-[0.1em] text-[#5E6C66] font-sans uppercase">Captured</span>
                 <div className="w-8 h-[1px] bg-[#D9E6E0]/80 my-1.5" />
@@ -628,15 +628,15 @@ export default function Home() {
             </p>
             <div className="grid grid-cols-3 gap-2 md:gap-4 w-full pt-4 md:pt-4 border-t border-[#D9E6E0]">
               <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-serif font-bold text-[#0F5C4D]">10+</div>
+                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-sans font-bold text-[#0F5C4D]">10+</div>
                 <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#5E6C66] mt-0.5">Years Experience</div>
               </div>
               <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-serif font-bold text-[#0F5C4D]">350+</div>
+                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-sans font-bold text-[#0F5C4D]">350+</div>
                 <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#5E6C66] mt-0.5">Weddings Shot</div>
               </div>
               <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-serif font-bold text-[#0F5C4D]">100%</div>
+                <div className="text-[18px] sm:text-[22px] md:text-[28px] font-sans font-bold text-[#0F5C4D]">100%</div>
                 <div className="text-[8.5px] sm:text-[10px] md:text-[12px] uppercase tracking-[1px] text-[#5E6C66] mt-0.5">Happy Clients</div>
               </div>
             </div>
@@ -826,7 +826,7 @@ export default function Home() {
             </div>
 
             {/* Description */}
-            <p 
+            <p
               className="!text-[10px] sm:!text-[11.5px] md:!text-[12.5px] font-medium leading-relaxed max-w-[540px] font-sans"
               style={{ color: '#ffffff' }}
             >
