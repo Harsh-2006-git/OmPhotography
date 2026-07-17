@@ -342,12 +342,12 @@ export default function Home() {
       <Header />
 
       {/* 2. HERO SECTION / BANNER */}
-      <section className="min-h-[100dvh] lg:h-screen pt-[var(--header-height)] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-3 lg:py-[2vh] max-w-[1920px] mx-auto w-full overflow-x-hidden lg:overflow-hidden relative">
+      <section className="min-h-[100dvh] lg:h-screen pt-[var(--header-height)] flex flex-col justify-between px-4 sm:px-6 md:px-12 py-1.5 sm:py-3 lg:py-[2vh] max-w-[1920px] mx-auto w-full overflow-x-hidden lg:overflow-hidden relative">
 
 
 
         {/* Two columns section (Flex on mobile, Grid on desktop) */}
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 pt-3 md:pt-10 lg:pt-12 w-full relative z-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-center justify-center flex-1 min-h-0 py-1.5 pt-0 sm:pt-4 md:pt-10 lg:pt-12 w-full relative z-10">
           {/* Left Column (42%) */}
           <div className="lg:col-span-5 flex flex-col items-start lg:items-center justify-center lg:pr-0 lg:text-center w-full flex-shrink-0">
             {/* Top Label with decorative green lines */}
@@ -483,7 +483,7 @@ export default function Home() {
 
 
         {/* IMAGE CAROUSEL CONTAINER (Full Viewport Width covering screen) */}
-        <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] bg-white border-y border-[#0F5C4D]/25 h-[80px] sm:h-[110px] md:h-[135px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] flex items-center overflow-hidden mt-3.5 md:mt-4 shadow-[0_10px_30px_rgba(15,92,77,0.03)] z-10">
+        <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] bg-white border-y border-[#0F5C4D]/25 h-[90px] xs:h-[105px] sm:h-[110px] md:h-[135px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] flex items-center overflow-hidden mt-3.5 md:mt-4 shadow-[0_10px_30px_rgba(15,92,77,0.03)] z-10">
           <style>{`
             @keyframes marquee {
               0% { transform: translateX(0); }
@@ -514,7 +514,7 @@ export default function Home() {
                 key={index}
                 src={src}
                 alt={`Wedding moment ${(index % carouselImages.length) + 1}`}
-                className="h-[80px] sm:h-[110px] md:h-[135px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] w-auto object-contain cursor-pointer transition-transform duration-300 hover:scale-[1.04] shrink-0"
+                className="h-[90px] xs:h-[105px] sm:h-[110px] md:h-[135px] lg:h-[15vh] lg:min-h-[100px] lg:max-h-[140px] w-auto object-contain cursor-pointer transition-transform duration-300 hover:scale-[1.04] shrink-0"
               />
             ))}
           </div>
